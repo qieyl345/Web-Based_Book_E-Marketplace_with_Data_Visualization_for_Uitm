@@ -1,0 +1,224 @@
+/* ========================================
+   PROFILE COVER - PREMIUM ANIMATED DESIGN
+   Option A: Animated Gradient with Particles
+   ======================================== */
+
+/* Fix Profile Header Card Padding */
+.profile-header-card {
+    padding: 0 !important;
+    overflow: visible !important;
+}
+
+/* Profile Cover Container */
+.profile-cover {
+    position: relative;
+    height: 250px !important;
+    width: 100% !important;
+    margin: 0 !important;
+    border-radius: 20px 20px 0 0 !important;
+    overflow: hidden !important;
+    background: linear-gradient(135deg,
+            #3A0B61 0%,
+            #6B1FA3 25%,
+            #FFD700 50%,
+            #FFF8DC 75%,
+            #3A0B61 100%);
+    background-size: 400% 400%;
+    animation: gradientFlow 20s ease-in-out infinite;
+}
+
+/* Animated Gradient Flow */
+@keyframes gradientFlow {
+
+    0%,
+    100% {
+        background-position: 0% 50%;
+    }
+
+    25% {
+        background-position: 50% 25%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    75% {
+        background-position: 50% 75%;
+    }
+}
+
+/* Dot Pattern Overlay */
+.profile-cover::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    z-index: 1;
+    animation: patternShift 30s linear infinite;
+}
+
+@keyframes patternShift {
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        background-position: 100px 100px;
+    }
+}
+
+/* Glassmorphism Layer */
+.profile-cover::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg,
+            rgba(255, 255, 255, 0.1) 0%,
+            rgba(255, 255, 255, 0.05) 50%,
+            rgba(0, 0, 0, 0.05) 100%);
+    backdrop-filter: blur(2px);
+    z-index: 2;
+}
+
+/* Light Rays Effect */
+.profile-cover {
+    background-image:
+        linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%),
+        linear-gradient(135deg,
+            #3A0B61 0%,
+            #6B1FA3 25%,
+            #FFD700 50%,
+            #FFF8DC 75%,
+            #3A0B61 100%);
+    background-size: 200% 100%, 400% 400%;
+    animation: gradientFlow 20s ease-in-out infinite, lightRays 5s linear infinite;
+}
+
+@keyframes lightRays {
+    0% {
+        background-position: -200% 0, 0% 50%;
+    }
+
+    100% {
+        background-position: 200% 0, 0% 50%;
+    }
+}
+
+/* Profile Content Area - Add Padding */
+.profile-main-info {
+    padding: 2rem 2.5rem !important;
+}
+
+.profile-stats-row {
+    padding: 2rem 2.5rem 2.5rem 2.5rem !important;
+}
+
+/* Edit Cover Button - Premium Styling */
+.edit-cover-btn,
+.btn-icon.edit-cover-btn {
+    position: absolute !important;
+    bottom: 1rem !important;
+    right: 1rem !important;
+    z-index: 10 !important;
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 12px !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 2px solid rgba(255, 215, 0, 0.5) !important;
+    color: var(--uitm-purple, #3A0B61) !important;
+    font-size: 1.25rem !important;
+    cursor: pointer !important;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.edit-cover-btn:hover,
+.btn-icon.edit-cover-btn:hover {
+    transform: translateY(-4px) scale(1.05) !important;
+    background: rgba(255, 255, 255, 1) !important;
+    border-color: var(--uitm-gold, #FFD700) !important;
+    box-shadow: 0 8px 24px rgba(255, 215, 0, 0.4),
+        0 0 0 4px rgba(255, 215, 0, 0.2) !important;
+}
+
+.edit-cover-btn i,
+.btn-icon.edit-cover-btn i {
+    transition: transform 0.3s ease !important;
+}
+
+.edit-cover-btn:hover i,
+.btn-icon.edit-cover-btn:hover i {
+    transform: rotate(15deg) scale(1.1) !important;
+}
+
+.edit-cover-btn:active,
+.btn-icon.edit-cover-btn:active {
+    transform: translateY(-2px) scale(1.02) !important;
+}
+
+/* Shimmer Effect on Hover */
+.profile-cover:hover::after {
+    animation: shimmer 2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+/* Responsive Cover */
+@media (max-width: 768px) {
+    .profile-cover {
+        height: 180px !important;
+    }
+
+    .profile-main-info {
+        padding: 1.5rem !important;
+    }
+
+    .profile-stats-row {
+        padding: 1.5rem !important;
+    }
+
+    .edit-cover-btn,
+    .btn-icon.edit-cover-btn {
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 1rem !important;
+        bottom: 0.75rem !important;
+        right: 0.75rem !important;
+    }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+
+    .profile-cover,
+    .profile-cover::before,
+    .profile-cover::after {
+        animation: none !important;
+    }
+
+    .edit-cover-btn:hover,
+    .btn-icon.edit-cover-btn:hover {
+        transform: none !important;
+    }
+}
