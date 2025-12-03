@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Email - UiTM e-Marketplace</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="auth-page">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <i class="fas fa-envelope-open-text verify-icon"></i>
+                <h1>Verify Your Email</h1>
+                <p>We've sent a verification link to your email</p>
+            </div>
+
+            <div class="verify-content">
+                <p class="verify-text">Please check your email and click the verification link to activate your account.</p>
+                <p class="verify-text">The link will expire in 24 hours.</p>
+
+                <div id="emailContainer" class="email-display"></div>
+
+                <button id="resendEmail" class="btn btn-secondary">
+                    <i class="fas fa-redo"></i> Resend Verification Email
+                </button>
+
+                <a href="login.html" class="btn btn-link">Back to Login</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="messageModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h3 id="modalMessageTitle"></h3>
+            <p id="modalMessageText"></p>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="../assets/js/firebase-config.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/verify-email.js"></script>
+</body>
+</html>

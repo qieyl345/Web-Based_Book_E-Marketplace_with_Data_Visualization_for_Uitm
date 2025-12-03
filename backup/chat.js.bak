@@ -1,0 +1,227 @@
+// Chat & Negotiation Logic
+
+let currentOfferId = null;
+let currentOffer = null;
+let chatUnsubscribe = null;
+
+document.addEventListener('DOMContentLoaded', async () => {
+    await waitForAuth();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    currentOfferId = urlParams.get('offerId');
+
+    if (!currentOfferId) {
+        window.location.href = 'index.html';
+        return;
+    }
+
+    await loadOfferDetails();
+    setupChatListeners();
+    setupActionButtons();
+});
+
+async function loadOfferDetails() {
+    try {
+        const snapshot = await database.ref(`offers/${currentOfferId}`).once('value');
+        currentOffer = snapshot.val();
+
+        if (!currentOffer) {
+            alert("Offer not found!");
+            window.location.href = 'index.html';
+            return;
+        }
+
+        // Verify participation
+        if (currentUser.uid !== currentOffer.buyerId && currentUser.uid !== currentOffer.sellerId) {
+            alert("Unauthorized access!");
+            window.location.href = 'index.html';
+            return;
+        }
+
+        updateUI();
+    } catch (error) {
+        console.error("Error loading offer:", error);
+    }
+}
+
+function updateUI() {
+    // Sidebar Info
+    document.getElementById('bookTitle').textContent = currentOffer.bookTitle;
+    document.getElementById('originalPrice').textContent = formatCurrency(currentOffer.bookPrice);
+    document.getElementById('currentOffer').textContent = formatCurrency(currentOffer.currentPrice);
+    
+    const statusEl = document.getElementById('offerStatus');
+    statusEl.textContent = currentOffer.status.replace('_', ' ');
+    statusEl.className = `offer-status status-${currentOffer.status.split('_')[0]}`;
+
+    // Other party name
+    const otherName = currentUser.uid === currentOffer.buyerId ? currentOffer.sellerName : currentOffer.buyerName;
+    document.getElementById('otherPartyName').textContent = otherName;
+    document.getElementById('chatHeaderTitle').textContent = `Chat with ${otherName}`;
+
+    // Action Buttons Logic
+    const actionBar = document.getElementById('actionBar');
+    const isMyTurn = currentOffer.lastActionBy !== currentUser.uid;
+    
+    // Show actions only if status is pending/counter_offered AND it's the other person's turn to respond
+    if ((currentOffer.status === 'pending' || currentOffer.status === 'counter_offered') && isMyTurn) {
+        actionBar.style.display = 'flex';
+    } else {
+        actionBar.style.display = 'none';
+    }
+}
+
+function setupChatListeners() {
+    const messagesRef = database.ref(`chats/${currentOfferId}/messages`);
+    const messagesContainer = document.getElementById('chatMessages');
+
+    messagesRef.on('value', (snapshot) => {
+        messagesContainer.innerHTML = '';
+        const messages = [];
+        
+        snapshot.forEach(child => {
+            messages.push(child.val());
+        });
+
+        // Sort by timestamp
+        messages.sort((a, b) => a.timestamp - b.timestamp);
+
+        if (messages.length === 0) {
+            messagesContainer.innerHTML = '<div class="text-center text-muted">Start the conversation...</div>';
+        } else {
+            messages.forEach(msg => {
+                const msgDiv = document.createElement('div');
+                
+                if (msg.type === 'system') {
+                    msgDiv.className = 'message system';
+                    msgDiv.innerHTML = `
+                        <i class="fas fa-info-circle"></i> ${msg.text}
+                        <span class="message-time">${formatTime(msg.timestamp)}</span>
+                    `;
+                } else {
+                    const isMe = msg.senderId === currentUser.uid;
+                    msgDiv.className = `message ${isMe ? 'sent' : 'received'}`;
+                    msgDiv.innerHTML = `
+                        ${msg.text}
+                        <span class="message-time">${formatTime(msg.timestamp)}</span>
+                    `;
+                }
+                messagesContainer.appendChild(msgDiv);
+            });
+        }
+        
+        // Scroll to bottom
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    });
+}
+
+function setupActionButtons() {
+    // Send Message
+    document.getElementById('messageForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const input = document.getElementById('messageInput');
+        const text = input.value.trim();
+        
+        if (!text) return;
+
+        try {
+            await sendMessage(text, 'text');
+            input.value = '';
+        } catch (error) {
+            console.error("Send error:", error);
+        }
+    });
+
+    // Accept Offer
+    document.getElementById('acceptBtn').addEventListener('click', async () => {
+        if (!confirm(`Accept the offer of ${formatCurrency(currentOffer.currentPrice)}?`)) return;
+
+        try {
+            await database.ref(`offers/${currentOfferId}`).update({
+                status: 'accepted',
+                lastActionBy: currentUser.uid,
+                updatedAt: Date.now()
+            });
+            
+            await sendMessage(`Offer of ${formatCurrency(currentOffer.currentPrice)} accepted!`, 'system');
+            
+            // Reload to update UI
+            window.location.reload();
+        } catch (error) {
+            console.error("Accept error:", error);
+        }
+    });
+
+    // Reject Offer
+    document.getElementById('rejectBtn').addEventListener('click', async () => {
+        if (!confirm("Reject this offer?")) return;
+
+        try {
+            await database.ref(`offers/${currentOfferId}`).update({
+                status: 'rejected',
+                lastActionBy: currentUser.uid,
+                updatedAt: Date.now()
+            });
+            
+            await sendMessage("Offer rejected.", 'system');
+            window.location.reload();
+        } catch (error) {
+            console.error("Reject error:", error);
+        }
+    });
+
+    // Counter Offer Modal
+    const modal = document.getElementById('counterModal');
+    document.getElementById('counterBtn').addEventListener('click', () => {
+        modal.style.display = 'flex';
+    });
+
+    document.querySelector('.modal-close').addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+
+    document.getElementById('counterForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const price = parseFloat(document.getElementById('counterPrice').value);
+        
+        if (isNaN(price) || price <= 0) {
+            alert("Please enter a valid price");
+            return;
+        }
+
+        try {
+            await database.ref(`offers/${currentOfferId}`).update({
+                currentPrice: price,
+                status: 'counter_offered',
+                lastActionBy: currentUser.uid,
+                updatedAt: Date.now()
+            });
+
+            await sendMessage(`Counter-offer sent: ${formatCurrency(price)}`, 'system');
+            modal.style.display = 'none';
+            window.location.reload();
+        } catch (error) {
+            console.error("Counter error:", error);
+        }
+    });
+}
+
+async function sendMessage(text, type = 'text') {
+    const messageData = {
+        senderId: currentUser.uid,
+        senderName: userData.fullName,
+        text: text,
+        type: type,
+        timestamp: Date.now()
+    };
+
+    await database.ref(`chats/${currentOfferId}/messages`).push(messageData);
+    await database.ref(`chats/${currentOfferId}`).update({
+        lastMessage: text,
+        lastMessageTimestamp: Date.now()
+    });
+}
+
+function formatTime(timestamp) {
+    return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}

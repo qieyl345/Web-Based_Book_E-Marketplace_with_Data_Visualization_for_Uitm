@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seed Users</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+        }
+
+        .log {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+        }
+
+        .success {
+            color: green;
+        }
+
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Seeding Test Users</h1>
+    <button id="seedBtn">Start Seeding</button>
+    <div id="log" class="log"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    <script src="assets/js/firebase-config.js"></script>
+
+    <script>
+        const logDiv = document.getElementById('log');
+        function log(msg, type = 'info') {
+            const div = document.createElement('div');
+            div.textContent = msg;
+            if (type === 'success') div.className = 'success';
+            if (type === 'error') div.className = 'error';
+            logDiv.appendChild(div);
+            console.log(msg);
+        }
+
+        const users = [
+            {
+                email: 'buyer@student.uitm.edu.my',
+                password: 'password123',
+                name: 'Test Buyer',
+                phone: '0123456789',
+                role: 'student',
+                studentId: '2023000001'
+            },
+            {
+                email: 'seller@student.uitm.edu.my',
+                password: 'password123',
+                name: 'Test Seller',
+                phone: '0198765432',
+                role: 'student',
+                studentId: '2023000002'
+            },
+            {
+                email: 'admin@uitm.edu.my',
+                password: 'adminpassword123',
+                name: 'System Admin',
+                phone: '0100000000',
+                role: 'admin',
+                staffId: 'STF001'
+            }
+        ];
+
+        document.getElementById('seedBtn').addEventListener('click', async () => {
+            log('Starting seeding process...');
+
+            for (const user of users) {
+                try {
+                    log(`Creating user: ${user.email}...`);
+
+                    // Create Auth User
+                    const userCredential = await firebase.auth().createUserWithEmailAndPassword(user.email, user.password);
+                    const uid = userCredential.user.uid;
+
+                    // Create Database Entry
+                    await firebase.database().ref('users/' + uid).set({
+                        fullName: user.name,
+                        email: user.email,
+                        phoneNumber: user.phone,
+                        role: user.role,
+                        studentId: user.studentId || null,
+                        staffId: user.staffId || null,
+                        createdAt: firebase.database.ServerValue.TIMESTAMP
+                    });
+
+                    log(`Successfully created ${user.name} (${user.role})`, 'success');
+
+                    // Sign out to create next user
+                    await firebase.auth().signOut();
+
+                } catch (error) {
+                    if (error.code === 'auth/email-already-in-use') {
+                        log(`User ${user.email} already exists. Skipping.`, 'info');
+                    } else {
+                        log(`Error creating ${user.email}: ${error.message}`, 'error');
+                    }
+                }
+            }
+
+            log('Seeding complete!', 'success');
+        });
+    </script>
+</body>
+
+</html>

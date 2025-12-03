@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt - UiTM Book e-Marketplace</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- Inline Feedback Styles -->
+    <style>
+        .feedback-section,
+        .feedback-submitted {
+            background: var(--card-bg, #fff);
+            border: 1px solid var(--border-light, #e5e7eb);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .feedback-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .feedback-header h2 {
+            color: var(--primary-uitm, #4F46E5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .star-rating {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 2rem;
+            justify-content: center;
+            margin-top: 0.5rem;
+        }
+
+        .star-rating i {
+            color: #d1d5db;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .star-rating i:hover,
+        .star-rating i.hover {
+            color: #fbbf24;
+            transform: scale(1.1);
+        }
+
+        .star-rating i.active {
+            color: #fbbf24;
+        }
+
+        .star-rating-display {
+            display: flex;
+            gap: 0.25rem;
+            font-size: 1.2rem;
+        }
+
+        .star-rating-display i.active {
+            color: #fbbf24;
+        }
+
+        .feedback-submitted .success-message {
+            text-align: center;
+        }
+
+        .feedback-submitted i.fa-check-circle {
+            font-size: 3rem;
+            color: var(--success, #10b981);
+            margin-bottom: 1rem;
+        }
+
+        .feedback-submitted h3 {
+            color: var(--success, #10b981);
+        }
+
+        .submitted-feedback {
+            margin-top: 2rem;
+            text-align: left;
+        }
+
+        .feedback-details {
+            background: #f9fafb;
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .feedback-details>div {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .feedback-details>div:last-child {
+            border-bottom: none;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0;
+        }
+
+        .feedback-type-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .feedback-type-badge.general {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+
+        .feedback-type-badge.dispute {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .feedback-status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .feedback-status-badge.pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        .feedback-status-badge.resolved {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        .dispute-hint {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1><i class="fas fa-book"></i> UiTM Book e-Marketplace</h1>
+                </div>
+
+                <nav class="main-nav">
+                    <a href="../index.html" class="nav-link">Home</a>
+                    <a href="cart.html" class="nav-link">
+                        <i class="fas fa-shopping-cart"></i> Cart
+                        <span id="cartCount" class="badge">0</span>
+                    </a>
+                    <a href="profile.html" class="nav-link">Profile</a>
+                    <a href="admin.html" class="nav-link admin-only" style="display: none;">Admin</a>
+                    <button id="logoutBtn" class="btn btn-secondary">Logout</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="receipt-page">
+        <div class="container">
+            <div class="receipt-header">
+                <h1><i class="fas fa-file-invoice"></i> Transaction Receipt</h1>
+                <div class="receipt-actions">
+                    <button id="downloadPdfBtn" class="btn btn-primary">
+                        <i class="fas fa-download"></i> Download PDF
+                    </button>
+                    <a href="../index.html" class="btn btn-secondary">Back to Home</a>
+                </div>
+            </div>
+
+            <div class="receipt-container" id="receipt">
+                <div class="receipt-brand">
+                    <h1>UiTM e-Marketplace</h1>
+                    <h2>Universiti Teknologi MARA</h2>
+                    <p>Tapah Campus, Perak</p>
+                </div>
+
+                <div class="receipt-info">
+                    <div class="info-section">
+                        <h3>Transaction Details</h3>
+                        <p><strong>Transaction ID:</strong> <span id="transactionId">-</span></p>
+                        <p><strong>Date:</strong> <span id="transactionDate">-</span></p>
+                        <p><strong>Status:</strong> <span id="transactionStatus" class="status-badge">-</span></p>
+                    </div>
+
+                    <div class="info-section">
+                        <h3>Buyer Information</h3>
+                        <p><strong>Name:</strong> <span id="buyerName">-</span></p>
+                        <p><strong>Email:</strong> <span id="buyerEmail">-</span></p>
+                        <p><strong>Phone:</strong> <span id="buyerPhone">-</span></p>
+                    </div>
+
+                    <div class="info-section">
+                        <h3>Seller Information</h3>
+                        <p><strong>Name:</strong> <span id="sellerName">-</span></p>
+                        <p><strong>Campus Location:</strong> <span id="sellerLocation">-</span></p>
+                    </div>
+                </div>
+
+                <div class="receipt-items">
+                    <h3>Items Purchased</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Book Title</th>
+                                <th>Subject Code</th>
+                                <th>Condition</th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody id="receiptItems">
+                            <!-- Items will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="receipt-total">
+                    <div class="total-row">
+                        <span>Subtotal:</span>
+                        <span id="receiptSubtotal">RM 0.00</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Admin Fee (0.5%):</span>
+                        <span id="receiptAdminFee">RM 0.00</span>
+                    </div>
+                    <div class="total-row grand-total">
+                        <span>Total Amount:</span>
+                        <span id="receiptTotal">RM 0.00</span>
+                    </div>
+                </div>
+
+                <div class="payment-info">
+                    <h3>Payment Information</h3>
+                    <p><strong>Payment Method:</strong> FPX Online Banking</p>
+                    <p><strong>FPX Transaction ID:</strong> <span id="fpxTransactionId">-</span></p>
+                </div>
+
+                <div class="meeting-info">
+                    <h3>Face-to-Face Meeting</h3>
+                    <p><strong>Location:</strong> <span id="meetingLocation">-</span></p>
+                    <p><strong>Suggested Meeting Time:</strong> <span id="meetingTime">-</span></p>
+                    <div class="meeting-instructions">
+                        <h4>Instructions:</h4>
+                        <ul>
+                            <li>Contact the seller to arrange a convenient meeting time</li>
+                            <li>Bring valid student/staff ID for verification</li>
+                            <li>Inspect the book before completing the transaction</li>
+                            <li>Have exact change ready if possible</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="receipt-footer">
+                    <p>Thank you for using UiTM e-Marketplace!</p>
+
+                    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+                    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+                    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+                    <script src="../assets/js/firebase-config.js"></script>
+                    <script src="../assets/js/app.js"></script>
+                    <script src="../assets/js/receipt.js"></script>
+</body>
+
+</html>

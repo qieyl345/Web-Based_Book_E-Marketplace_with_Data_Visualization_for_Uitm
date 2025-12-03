@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Feedback - UiTM e-Marketplace</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .rating-stars {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 2rem;
+            color: var(--border-medium);
+            cursor: pointer;
+            margin-bottom: 1rem;
+        }
+        .rating-stars i.active {
+            color: var(--accent);
+        }
+        .feedback-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow-medium);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1><i class="fas fa-book"></i> UiTM e-Marketplace</h1>
+                </div>
+                <nav class="main-nav">
+                    <a href="../index.html" class="nav-link">Home</a>
+                    <a href="profile.html" class="nav-link">Profile</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="feedback-container">
+            <h2>Rate Your Experience</h2>
+            <p>Please provide feedback for your recent transaction.</p>
+            
+            <form id="feedbackForm">
+                <input type="hidden" id="transactionId">
+                <input type="hidden" id="sellerId">
+                
+                <div class="form-group">
+                    <label>Rating</label>
+                    <div class="rating-stars" id="ratingStars">
+                        <i class="fas fa-star" data-value="1"></i>
+                        <i class="fas fa-star" data-value="2"></i>
+                        <i class="fas fa-star" data-value="3"></i>
+                        <i class="fas fa-star" data-value="4"></i>
+                        <i class="fas fa-star" data-value="5"></i>
+                    </div>
+                    <input type="hidden" id="ratingValue" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="feedbackType">Feedback Type</label>
+                    <select id="feedbackType" required>
+                        <option value="general">General Feedback</option>
+                        <option value="dispute">Report a Dispute</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="comment">Comments</label>
+                    <textarea id="comment" required placeholder="Describe your experience..."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">Submit Feedback</button>
+            </form>
+        </div>
+    </main>
+
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    <script src="../assets/js/firebase-config.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await waitForAuth();
+            
+            // Get URL params
+            const urlParams = new URLSearchParams(window.location.search);
+            const transactionId = urlParams.get('txnId');
+            const sellerId = urlParams.get('sellerId');
+            
+            if (transactionId) document.getElementById('transactionId').value = transactionId;
+            if (sellerId) document.getElementById('sellerId').value = sellerId;
+
+            // Star rating logic
+            const stars = document.querySelectorAll('.rating-stars i');
+            const ratingInput = document.getElementById('ratingValue');
+
+            stars.forEach(star => {
+                star.addEventListener('click', () => {
+                    const value = star.dataset.value;
+                    ratingInput.value = value;
+                    stars.forEach(s => {
+                        if (s.dataset.value <= value) {
+                            s.classList.add('active');
+                        } else {
+                            s.classList.remove('active');
+                        }
+                    });
+                });
+            });
+
+            // Form submission
+            document.getElementById('feedbackForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                loadingOverlay.style.display = 'flex';
+
+                try {
+                    const feedbackData = {
+                        transactionId: document.getElementById('transactionId').value,
+                        sellerId: document.getElementById('sellerId').value,
+                        buyerId: currentUser.uid,
+                        buyerName: userData.fullName,
+                        rating: parseInt(document.getElementById('ratingValue').value),
+                        type: document.getElementById('feedbackType').value,
+                        comment: document.getElementById('comment').value,
+                        createdAt: Date.now(),
+                        status: 'pending' // For admin review
+                    };
+
+                    await database.ref('feedback').push(feedbackData);
+                    
+                    showNotification('Feedback submitted successfully!', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1500);
+                } catch (error) {
+                    console.error('Error submitting feedback:', error);
+                    showNotification('Error submitting feedback', 'error');
+                } finally {
+                    loadingOverlay.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

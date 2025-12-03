@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cart Test</title>
+</head>
+<body>
+    <h1>Cart Debug Test</h1>
+    <button onclick="testCart()">Test Add to Cart</button>
+    <div id="output"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    <script src="assets/js/firebase-config.js"></script>
+    <script>
+        async function testCart() {
+            if (!currentUser) {
+                console.log('Not logged in');
+                return;
+            }
+
+            const cartRef = database.ref(`carts/${currentUser.uid}`);
+            const snapshot = await cartRef.once('value');
+            const cart = snapshot.val();
+
+            console.log('=== CART TEST ===');
+            console.log('currentUser.uid:', currentUser.uid);
+            console.log('snapshot.val():', snapshot.val());
+            console.log('cart:', cart);
+            console.log('typeof cart:', typeof cart);
+            console.log('cart is null:', cart === null);
+            console.log('cart is undefined:', cart === undefined);
+            console.log('cart.items:', cart?.items);
+            console.log('typeof cart.items:', typeof cart?.items);
+            console.log('cart.items === null:', cart?.items === null);
+            console.log('cart.items === undefined:', cart?.items === undefined);
+            console.log('Object.keys(cart):', Object.keys(cart || {}));
+            console.log('Object.keys(cart.items):', Object.keys(cart?.items || {}));
+
+            document.getElementById('output').innerHTML = `
+                <pre>${JSON.stringify({
+                    uid: currentUser.uid,
+                    cart: cart,
+                    typeof_cart: typeof cart,
+                    cart_items: cart?.items,
+                    typeof_cart_items: typeof cart?.items,
+                    keys_cart: Object.keys(cart || {}),
+                    keys_cart_items: Object.keys(cart?.items || {})
+                }, null, 2)}</pre>
+            `;
+        }
+
+        // Wait for auth
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                console.log('Logged in as:', user.uid);
+            }
+        });
+    </script>
+</body>
+</html>

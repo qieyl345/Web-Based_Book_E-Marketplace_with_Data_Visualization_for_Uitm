@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Negotiation Chat - UiTM Book e-Marketplace</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/animations.css">
+    <link rel="stylesheet" href="../assets/css/notifications.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Chat-specific styles */
+        .chat-container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 1rem;
+            height: calc(100vh - 140px);
+            max-width: 1200px;
+            margin: 1rem auto;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow-medium);
+            overflow: hidden;
+        }
+
+        .chat-sidebar {
+            border-right: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .offer-details {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            background: var(--bg-secondary);
+        }
+
+        .offer-details h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+
+        .offer-details h4 {
+            margin: 1rem 0 0.5rem 0;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .offer-details p {
+            margin: 0.25rem 0;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .offer-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: var(--warning);
+            color: white;
+        }
+
+        .status-accepted {
+            background: var(--success);
+            color: white;
+        }
+
+        .status-rejected {
+            background: var(--error);
+            color: white;
+        }
+
+        .status-counter {
+            background: var(--info);
+            color: white;
+        }
+
+        /* PREVENT FLOODING - Critical fix */
+        .chat-main {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            max-height: 100%;
+            overflow: hidden;
+            /* Prevents container from growing */
+        }
+
+        .chat-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-light);
+            background: white;
+            flex-shrink: 0;
+            /* Prevent header from shrinking */
+        }
+
+        .chat-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+
+        /* SCROLLABLE MESSAGES AREA - No flooding */
+        .chat-messages {
+            flex: 1 1 auto;
+            min-height: 200px;
+            max-height: 100%;
+            padding: 1.5rem;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            background: #f9fafb;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            scroll-behavior: smooth;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: #e5e7eb;
+            border-radius: 6px;
+            margin: 4px 0;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #9ca3af;
+            border-radius: 6px;
+            border: 2px solid #f9fafb;
+            min-height: 40px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb:active {
+            background: #4b5563;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            position: relative;
+            word-wrap: break-word;
+            word-break: break-word;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            animation: fadeIn 0.2s ease-in;
+            flex-shrink: 0;
+            /* Prevent messages from shrinking */
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.sent {
+            align-self: flex-end;
+            background: var(--primary-uitm);
+            color: white;
+            border-bottom-right-radius: 2px;
+        }
+
+        .message.received {
+            align-self: flex-start;
+            background: white;
+            border: 1px solid var(--border-light);
+            border-bottom-left-radius: 2px;
+        }
+
+        .message.system {
+            align-self: center;
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-align: center;
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            max-width: 80%;
+            font-style: italic;
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            margin-top: 0.25rem;
+            display: block;
+            text-align: right;
+        }
+
+        .message.received .message-time {
+            text-align: left;
+        }
+
+        .chat-input-area {
+            padding: 1rem;
+            background: white;
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-shrink: 0;
+            /* Prevent input from shrinking */
+        }
+
+        #messageInput {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        #messageInput:focus {
+            outline: none;
+            border-color: var(--primary-uitm);
+            box-shadow: 0 0 0 3px rgba(136, 14, 79, 0.1);
+        }
+
+        #messageInput:disabled {
+            background: #f3f4f6;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .action-bar {
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+        }
+
+        .status-message {
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-light);
+            text-align: center;
+            color: var(--text-secondary);
+            display: none;
+            flex-shrink: 0;
+        }
+
+        .loading-placeholder {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-tertiary);
+        }
+
+        @media (max-width: 768px) {
+            .chat-container {
+                grid-template-columns: 1fr;
+                height: calc(100vh - 100px);
+            }
+
+            .chat-sidebar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1><i class="fas fa-comments"></i> Negotiation</h1>
+                </div>
+                <nav class="main-nav">
+                    <a href="../index.html" class="nav-link">Home</a>
+                    <a href="profile.html" class="nav-link">Profile</a>
+
+                    <!-- Notification Bell -->
+                    <div class="notification-wrapper">
+                        <div class="notification-bell" id="notificationBell">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge" id="notificationBadge">0</span>
+                        </div>
+                        <div class="notification-dropdown" id="notificationDropdown">
+                            <div class="notification-header">
+                                <h3>Notifications</h3>
+                                <button class="mark-read-btn" onclick="markAllAsRead()">Mark all as read</button>
+                            </div>
+                            <div class="notification-list" id="notificationList">
+                                <!-- Notifications will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="chat-container">
+            <!-- Sidebar: Offer Details -->
+            <aside class="chat-sidebar">
+                <div class="offer-details">
+                    <h3 id="bookTitle">Loading...</h3>
+                    <p>Original Price: <strong id="originalPrice">RM 0.00</strong></p>
+                    <p>Current Offer: <strong id="currentOffer"
+                            style="font-size: 1.2rem; color: var(--primary-uitm);">RM 0.00</strong></p>
+                    <span id="offerStatus" class="offer-status status-pending">Pending</span>
+                </div>
+                <div class="offer-details">
+                    <h4>Participants</h4>
+                    <p><i class="fas fa-user"></i> <span id="otherPartyName">Loading...</span></p>
+                    <p style="font-size: 0.75rem; margin-top: 0.5rem;"><i class="fas fa-clock"></i> <span
+                            id="dateDisplay">...</span></p>
+                </div>
+            </aside>
+
+            <!-- Main Chat Area -->
+            <section class="chat-main">
+                <div class="chat-header">
+                    <h3 id="chatHeaderTitle">Negotiation Chat</h3>
+                </div>
+
+                <div id="chatMessages" class="chat-messages">
+                    <div class="loading-placeholder">Loading conversation...</div>
+                </div>
+
+                <!-- Status Message (for completed/rejected offers) -->
+                <div id="statusMessage" class="status-message"></div>
+
+                <!-- Action Buttons (Accept/Reject/Counter/Payment) -->
+                <div id="actionBar" class="action-bar" style="display: none;"></div>
+
+                <!-- Message Input -->
+                <form id="messageForm" class="chat-input-area">
+                    <input type="text" id="messageInput" placeholder="Type a message..." maxlength="500"
+                        autocomplete="off">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+            </section>
+        </div>
+    </main>
+
+    <!-- Counter Offer Modal -->
+    <div id="counterModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h3>Make Counter Offer</h3>
+            <p>Enter your counter-offer price. The other party will be notified.</p>
+            <form id="counterForm">
+                <div class="form-group">
+                    <label>Your Price (RM)</label>
+                    <input type="number" id="counterPrice" step="0.01" min="0.01" required placeholder="e.g. 30.00">
+                    <small id="priceError" style="color: var(--error); display: none; margin-top: 0.25rem;"></small>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Send Counter Offer</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    <script src="../assets/js/firebase-config.js"></script>
+    <script src="../assets/js/app.js"></script>
+    <script src="../assets/js/notifications.js"></script>
+    <script src="../assets/js/chat.js"></script>
+</body>
+
+</html>

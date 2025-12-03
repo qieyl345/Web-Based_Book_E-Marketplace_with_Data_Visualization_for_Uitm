@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - UiTM e-Marketplace</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1><i class="fas fa-book"></i> UiTM e-Marketplace</h1>
+                </div>
+
+                <nav class="main-nav">
+                    <a href="../index.html" class="nav-link">Home</a>
+                    <a href="cart.html" class="nav-link">
+                        <i class="fas fa-shopping-cart"></i> Cart
+                        <span id="cartCount" class="badge">0</span>
+                    </a>
+                    <a href="profile.html" class="nav-link">Profile</a>
+                    <a href="admin.html" class="nav-link admin-only" style="display: none;">Admin</a>
+                    <button id="logoutBtn" class="btn btn-secondary">Logout</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="payment-page">
+        <div class="container">
+            <div class="payment-header">
+                <h1><i class="fas fa-credit-card"></i> Payment</h1>
+                <div class="payment-steps">
+                    <div class="step completed">1. Cart Review</div>
+                    <div class="step active">2. Payment</div>
+                    <div class="step">3. Confirmation</div>
+                </div>
+            </div>
+
+            <div class="payment-content">
+                <!-- Order Summary -->
+                <div class="order-summary">
+                    <h2>Order Summary</h2>
+                    <div id="paymentItems">
+                        <!-- Items will be loaded here -->
+                    </div>
+
+                    <div class="payment-breakdown">
+                        <div class="breakdown-row">
+                            <span>Subtotal:</span>
+                            <span id="paymentSubtotal">RM 0.00</span>
+                        </div>
+                        <div class="breakdown-row">
+                            <span>Admin Fee (0.5%):</span>
+                            <span id="paymentAdminFee">RM 0.00</span>
+                        </div>
+                        <div class="breakdown-row total">
+                            <span>Total Amount:</span>
+                            <span id="paymentTotal">RM 0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Method -->
+                <div class="payment-method">
+                    <h2>Select Bank (FPX)</h2>
+                    <div class="banks-grid">
+                        <div class="bank-option" data-bank="maybank">
+                            <img src="../assets/images/banks/maybank.png" alt="Maybank">
+                            <h3>Maybank</h3>
+                        </div>
+                        <div class="bank-option" data-bank="cimb">
+                            <img src="../assets/images/banks/cimb.png" alt="CIMB Bank">
+                            <h3>CIMB Bank</h3>
+                        </div>
+                        <div class="bank-option" data-bank="publicbank">
+                            <img src="../assets/images/banks/publicbank.png" alt="Public Bank">
+                            <h3>Public Bank</h3>
+                        </div>
+                        <div class="bank-option" data-bank="rhb">
+                            <img src="../assets/images/banks/rhb.png" alt="RHB Bank">
+                            <h3>RHB Bank</h3>
+                        </div>
+                        <div class="bank-option" data-bank="hongleong">
+                            <img src="../assets/images/banks/hongleong.png" alt="Hong Leong Bank">
+                            <h3>Hong Leong Bank</h3>
+                        </div>
+                        <div class="bank-option" data-bank="ambank">
+                            <img src="../assets/images/banks/ambank.png" alt="AmBank">
+                            <h3>AmBank</h3>
+                        </div>
+                    </div>
+
+                    <div class="selected-bank" id="selectedBank" style="display: none;">
+                        <h3>Selected Bank: <span id="bankName"></span></h3>
+                    </div>
+
+                    <button id="payNowBtn" class="btn btn-success btn-block" disabled>
+                        <i class="fas fa-lock"></i> Pay Securely with FPX
+                    </button>
+
+                    <div class="payment-security">
+                        <i class="fas fa-shield-alt"></i>
+                        <small>Your payment is secured with 256-bit SSL encryption</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FPX Processing Modal -->
+    <div id="processingModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="processing-animation">
+                <div class="fpx-logo">FPX</div>
+                <div class="spinner"></div>
+                <h3>Processing Payment...</h3>
+                <p>Please do not close this window. You will be redirected shortly.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Result Modal -->
+    <div id="paymentResultModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div id="paymentResult">
+                <!-- Result will be shown here -->
+            </div>
+        </div>
+    </div>
+
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    <script src="../assets/js/firebase-config.js"></script>
+    <script src="../assets/js/app.js"></script>
+    <script src="../assets/js/payment.js"></script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Seed Data</title>
+</head>
+
+<body>
+    <button id="seedBtn">Seed Data</button>
+    <div id="output"></div>
+
+    <hr>
+    <h3>Accept Offer</h3>
+    <input type="text" id="offerIdInput" placeholder="Enter Offer ID">
+    <button id="acceptBtn">Accept Offer</button>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    <script src="assets/js/firebase-config.js"></script>
+    <script>
+        document.getElementById('seedBtn').addEventListener('click', async () => {
+            try {
+                // Ensure we are logged in (or use a test user if possible, but better to use current)
+                const user = firebase.auth().currentUser;
+                if (!user) {
+                    document.getElementById('output').innerText = "Please login first in another tab, then refresh this page.";
+                    return;
+                }
+
+                const db = firebase.database();
+
+                // 1. Create a dummy book
+                const bookRef = db.ref('books').push();
+                const bookId = bookRef.key;
+                const bookData = {
+                    title: "Negotiation Test Book",
+                    author: "Test Author",
+                    price: 100,
+                    sellerId: user.uid, // Self-selling for ease, or we can mock
+                    sellerName: "Test Seller",
+                    campusLocation: "Test Campus",
+                    status: "available",
+                    createdAt: Date.now()
+                };
+                await bookRef.set(bookData);
+
+                // 2. Create an offer (Self-offer for testing UI, or we need two users)
+                // To test "Proceed to Payment", I need to be the BUYER.
+                // So I should set sellerId to something else.
+                const sellerId = "TEST_SELLER_ID";
+
+                const offerRef = db.ref('offers').push();
+                const offerId = offerRef.key;
+                const offerData = {
+                    bookId: bookId,
+                    bookTitle: bookData.title,
+                    bookPrice: bookData.price,
+                    buyerId: user.uid,
+                    buyerName: "Test Buyer",
+                    sellerId: sellerId,
+                    sellerName: "Test Seller",
+                    currentPrice: 80, // Negotiated price
+                    status: "pending",
+                    lastActionBy: user.uid,
+                    createdAt: Date.now(),
+                    updatedAt: Date.now()
+                };
+                await offerRef.set(offerData);
+
+                // 3. Create chat
+                await db.ref(`chats/${offerId}`).set({
+                    participants: {
+                        [user.uid]: true,
+                        [sellerId]: true
+                    },
+                    lastMessage: "Offer made",
+                    lastMessageTimestamp: Date.now()
+                });
+
+                document.getElementById('output').innerText = `DATA_CREATED: ${offerId}`;
+                document.getElementById('offerIdInput').value = offerId;
+            } catch (error) {
+                document.getElementById('output').innerText = "Error: " + error.message;
+                console.error(error);
+            }
+        });
+
+        document.getElementById('acceptBtn').addEventListener('click', async () => {
+            const offerId = document.getElementById('offerIdInput').value;
+            if (!offerId) return;
+
+            try {
+                const db = firebase.database();
+                await db.ref(`offers/${offerId}`).update({
+                    status: 'accepted',
+                    lastActionBy: 'TEST_SELLER_ID',
+                    updatedAt: Date.now()
+                });
+                document.getElementById('output').innerText = `OFFER_ACCEPTED: ${offerId}`;
+            } catch (error) {
+                document.getElementById('output').innerText = "Error: " + error.message;
+            }
+        });
+    </script>
+</body>
+
+</html>
