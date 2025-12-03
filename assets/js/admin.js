@@ -4,6 +4,16 @@ let allUsers = [];
 let allTransactions = [];
 let allBooks = [];
 
+// Store chart instances globally for dynamic updates
+let salesChartInstance = null;
+let revenueChartInstance = null;
+let disputeMetricsChartInstance = null;
+let topBooksChartInstance = null;
+let subjectChartInstance = null;
+let transactionSuccessChartInstance = null;
+let feedbackDistributionChartInstance = null;
+let offerFunnelChartInstance = null;
+
 // Initialize admin dashboard
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('[ADMIN] DOMContentLoaded fired');
@@ -34,6 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         setupExportButton();
         setupUserSearch();
         setupSettingsForm();
+        setupChartFilters(); // NEW: Setup filter event listeners
 
         console.log('[ADMIN] Admin initialization complete');
     } catch (error) {
@@ -302,9 +313,9 @@ async function loadCharts() {
         if (!salesCtx) {
             console.error('[ADMIN] salesChart canvas not found!');
         } else {
-            const salesData = calculateSalesTrend();
+            const salesData = calculateSalesTrendWithFilter('all'); // Default to All Time
             console.log('[ADMIN] Sales data:', salesData);
-            new Chart(salesCtx.getContext('2d'), {
+            salesChartInstance = new Chart(salesCtx.getContext('2d'), {
                 type: 'line',
                 data: {
                     labels: salesData.labels,
@@ -345,9 +356,9 @@ async function loadCharts() {
         if (!revenueCtx) {
             console.error('[ADMIN] revenueChart canvas not found!');
         } else {
-            const revenueData = calculateRevenueTrend();
+            const revenueData = calculateRevenueTrendWithFilter('all'); // Default to All Time
             console.log('[ADMIN] Revenue data:', revenueData);
-            new Chart(revenueCtx.getContext('2d'), {
+            revenueChartInstance = new Chart(revenueCtx.getContext('2d'), {
                 type: 'bar',
                 data: {
                     labels: revenueData.labels,
@@ -911,16 +922,16 @@ async function calculateFeedbackDistribution() {
     };
 }
 
-function createDisputeMetricsChart() {
+async function createDisputeMetricsChart() {
     const ctx = document.getElementById('disputeMetricsChart');
     if (!ctx) return;
 
-    const metrics = calculateDisputeMetrics();
+    const metrics = await calculateDisputeMetricsWithFilter('all'); // Default to All Time
 
-    new Chart(ctx.getContext('2d'), {
+    disputeMetricsChartInstance = new Chart(ctx.getContext('2d'), {
         type: 'bar',
         data: {
-            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+            labels: metrics.labels,
             datasets: [
                 {
                     label: 'Disputes Opened',
@@ -1122,3 +1133,503 @@ function calculateOfferFunnel() {
         ]
     };
 }
+
+// ===== CHART FILTERS =====
+
+function setupChartFilters() {
+    // Sales Trend Filter
+    const salesTrendFilter = document.getElementById('salesTrendFilter');
+    if (salesTrendFilter) {
+        salesTrendFilter.addEventListener('change', (e) => {
+            updateSalesChart(e.target.value);
+        });
+    }
+
+    // Revenue Filter
+    const revenueFilter = document.getElementById('revenueFilter');
+    if (revenueFilter) {
+        revenueFilter.addEventListener('change', (e) => {
+            updateRevenueChart(e.target.value);
+        });
+    }
+
+    // Dispute Metrics Filter
+    const disputeFilter = document.getElementById('disputeMetricsFilter');
+    if (disputeFilter) {
+        disputeFilter.addEventListener('change', (e) => {
+            updateDisputeMetricsChart(e.target.value);
+        });
+    }
+
+    // Top Books Filter
+    const topBooksFilter = document.getElementById('topBooksFilter');
+    if (topBooksFilter) {
+        topBooksFilter.addEventListener('change', (e) => {
+            updateTopBooksChart(e.target.value);
+        });
+    }
+
+    // Subject Distribution Filter
+    const subjectFilter = document.getElementById('subjectFilter');
+    if (subjectFilter) {
+        subjectFilter.addEventListener('change', (e) => {
+            updateSubjectChart(e.target.value);
+        });
+    }
+
+    // Transaction Success Filter
+    const transactionSuccessFilter = document.getElementById('transactionSuccessFilter');
+    if (transactionSuccessFilter) {
+        transactionSuccessFilter.addEventListener('change', (e) => {
+            updateTransactionSuccessChart(e.target.value);
+        });
+    }
+
+    // Feedback Distribution Filter
+    const feedbackDistributionFilter = document.getElementById('feedbackDistributionFilter');
+    if (feedbackDistributionFilter) {
+        feedbackDistributionFilter.addEventListener('change', (e) => {
+            updateFeedbackDistributionChart(e.target.value);
+        });
+    }
+
+    // Offer Funnel Filter
+    const offerFunnelFilter = document.getElementById('offerFunnelFilter');
+    if (offerFunnelFilter) {
+        offerFunnelFilter.addEventListener('change', (e) => {
+            updateOfferFunnelChart(e.target.value);
+        });
+    }
+}
+
+function updateSalesChart(range) {
+    const salesData = calculateSalesTrendWithFilter(range);
+
+    if (salesChartInstance) {
+        salesChartInstance.data.labels = salesData.labels;
+        salesChartInstance.data.datasets[0].data = salesData.data;
+        salesChartInstance.update();
+    }
+}
+
+function updateRevenueChart(range) {
+    const revenueData = calculateRevenueTrendWithFilter(range);
+
+    if (revenueChartInstance) {
+        revenueChartInstance.data.labels = revenueData.labels;
+        revenueChartInstance.data.datasets[0].data = revenueData.data;
+        revenueChartInstance.update();
+    }
+}
+
+function updateDisputeMetricsChart(range) {
+    const metricsData = calculateDisputeMetricsWithFilter(range);
+
+    if (disputeMetricsChartInstance) {
+        disputeMetricsChartInstance.data.labels = metricsData.labels;
+        disputeMetricsChartInstance.data.datasets[0].data = metricsData.opened;
+        disputeMetricsChartInstance.data.datasets[1].data = metricsData.resolved;
+        disputeMetricsChartInstance.data.datasets[2].data = metricsData.resolutionRate;
+        disputeMetricsChartInstance.update();
+    }
+}
+
+function calculateSalesTrendWithFilter(range) {
+    if (range === 'all') {
+        // Show all time - group by month or week based on data span
+        return calculateAllTimeSalesTrend();
+    }
+
+    const days = parseInt(range);
+    const labels = [];
+    const data = [];
+
+    for (let i = days - 1; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const dateStr = date.toLocaleDateString('en-MY', { month: 'short', day: 'numeric' });
+        labels.push(dateStr);
+
+        const count = allTransactions.filter(txn => {
+            const txnDate = new Date(txn.createdAt);
+            return txnDate.toDateString() === date.toDateString();
+        }).length;
+
+        data.push(count);
+    }
+
+    return { labels, data };
+}
+
+function calculateAllTimeSalesTrend() {
+    // Group all transactions by month
+    const monthlyData = {};
+
+    allTransactions.forEach(txn => {
+        const date = new Date(txn.createdAt);
+        const monthYear = date.toLocaleDateString('en-MY', { month: 'short', year: 'numeric' });
+        monthlyData[monthYear] = (monthlyData[monthYear] || 0) + 1;
+    });
+
+    const sortedMonths = Object.keys(monthlyData).sort((a, b) => {
+        return new Date(a) - new Date(b);
+    });
+
+    return {
+        labels: sortedMonths,
+        data: sortedMonths.map(month => monthlyData[month])
+    };
+}
+
+function calculateRevenueTrendWithFilter(range) {
+    if (range === 'all') {
+        return calculateAllTimeRevenueTrend();
+    }
+
+    const days = parseInt(range);
+    const labels = [];
+    const data = [];
+
+    for (let i = days - 1; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const dateStr = date.toLocaleDateString('en-MY', { month: 'short', day: 'numeric' });
+        labels.push(dateStr);
+
+        const revenue = allTransactions
+            .filter(txn => {
+                const txnDate = new Date(txn.createdAt);
+                return txnDate.toDateString() === date.toDateString();
+            })
+            .reduce((sum, txn) => sum + (txn.commissionFee || 0), 0);
+
+        data.push(revenue.toFixed(2));
+    }
+
+    return { labels, data };
+}
+
+function calculateAllTimeRevenueTrend() {
+    const monthlyRevenue = {};
+
+    allTransactions.forEach(txn => {
+        const date = new Date(txn.createdAt);
+        const monthYear = date.toLocaleDateString('en-MY', { month: 'short', year: 'numeric' });
+        monthlyRevenue[monthYear] = (monthlyRevenue[monthYear] || 0) + (txn.commissionFee || 0);
+    });
+
+    const sortedMonths = Object.keys(monthlyRevenue).sort((a, b) => {
+        return new Date(a) - new Date(b);
+    });
+
+    return {
+        labels: sortedMonths,
+        data: sortedMonths.map(month => monthlyRevenue[month].toFixed(2))
+    };
+}
+
+async function calculateDisputeMetricsWithFilter(range) {
+    let weeks = 4;
+    let labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+
+    if (range === '12') {
+        weeks = 12;
+        labels = ['Month 1', 'Month 2', 'Month 3'];
+    } else if (range === '24') {
+        weeks = 24;
+        labels = ['Month 1', 'Month 2', 'Month 3', 'Month 4', 'Month 5', 'Month 6'];
+    } else if (range === 'all') {
+        // Show all disputes grouped by month
+        return calculateAllTimeDisputeMetrics();
+    }
+
+    const opened = new Array(range === '4' ? 4 : range === '12' ? 3 : 6).fill(0);
+    const resolved = new Array(opened.length).fill(0);
+    const resolutionRate = new Array(opened.length).fill(0);
+
+    try {
+        const feedbackSnapshot = await database.ref('feedback').once('value');
+        const disputes = [];
+
+        feedbackSnapshot.forEach(child => {
+            const feedback = child.val();
+            if (feedback.type === 'dispute') {
+                disputes.push({ id: child.key, ...feedback });
+            }
+        });
+
+        const daysPerPeriod = range === '4' ? 7 : 30;
+
+        for (let periodIndex = 0; periodIndex < opened.length; periodIndex++) {
+            const periodStart = new Date();
+            periodStart.setDate(periodStart.getDate() - (daysPerPeriod * (opened.length - periodIndex)));
+            const periodEnd = new Date();
+            periodEnd.setDate(periodEnd.getDate() - (daysPerPeriod * (opened.length - periodIndex - 1)));
+
+            disputes.forEach(dispute => {
+                const createdDate = new Date(dispute.createdAt);
+                if (createdDate >= periodStart && createdDate < periodEnd) {
+                    opened[periodIndex]++;
+                    if (dispute.status === 'resolved') {
+                        resolved[periodIndex]++;
+                    }
+                }
+            });
+
+            resolutionRate[periodIndex] = opened[periodIndex] > 0
+                ? ((resolved[periodIndex] / opened[periodIndex]) * 100).toFixed(1)
+                : 0;
+        }
+    } catch (error) {
+        console.error('[ADMIN] Error calculating dispute metrics:', error);
+    }
+
+    return { labels, opened, resolved, resolutionRate };
+}
+
+async function calculateAllTimeDisputeMetrics() {
+    const monthlyData = {};
+
+    try {
+        const feedbackSnapshot = await database.ref('feedback').once('value');
+
+        feedbackSnapshot.forEach(child => {
+            const feedback = child.val();
+            if (feedback.type === 'dispute') {
+                const date = new Date(feedback.createdAt);
+                const monthYear = date.toLocaleDateString('en-MY', { month: 'short', year: 'numeric' });
+
+                if (!monthlyData[monthYear]) {
+                    monthlyData[monthYear] = { opened: 0, resolved: 0 };
+                }
+
+                monthlyData[monthYear].opened++;
+                if (feedback.status === 'resolved') {
+                    monthlyData[monthYear].resolved++;
+                }
+            }
+        });
+
+        const sortedMonths = Object.keys(monthlyData).sort((a, b) => new Date(a) - new Date(b));
+
+        return {
+            labels: sortedMonths,
+            opened: sortedMonths.map(m => monthlyData[m].opened),
+            resolved: sortedMonths.map(m => monthlyData[m].resolved),
+            resolutionRate: sortedMonths.map(m =>
+                monthlyData[m].opened > 0
+                    ? ((monthlyData[m].resolved / monthlyData[m].opened) * 100).toFixed(1)
+                    : 0
+            )
+        };
+    } catch (error) {
+        console.error('[ADMIN] Error calculating all time dispute metrics:', error);
+        return { labels: [], opened: [], resolved: [], resolutionRate: [] };
+    }
+}
+
+// ===== UPDATE FUNCTIONS FOR REMAINING CHARTS =====
+
+function updateTopBooksChart(range) {
+    const data = calculateTopBooksWithFilter(range);
+    if (topBooksChartInstance) {
+        topBooksChartInstance.data.labels = data.labels;
+        topBooksChartInstance.data.datasets[0].data = data.data;
+        topBooksChartInstance.update();
+    }
+}
+
+function updateSubjectChart(range) {
+    const data = calculateSubjectDistributionWithFilter(range);
+    if (subjectChartInstance) {
+        subjectChartInstance.data.labels = data.labels;
+        subjectChartInstance.data.datasets[0].data = data.data;
+        subjectChartInstance.update();
+    }
+}
+
+function updateTransactionSuccessChart(range) {
+    const data = calculateTransactionSuccessWithFilter(range);
+    if (transactionSuccessChartInstance) {
+        transactionSuccessChartInstance.data.datasets[0].data = data.counts;
+        transactionSuccessChartInstance.update();
+    }
+}
+
+async function updateFeedbackDistributionChart(range) {
+    const data = await calculateFeedbackDistributionWithFilter(range);
+    if (feedbackDistributionChartInstance) {
+        feedbackDistributionChartInstance.data.datasets[0].data = data.counts;
+        feedbackDistributionChartInstance.update();
+    }
+}
+
+async function updateOfferFunnelChart(range) {
+    const data = await calculateOfferFunnelWithFilter(range);
+    if (offerFunnelChartInstance) {
+        offerFunnelChartInstance.data.datasets[0].data = data.counts;
+        offerFunnelChartInstance.update();
+    }
+}
+
+// ===== CALCULATION FUNCTIONS WITH FILTERS =====
+
+function calculateTopBooksWithFilter(range) {
+    let filteredTransactions = allTransactions;
+
+    if (range !== 'all') {
+        const days = parseInt(range);
+        const cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() - days);
+        filteredTransactions = allTransactions.filter(txn => new Date(txn.createdAt) >= cutoffDate);
+    }
+
+    const bookCounts = {};
+    filteredTransactions.forEach(txn => {
+        if (txn.items && Array.isArray(txn.items)) {
+            txn.items.forEach(item => {
+                const bookTitle = item.bookDetails?.title || 'Unknown Book';
+                bookCounts[bookTitle] = (bookCounts[bookTitle] || 0) + 1;
+            });
+        }
+    });
+
+    const sortedBooks = Object.entries(bookCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5);
+
+    return {
+        labels: sortedBooks.map(([title]) => title),
+        data: sortedBooks.map(([, count]) => count)
+    };
+}
+
+function calculateSubjectDistributionWithFilter(range) {
+    let filteredTransactions = allTransactions;
+
+    if (range !== 'all') {
+        const days = parseInt(range);
+        const cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() - days);
+        filteredTransactions = allTransactions.filter(txn => new Date(txn.createdAt) >= cutoffDate);
+    }
+
+    const subjectCounts = {};
+    filteredTransactions.forEach(txn => {
+        if (txn.items && Array.isArray(txn.items)) {
+            txn.items.forEach(item => {
+                const subject = item.bookDetails?.subjectCode || 'Unknown';
+                subjectCounts[subject] = (subjectCounts[subject] || 0) + 1;
+            });
+        }
+    });
+
+    return {
+        labels: Object.keys(subjectCounts),
+        data: Object.values(subjectCounts)
+    };
+}
+
+function calculateTransactionSuccessWithFilter(range) {
+    let filteredTransactions = allTransactions;
+
+    if (range !== 'all') {
+        const days = parseInt(range);
+        const cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() - days);
+        filteredTransactions = allTransactions.filter(txn => new Date(txn.createdAt) >= cutoffDate);
+    }
+
+    let completed = 0;
+    let cancelled = 0;
+    let failed = 0;
+
+    filteredTransactions.forEach(txn => {
+        if (txn.status === 'completed') completed++;
+        else if (txn.status === 'cancelled') cancelled++;
+        else if (txn.status === 'failed') failed++;
+    });
+
+    return {
+        counts: [completed, cancelled, failed],
+        total: filteredTransactions.length,
+        successRate: filteredTransactions.length > 0 ? (completed / filteredTransactions.length * 100).toFixed(1) : 0
+    };
+}
+
+async function calculateFeedbackDistributionWithFilter(range) {
+    let cutoffDate = null;
+    if (range !== 'all') {
+        const days = parseInt(range);
+        cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() - days);
+    }
+
+    const counts = [0, 0, 0, 0, 0]; // 1-5 stars
+
+    try {
+        const feedbackSnapshot = await database.ref('feedback').once('value');
+        feedbackSnapshot.forEach(child => {
+            const feedback = child.val();
+            if (feedback.type === 'feedback' && feedback.rating) {
+                const feedbackDate = new Date(feedback.createdAt);
+                if (!cutoffDate || feedbackDate >= cutoffDate) {
+                    const index = feedback.rating - 1;
+                    if (index >= 0 && index < 5) {
+                        counts[index]++;
+                    }
+                }
+            }
+        });
+    } catch (error) {
+        console.error('[ADMIN] Error calculating feedback distribution:', error);
+    }
+
+    const total = counts.reduce((sum, count) => sum + count, 0);
+    const average = total > 0 ? counts.reduce((sum, count, i) => sum + (count * (i + 1)), 0) / total : 0;
+
+    return { counts, average, total };
+}
+
+async function calculateOfferFunnelWithFilter(range) {
+    let cutoffDate = null;
+    if (range !== 'all') {
+        const days = parseInt(range);
+        cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() - days);
+    }
+
+    let allOffers = [];
+    try {
+        const offersSnapshot = await database.ref('offers').once('value');
+        offersSnapshot.forEach(child => {
+            const offer = child.val();
+            const offerDate = new Date(offer.createdAt);
+            if (!cutoffDate || offerDate >= cutoffDate) {
+                allOffers.push({ id: child.key, ...offer });
+            }
+        });
+    } catch (error) {
+        console.error('[ADMIN] Error loading offers:', error);
+    }
+
+    let totalOffers = allOffers.length;
+    let counterOffers = 0;
+    let acceptedOffers = 0;
+
+    allOffers.forEach(offer => {
+        if (offer.status === 'counter_offered') counterOffers++;
+        if (offer.status === 'accepted') acceptedOffers++;
+    });
+
+    let completedPurchases = allTransactions.filter(txn => {
+        const txnDate = new Date(txn.createdAt);
+        const isInRange = !cutoffDate || txnDate >= cutoffDate;
+        return txn.status === 'completed' && txn.fromOffer === true && isInRange;
+    }).length;
+
+    return {
+        counts: [totalOffers, counterOffers, acceptedOffers, completedPurchases]
+    };
+}
+

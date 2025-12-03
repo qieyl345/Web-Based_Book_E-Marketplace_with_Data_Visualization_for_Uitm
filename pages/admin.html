@@ -105,22 +105,62 @@
             <!-- Charts -->
             <div class="charts-grid">
                 <div class="chart-card">
-                    <h3>Sales Trend</h3>
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3>Sales Trend</h3>
+                        <select id="salesTrendFilter" class="chart-filter"
+                            style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
+                            <option value="all">All Time</option>
+                            <option value="7">Last 7 Days</option>
+                            <option value="30">Last 30 Days</option>
+                            <option value="90">Last 3 Months</option>
+                        </select>
+                    </div>
                     <canvas id="salesChart"></canvas>
                 </div>
 
                 <div class="chart-card">
-                    <h3>Revenue Overview</h3>
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3>Revenue Overview</h3>
+                        <select id="revenueFilter" class="chart-filter"
+                            style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
+                            <option value="all">All Time</option>
+                            <option value="7">Last 7 Days</option>
+                            <option value="30">Last 30 Days</option>
+                            <option value="90">Last 3 Months</option>
+                        </select>
+                    </div>
                     <canvas id="revenueChart"></canvas>
                 </div>
 
                 <div class="chart-card">
-                    <h3>Top Selling Books</h3>
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3>Top Selling Books</h3>
+                        <select id="topBooksFilter" class="chart-filter"
+                            style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
+                            <option value="all">All Time</option>
+                            <option value="7">Last 7 Days</option>
+                            <option value="30">Last 30 Days</option>
+                            <option value="90">Last 3 Months</option>
+                        </select>
+                    </div>
                     <canvas id="topBooksChart"></canvas>
                 </div>
 
                 <div class="chart-card">
-                    <h3>Subject Distribution</h3>
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3>Subject Distribution</h3>
+                        <select id="subjectFilter" class="chart-filter"
+                            style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
+                            <option value="all">All Time</option>
+                            <option value="7">Last 7 Days</option>
+                            <option value="30">Last 30 Days</option>
+                            <option value="90">Last 3 Months</option>
+                        </select>
+                    </div>
                     <canvas id="subjectChart"></canvas>
                 </div>
             </div>
@@ -130,22 +170,62 @@
                 <h2 style="margin-bottom: 1.5rem;"><i class="fas fa-chart-bar"></i> Critical Analytics</h2>
                 <div class="charts-grid">
                     <div class="chart-card">
-                        <h3>Transaction Success Rate</h3>
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h3>Transaction Success Rate</h3>
+                            <select id="transactionSuccessFilter" class="chart-filter"
+                                style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
+                                <option value="all">All Time</option>
+                                <option value="7">Last 7 Days</option>
+                                <option value="30">Last 30 Days</option>
+                                <option value="90">Last 3 Months</option>
+                            </select>
+                        </div>
                         <canvas id="transactionSuccessChart"></canvas>
                     </div>
 
                     <div class="chart-card">
-                        <h3>Feedback Rating Distribution</h3>
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h3>Feedback Rating Distribution</h3>
+                            <select id="feedbackDistributionFilter" class="chart-filter"
+                                style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
+                                <option value="all">All Time</option>
+                                <option value="7">Last 7 Days</option>
+                                <option value="30">Last 30 Days</option>
+                                <option value="90">Last 3 Months</option>
+                            </select>
+                        </div>
                         <canvas id="feedbackDistributionChart"></canvas>
                     </div>
 
                     <div class="chart-card">
-                        <h3>Dispute Metrics</h3>
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h3>Dispute Metrics</h3>
+                            <select id="disputeMetricsFilter" class="chart-filter"
+                                style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
+                                <option value="all">All Time</option>
+                                <option value="4">Last 4 Weeks</option>
+                                <option value="12">Last 3 Months</option>
+                                <option value="24">Last 6 Months</option>
+                            </select>
+                        </div>
                         <canvas id="disputeMetricsChart"></canvas>
                     </div>
 
                     <div class="chart-card">
-                        <h3>Offer Success Funnel</h3>
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h3>Offer Success Funnel</h3>
+                            <select id="offerFunnelFilter" class="chart-filter"
+                                style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
+                                <option value="all">All Time</option>
+                                <option value="7">Last 7 Days</option>
+                                <option value="30">Last 30 Days</option>
+                                <option value="90">Last 3 Months</option>
+                            </select>
+                        </div>
                         <canvas id="offerFunnelChart"></canvas>
                     </div>
                 </div>
