@@ -119,8 +119,17 @@ function updateUIForUser() {
     // Display welcome message
     const welcomeMsg = document.getElementById('welcomeMsg');
     if (welcomeMsg && userData.fullName) {
-        welcomeMsg.textContent = `Welcome, ${userData.fullName}`;
-        welcomeMsg.style.display = 'inline-block';
+        // Check if new structure exists (with .welcome-name span)
+        const welcomeNameSpan = welcomeMsg.querySelector('.welcome-name');
+        if (welcomeNameSpan) {
+            // New structure with separate spans
+            welcomeNameSpan.textContent = userData.fullName;
+            welcomeMsg.style.display = 'inline-flex';
+        } else {
+            // Old structure fallback
+            welcomeMsg.textContent = `Welcome, ${userData.fullName}`;
+            welcomeMsg.style.display = 'inline-block';
+        }
     }
 
     // Update cart count (only for non-admin users)
