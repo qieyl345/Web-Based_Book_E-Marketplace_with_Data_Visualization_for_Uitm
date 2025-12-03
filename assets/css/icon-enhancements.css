@@ -1,0 +1,552 @@
+/* =============================================
+   UiTM e-Marketplace - Icon Enhancements
+   Description: Enhanced icon styling for headers, navigation, and profile pages
+   ============================================= */
+
+/* ===== Base Icon Styles ===== */
+
+.icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.icon-sm {
+    font-size: 1rem;
+    width: 20px;
+    height: 20px;
+}
+
+.icon-md {
+    font-size: 1.25rem;
+    width: 24px;
+    height: 24px;
+}
+
+.icon-lg {
+    font-size: 1.5rem;
+    width: 32px;
+    height: 32px;
+}
+
+.icon-xl {
+    font-size: 2rem;
+    width: 40px;
+    height: 40px;
+}
+
+/* ===== Header/Navigation Icon Styles ===== */
+
+.nav-icon {
+    font-size: 1.25rem;
+    color: var(--text-secondary, #475569);
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-icon:hover {
+    color: var(--uitm-purple, #3A0B61);
+    background: rgba(58, 11, 97, 0.1);
+    transform: translateY(-2px);
+}
+
+.nav-icon.active {
+    color: var(--uitm-gold, #FFD700);
+    background: rgba(255, 215, 0, 0.15);
+}
+
+.nav-icon:hover::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 2px;
+    background: var(--uitm-gold, #FFD700);
+    border-radius: 2px;
+}
+
+/* Icon with Gold Hover Effect */
+.nav-icon-gold {
+    font-size: 1.25rem;
+    color: var(--text-secondary, #475569);
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-icon-gold:hover {
+    color: var(--uitm-gold, #FFD700);
+    background: rgba(255, 215, 0, 0.15);
+    box-shadow: 0 0 12px rgba(255, 215, 0, 0.3);
+    transform: scale(1.1);
+}
+
+/* Icon with Purple Hover Effect */
+.nav-icon-purple {
+    font-size: 1.25rem;
+    color: var(--text-secondary, #475569);
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-icon-purple:hover {
+    color: var(--uitm-purple, #3A0B61);
+    background: rgba(58, 11, 97, 0.1);
+    box-shadow: 0 0 12px rgba(58, 11, 97, 0.2);
+    transform: scale(1.1);
+}
+
+/* ===== Icon Badge Styling ===== */
+
+.icon-with-badge {
+    position: relative;
+}
+
+.icon-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 18px;
+    height: 18px;
+    background: #EF4444;
+    color: #FFFFFF;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5px;
+    border: 2px solid #FFFFFF;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.icon-badge-gold {
+    background: var(--uitm-gold, #FFD700);
+    color: #1E293B;
+}
+
+.icon-badge-purple {
+    background: var(--uitm-purple, #3A0B61);
+    color: #FFFFFF;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.8;
+        transform: scale(1.1);
+    }
+}
+
+/* ===== Glassmorphic Icon Containers ===== */
+
+.icon-container-glass {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    padding: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.icon-container-glass:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.icon-container-purple {
+    background: rgba(58, 11, 97, 0.9);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 12px;
+    padding: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(58, 11, 97, 0.3);
+    color: #FFFFFF;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.icon-container-purple:hover {
+    background: rgba(46, 0, 79, 1);
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(58, 11, 97, 0.4);
+}
+
+.icon-container-gold {
+    background: var(--uitm-gold, #FFD700);
+    border: 1px solid rgba(245, 199, 0, 0.5);
+    border-radius: 12px;
+    padding: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+    color: #1E293B;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.icon-container-gold:hover {
+    background: #F5C700;
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
+}
+
+/* ===== Profile Page Icon Styles ===== */
+
+.profile-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--uitm-purple, #3A0B61) 0%, var(--uitm-purple-dark, #2E004F) 100%);
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 12px rgba(58, 11, 97, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.profile-icon:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(58, 11, 97, 0.4);
+}
+
+.profile-icon-gold {
+    background: linear-gradient(135deg, var(--uitm-gold, #FFD700) 0%, #F5C700 100%);
+    color: #1E293B;
+}
+
+.profile-icon-gold:hover {
+    box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
+}
+
+.profile-section-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: rgba(58, 11, 97, 0.1);
+    color: var(--uitm-purple, #3A0B61);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    transition: all 0.3s ease;
+}
+
+.profile-section-icon:hover {
+    background: rgba(58, 11, 97, 0.15);
+    color: var(--uitm-purple-dark, #2E004F);
+    transform: rotate(5deg) scale(1.1);
+}
+
+/* ===== Functional Icon Groups ===== */
+
+.icon-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.icon-group-vertical {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Home Icon */
+.icon-home {
+    font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free';
+    font-weight: 900;
+}
+
+.icon-home::before {
+    content: '\f015';
+}
+
+/* Profile Icon */
+.icon-profile {
+    font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free';
+    font-weight: 900;
+}
+
+.icon-profile::before {
+    content: '\f007';
+}
+
+/* Notification Bell Icon */
+.icon-notification {
+    font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free';
+    font-weight: 900;
+}
+
+.icon-notification::before {
+    content: '\f0f3';
+}
+
+/* Cart Icon */
+.icon-cart {
+    font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free';
+    font-weight: 900;
+}
+
+.icon-cart::before {
+    content: '\f07a';
+}
+
+/* Logout Icon */
+.icon-logout {
+    font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free';
+    font-weight: 900;
+}
+
+.icon-logout::before {
+    content: '\f2f5';
+}
+
+/* Chat Icon */
+.icon-chat {
+    font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free';
+    font-weight: 900;
+}
+
+.icon-chat::before {
+    content: '\f4ad';
+}
+
+/* Settings Icon */
+.icon-settings {
+    font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free';
+    font-weight: 900;
+}
+
+.icon-settings::before {
+    content: '\f013';
+}
+
+/* ===== Icon Label Combinations ===== */
+
+.icon-with-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--text-secondary, #475569);
+}
+
+.icon-with-label:hover {
+    background: rgba(58, 11, 97, 0.05);
+    color: var(--uitm-purple, #3A0B61);
+}
+
+.icon-with-label .icon {
+    font-size: 1.125rem;
+}
+
+.icon-with-label .label {
+    font-size: 0.9375rem;
+}
+
+/* ===== Icon Button Styles ===== */
+
+.icon-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary, #475569);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.icon-btn:hover {
+    background: rgba(58, 11, 97, 0.1);
+    color: var(--uitm-purple, #3A0B61);
+    transform: scale(1.1);
+}
+
+.icon-btn:active {
+    transform: scale(0.95);
+}
+
+.icon-btn-purple {
+    background: var(--uitm-purple, #3A0B61);
+    color: #FFFFFF;
+}
+
+.icon-btn-purple:hover {
+    background: var(--uitm-purple-dark, #2E004F);
+    box-shadow: 0 4px 12px rgba(58, 11, 97, 0.3);
+}
+
+.icon-btn-gold {
+    background: var(--uitm-gold, #FFD700);
+    color: #1E293B;
+}
+
+.icon-btn-gold:hover {
+    background: #F5C700;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+}
+
+/* ===== Icon Hover Effects ===== */
+
+.icon-hover-rotate:hover {
+    transform: rotate(15deg);
+}
+
+.icon-hover-bounce:hover {
+    animation: iconBounce 0.5s ease;
+}
+
+@keyframes iconBounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+.icon-hover-shake:hover {
+    animation: iconShake 0.5s ease;
+}
+
+@keyframes iconShake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-4px);
+    }
+
+    75% {
+        transform: translateX(4px);
+    }
+}
+
+.icon-hover-pulse:hover {
+    animation: iconPulse 1s ease infinite;
+}
+
+@keyframes iconPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+}
+
+/* ===== Responsive Icon Styles ===== */
+
+@media (max-width: 768px) {
+
+    .nav-icon,
+    .nav-icon-gold,
+    .nav-icon-purple {
+        font-size: 1.125rem;
+        padding: 0.375rem;
+    }
+
+    .icon-container-glass,
+    .icon-container-purple,
+    .icon-container-gold {
+        padding: 0.625rem;
+    }
+
+    .profile-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.25rem;
+    }
+
+    .icon-with-label .label {
+        display: none;
+    }
+}
+
+/* ===== Accessibility ===== */
+
+.icon:focus-visible,
+.icon-btn:focus-visible,
+.nav-icon:focus-visible {
+    outline: 2px solid var(--uitm-gold, #FFD700);
+    outline-offset: 2px;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+
+    .icon-btn,
+    .nav-icon {
+        border: 2px solid currentColor;
+    }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+
+    .icon,
+    .icon-btn,
+    .nav-icon,
+    .nav-icon-gold,
+    .nav-icon-purple {
+        animation: none !important;
+        transition-duration: 0.01ms !important;
+    }
+}

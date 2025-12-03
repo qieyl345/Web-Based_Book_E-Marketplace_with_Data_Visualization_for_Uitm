@@ -1,10 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Submit Feedback - UiTM e-Marketplace</title>
     <link rel="stylesheet" href="../assets/css/styles.css">
+    <!-- UiTM Design System -->
+    <link rel="stylesheet" href="../assets/css/uitm-glassmorphism.css">
+    <link rel="stylesheet" href="../assets/css/uitm-animations.css">
+    <link rel="stylesheet" href="../assets/css/role-based-styles.css">
+    <link rel="stylesheet" href="../assets/css/icon-enhancements.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .rating-stars {
@@ -15,9 +21,11 @@
             cursor: pointer;
             margin-bottom: 1rem;
         }
+
         .rating-stars i.active {
             color: var(--accent);
         }
+
         .feedback-container {
             max-width: 600px;
             margin: 2rem auto;
@@ -28,6 +36,7 @@
         }
     </style>
 </head>
+
 <body>
     <header class="header">
         <div class="container">
@@ -47,11 +56,11 @@
         <div class="feedback-container">
             <h2>Rate Your Experience</h2>
             <p>Please provide feedback for your recent transaction.</p>
-            
+
             <form id="feedbackForm">
                 <input type="hidden" id="transactionId">
                 <input type="hidden" id="sellerId">
-                
+
                 <div class="form-group">
                     <label>Rating</label>
                     <div class="rating-stars" id="ratingStars">
@@ -93,12 +102,12 @@
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             await waitForAuth();
-            
+
             // Get URL params
             const urlParams = new URLSearchParams(window.location.search);
             const transactionId = urlParams.get('txnId');
             const sellerId = urlParams.get('sellerId');
-            
+
             if (transactionId) document.getElementById('transactionId').value = transactionId;
             if (sellerId) document.getElementById('sellerId').value = sellerId;
 
@@ -140,7 +149,7 @@
                     };
 
                     await database.ref('feedback').push(feedbackData);
-                    
+
                     showNotification('Feedback submitted successfully!', 'success');
                     setTimeout(() => {
                         window.location.href = 'index.html';
@@ -155,4 +164,5 @@
         });
     </script>
 </body>
+
 </html>

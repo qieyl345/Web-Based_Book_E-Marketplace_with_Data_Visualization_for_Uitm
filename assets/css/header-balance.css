@@ -1,0 +1,91 @@
+/* =============================================
+   Header Balance & Alignment Enhancements
+   Description: Improved spacing and icon alignment for balanced header
+   ============================================= */
+
+/* Main Navigation - Better Spacing */
+.main-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* Navigation Links - Consistent Icon Spacing */
+.main-nav .nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.main-nav .nav-link i {
+    font-size: 1.1rem;
+}
+
+/* Admin Link Icon - Shield Style */
+.admin-only i.fa-user-shield {
+    color: #DC2626;
+}
+
+.admin-only:hover i.fa-user-shield {
+    color: #B91C1C;
+}
+
+/* Logout Button - Icon Enhancement */
+#logoutBtn {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    padding: 0.625rem 1.25rem !important;
+}
+
+#logoutBtn i {
+    font-size: 1rem;
+}
+
+/* Welcome Message - Proper Spacing */
+.welcome-message {
+    margin: 0 0.5rem;
+}
+
+/* Notification Wrapper - Alignment */
+.notification-wrapper {
+    display: flex;
+    align-items: center;
+    margin: 0 0.5rem;
+}
+
+/* Responsive Header Balance */
+@media (max-width: 1024px) {
+    .main-nav {
+        gap: 0.5rem;
+    }
+
+    .main-nav .nav-link {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-nav {
+        flex-wrap: wrap;
+        gap: 0.25rem;
+    }
+
+    .main-nav .nav-link {
+        padding: 0.5rem;
+    }
+
+    .main-nav .nav-link span:not(.badge):not(.welcome-greeting):not(.welcome-name) {
+        display: none;
+    }
+
+    .welcome-message {
+        order: 10;
+        width: 100%;
+        justify-content: center;
+        margin-top: 0.5rem;
+    }
+}

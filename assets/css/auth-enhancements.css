@@ -1,0 +1,138 @@
+/* =============================================
+   UiTM e-Marketplace - Authentication Page Enhancements
+   Description: Beautiful login/signup pages with gradient motion headers
+   ============================================= */
+
+/* Auth Card - Enhanced Border */
+.auth-card {
+    border: 2px solid rgba(255, 215, 0, 0.3) !important;
+    box-shadow: 0 12px 40px rgba(58, 11, 97, 0.15),
+        0 0 0 1px rgba(255, 215, 0, 0.1) !important;
+}
+
+/* Auth Header - Gradient Motion Background */
+.auth-header {
+    background: linear-gradient(135deg,
+            #3A0B61 0%,
+            #4A1B71 25%,
+            #FFD700 50%,
+            #4A1B71 75%,
+            #3A0B61 100%) !important;
+    background-size: 400% 400% !important;
+    animation: gradientMotion 15s ease infinite !important;
+    padding: 2.5rem 2rem !important;
+    border-radius: 12px 12px 0 0 !important;
+    margin: -2rem -2rem 2rem -2rem !important;
+    border-bottom: 3px solid rgba(255, 215, 0, 0.5) !important;
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.auth-header h1 {
+    color: #FFFFFF !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+    font-weight: 700 !important;
+    margin: 0 0 0.75rem 0 !important;
+    font-size: 1.75rem !important;
+    line-height: 1.2 !important;
+}
+
+.auth-header p {
+    color: rgba(255, 255, 255, 0.95) !important;
+    font-size: 1rem !important;
+    margin: 0 !important;
+    font-weight: 500 !important;
+}
+
+/* Gradient Motion Animation */
+@keyframes gradientMotion {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Enhanced Auth Card Hover */
+.auth-card:hover {
+    border-color: rgba(255, 215, 0, 0.6) !important;
+    box-shadow: 0 16px 48px rgba(58, 11, 97, 0.2),
+        0 0 0 2px rgba(255, 215, 0, 0.2) !important;
+    transform: translateY(-4px);
+}
+
+/* Auth Form Elements - UiTM Styling */
+.auth-form input[type="text"],
+.auth-form input[type="email"],
+.auth-form input[type="password"],
+.auth-form input[type="tel"],
+.auth-form select {
+    border: 2px solid #E2E8F0 !important;
+    transition: all 0.3s ease !important;
+}
+
+.auth-form input:focus,
+.auth-form select:focus {
+    border-color: var(--uitm-gold) !important;
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1) !important;
+}
+
+/* Auth Buttons */
+.auth-form .btn-primary {
+    background: linear-gradient(135deg, #3A0B61 0%, #2E004F 100%) !important;
+    border: none !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    box-shadow: 0 410px rgba(58, 11, 97, 0.3) !important;
+}
+
+.auth-form .btn-primary:hover {
+    background: linear-gradient(135deg, #2E004F 0%, #1A0030 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px rgba(58, 11, 97, 0.4) !important;
+}
+
+/* Auth Links */
+.auth-links a,
+.auth-footer a {
+    color: var(--uitm-purple) !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+}
+
+.auth-links a:hover,
+.auth-footer a:hover {
+    color: var(--uitm-gold) !important;
+    text-decoration: underline !important;
+}
+
+/* Password Toggle Icon */
+.toggle-password {
+    color: #94A3B8 !important;
+    transition: color 0.3s ease !important;
+}
+
+.toggle-password:hover {
+    color: var(--uitm-gold) !important;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    .auth-header {
+        animation: none !important;
+    }
+
+    .auth-card:hover {
+        transform: none !important;
+    }
+}

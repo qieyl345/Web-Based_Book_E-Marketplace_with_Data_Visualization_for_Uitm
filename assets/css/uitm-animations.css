@@ -1,0 +1,542 @@
+/* =============================================
+   UiTM e-Marketplace - Enhanced Animations with UiTM Branding
+   Description: Golden and purple hover effects, enhanced transitions
+   ============================================= */
+
+/* ===== Enhanced Hover Effects with Gold ===== */
+
+.hover-glow {
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.hover-glow:hover {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+    transform: translateY(-2px);
+}
+
+.hover-lift-gold {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift-gold:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
+}
+
+.hover-pulse-gold {
+    animation: pulseGold 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulseGold {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.4);
+    }
+
+    50% {
+        box-shadow: 0 0 0 10px rgba(255, 215, 0, 0);
+    }
+}
+
+.hover-shine {
+    position: relative;
+    overflow: hidden;
+}
+
+.hover-shine::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 215, 0, 0.4),
+            transparent);
+    transition: left 0.5s ease;
+}
+
+.hover-shine:hover::after {
+    left: 100%;
+}
+
+.hover-glow-purple {
+    transition: all 0.3s ease;
+}
+
+.hover-glow-purple:hover {
+    box-shadow: 0 0 20px rgba(58, 11, 97, 0.4);
+    transform: translateY(-2px);
+}
+
+/* ===== Button Ripple Effect ===== */
+
+.btn-enhanced {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-enhanced::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 215, 0, 0.4);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn-enhanced:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn-enhanced:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(255, 215, 0, 0.3);
+}
+
+.btn-enhanced:active {
+    transform: translateY(0);
+}
+
+/* ===== Enhanced Card Animations ===== */
+
+.card-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+.card-hover::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--uitm-purple, #3A0B61) 0%, var(--uitm-gold, #FFD700) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-6px) scale(1.01);
+    box-shadow: 0 20px 25px -5px rgba(58, 11, 97, 0.15),
+        0 10px 10px -5px rgba(255, 215, 0, 0.1);
+}
+
+.card-hover:hover::before {
+    opacity: 1;
+}
+
+.card-hover:active {
+    transform: translateY(-2px) scale(1.005);
+}
+
+/* ===== Price Highlight with Gold ===== */
+
+@keyframes priceHighlightGold {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.5);
+    }
+
+    50% {
+        box-shadow: 0 0 0 12px rgba(255, 215, 0, 0);
+    }
+}
+
+.price-highlight {
+    animation: priceHighlightGold 1.5s ease-out;
+}
+
+.price-glow {
+    color: var(--uitm-gold, #FFD700);
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    font-weight: 700;
+}
+
+/* ===== Enhanced Spinner with UiTM Colors ===== */
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(58, 11, 97, 0.2);
+    border-left-color: var(--uitm-purple, #3A0B61);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.spinner-gold {
+    border: 4px solid rgba(255, 215, 0, 0.3);
+    border-left-color: var(--uitm-gold, #FFD700);
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ===== Notification Badge Pulse with Gold ===== */
+
+.badge-pulse {
+    animation: pulseBadgeGold 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulseBadgeGold {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7);
+    }
+
+    50% {
+        opacity: 0.9;
+        transform: scale(1.05);
+        box-shadow: 0 0 0 8px rgba(255, 215, 0, 0);
+    }
+}
+
+/* ===== Gradient Text Animation ===== */
+
+.text-gradient-animate {
+    background: linear-gradient(90deg,
+            var(--uitm-purple, #3A0B61) 0%,
+            var(--uitm-gold, #FFD700) 50%,
+            var(--uitm-purple, #3A0B61) 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientText 3s ease-in-out infinite;
+}
+
+@keyframes gradientText {
+
+    0%,
+    100% {
+        background-position: 0% center;
+    }
+
+    50% {
+        background-position: 100% center;
+    }
+}
+
+/* ===== Floating Animation for Icons ===== */
+
+.float-animation {
+    animation: floating 3s ease-in-out infinite;
+}
+
+@keyframes floating {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* ===== Shake Animation for Alerts ===== */
+
+.shake-animation {
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-10px);
+    }
+
+    75% {
+        transform: translateX(10px);
+    }
+}
+
+/* ===== Slide In Animations ===== */
+
+.slide-in-left {
+    animation: slideInLeft 0.5s ease-out;
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.slide-in-right {
+    animation: slideInRight 0.5s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ===== Zoom In Animation ===== */
+
+.zoom-in {
+    animation: zoomIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes zoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ===== Success Checkmark Animation with Gold ===== */
+
+@keyframes checkmarkGold {
+    0% {
+        stroke-dashoffset: 100;
+    }
+
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+.checkmark-animate {
+    stroke: var(--uitm-gold, #FFD700);
+    stroke-dasharray: 100;
+    animation: checkmarkGold 0.5s ease-out forwards;
+}
+
+/* ===== Loading Dots Animation ===== */
+
+.loading-dots {
+    display: inline-flex;
+    gap: 4px;
+}
+
+.loading-dots span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--uitm-purple, #3A0B61);
+    animation: loadingDots 1.4s ease-in-out infinite;
+}
+
+.loading-dots span:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.loading-dots span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.loading-dots span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes loadingDots {
+
+    0%,
+    80%,
+    100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+
+    40% {
+        opacity: 1;
+        transform: scale(1.3);
+    }
+}
+
+/* ===== Skeleton Loader with UiTM Colors ===== */
+
+.skeleton {
+    background: linear-gradient(90deg,
+            #F1F5F9 25%,
+            rgba(58, 11, 97, 0.05) 50%,
+            #F1F5F9 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+    border-radius: 8px;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+/* ===== Progress Bar Animation ===== */
+
+.progress-bar {
+    height: 6px;
+    background: #E2E8F0;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--uitm-purple, #3A0B61) 0%, var(--uitm-gold, #FFD700) 100%);
+    border-radius: 3px;
+    transition: width 0.5s ease;
+    animation: progressShine 2s ease-in-out infinite;
+}
+
+@keyframes progressShine {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 rgba(255, 215, 0, 0);
+    }
+
+    50% {
+        box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+    }
+}
+
+/* ===== Tooltip Animations ===== */
+
+.tooltip-fade-in {
+    animation: tooltipFadeIn 0.3s ease-out;
+}
+
+@keyframes tooltipFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== Modal Animations ===== */
+
+.modal-fade-in {
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal-slide-up {
+    animation: modalSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes modalSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== Stagger Animation Delays ===== */
+
+.stagger-1 {
+    animation-delay: 0.1s;
+}
+
+.stagger-2 {
+    animation-delay: 0.2s;
+}
+
+.stagger-3 {
+    animation-delay: 0.3s;
+}
+
+.stagger-4 {
+    animation-delay: 0.4s;
+}
+
+.stagger-5 {
+    animation-delay: 0.5s;
+}
+
+/* ===== Focus States with Gold Rings ===== */
+
+.focus-ring:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.5);
+    border-color: var(--uitm-gold, #FFD700);
+}
+
+.focus-ring-purple:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(58, 11, 97, 0.3);
+    border-color: var(--uitm-purple, #3A0B61);
+}
+
+/* ===== Accessibility & Reduced Motion ===== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

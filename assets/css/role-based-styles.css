@@ -1,0 +1,516 @@
+/* =============================================
+   UiTM e-Marketplace - Role-Based Interface Styles
+   Description: Distinct visual themes for Student, Staff, and Admin users
+   ============================================= */
+
+/* ===== STUDENT THEME - Bright & Energetic ===== */
+
+.student-theme {
+    /* Student-specific color overrides */
+    --theme-primary: #4A1B71;
+    --theme-accent: #FFD700;
+    --theme-bg: #FAFAFA;
+    --theme-card-bg: #FFFFFF;
+}
+
+/* Student Body Background */
+.student-theme body,
+.student-theme .main-content {
+    background: linear-gradient(135deg,
+            #F5F0FA 0%,
+            #FFFFFF 25%,
+            #FFFEF0 50%,
+            #F5F0FA 100%);
+    background-size: 400% 400%;
+    animation: gradientWave 20s ease-in-out infinite;
+}
+
+/* Student Cards - Bright with Yellow Accents */
+.student-theme .card,
+.student-theme .card-enhanced,
+.student-theme .glass-card {
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(255, 215, 0, 0.2);
+    border-radius: 20px;
+    box-shadow: 0 8px 16px rgba(255, 215, 0, 0.15);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.student-theme .card:hover,
+.student-theme .card-enhanced:hover {
+    transform: translateY(-6px) scale(1.02);
+    border-color: var(--uitm-gold);
+    box-shadow: 0 12px 24px rgba(255, 215, 0, 0.3);
+}
+
+/* Student Buttons - Energetic with Gold Emphasis */
+.student-theme .btn-primary,
+.student-theme .btn-uitm-primary {
+    background: linear-gradient(135deg, #4A1B71 0%, #3A0B61 100%);
+    color: #FFFFFF;
+    font-weight: 600;
+    border-radius: 12px;
+    padding: 0.875rem 1.75rem;
+    box-shadow: 0 4px 12px rgba(74, 27, 113, 0.3);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.student-theme .btn-primary:hover {
+    background: linear-gradient(135deg, #3A0B61 0%, #2E004F 100%);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(74, 27, 113, 0.4);
+}
+
+.student-theme .btn-gold,
+.student-theme .btn-uitm-accent {
+    background: linear-gradient(135deg, #FFD700 0%, #FFC700 100%);
+    color: #1E293B;
+    font-weight: 700;
+    border-radius: 12px;
+    padding: 0.875rem 1.75rem;
+    box-shadow: 0 6px 16px rgba(255, 215, 0, 0.4);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.student-theme .btn-gold:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 24px rgba(255, 215, 0, 0.5);
+}
+
+/* Student Header - Bright and Welcoming */
+.student-theme .header,
+.student-theme .header-uitm {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.1);
+}
+
+/* Student Navigation Items */
+.student-theme .nav-item {
+    color: #475569;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.student-theme .nav-item:hover {
+    color: #FFD700;
+    background: rgba(255, 215, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.student-theme .nav-item.active {
+    color: #FFD700;
+    font-weight: 700;
+    background: rgba(255, 215, 0, 0.15);
+}
+
+/* Student Typography - Friendly and Clear */
+.student-theme h1,
+.student-theme h2,
+.student-theme h3 {
+    color: #4A1B71;
+    font-weight: 700;
+}
+
+.student-theme .text-accent {
+    color: #FFD700;
+    font-weight: 600;
+}
+
+/* ===== STAFF THEME - Sleek & Minimal ===== */
+
+.staff-theme {
+    --theme-primary: #3A0B61;
+    --theme-accent: #FFD700;
+    --theme-bg: #F8FAFC;
+    --theme-card-bg: #FFFFFF;
+}
+
+/* Staff Body Background - Clean and Professional */
+.staff-theme body,
+.staff-theme .main-content {
+    background: #F8FAFC;
+}
+
+/* Staff Cards - Structured and Clean */
+.staff-theme .card,
+.staff-theme .card-enhanced,
+.staff-theme .glass-card {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-left: 4px solid var(--uitm-gold);
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.staff-theme .card:hover,
+.staff-theme .card-enhanced:hover {
+    transform: translateY(-2px);
+    border-left-color: var(--uitm-purple);
+    box-shadow: 0 8px 12px rgba(58, 11, 97, 0.1);
+}
+
+/* Staff Buttons - Professional and Confident */
+.staff-theme .btn-primary,
+.staff-theme .btn-uitm-primary {
+    background: var(--uitm-purple);
+    color: #FFFFFF;
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    box-shadow: 0 2px 4px rgba(58, 11, 97, 0.2);
+    transition: all 0.2s ease;
+}
+
+.staff-theme .btn-primary:hover {
+    background: var(--uitm-purple-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(58, 11, 97, 0.3);
+}
+
+.staff-theme .btn-gold,
+.staff-theme .btn-uitm-accent {
+    background: #FFFFFF;
+    color: var(--uitm-purple);
+    border: 2px solid var(--uitm-gold);
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.2s ease;
+}
+
+.staff-theme .btn-gold:hover {
+    background: var(--uitm-gold);
+    color: #1E293B;
+    transform: translateY(-2px);
+}
+
+/* Staff Header - Minimalist Glassmorphism */
+.staff-theme .header,
+.staff-theme .header-uitm {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid #E2E8F0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Staff Navigation - Structured */
+.staff-theme .nav-item {
+    color: #475569;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+}
+
+.staff-theme .nav-item:hover {
+    color: var(--uitm-purple);
+    background: rgba(58, 11, 97, 0.05);
+}
+
+.staff-theme .nav-item.active {
+    color: var(--uitm-purple);
+    background: rgba(58, 11, 97, 0.1);
+    font-weight: 600;
+}
+
+/* Staff Typography - Clear Hierarchy */
+.staff-theme h1,
+.staff-theme h2,
+.staff-theme h3 {
+    color: var(--uitm-purple);
+    font-weight: 600;
+}
+
+.staff-theme .section-title {
+    border-left: 4px solid var(--uitm-gold);
+    padding-left: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* ===== ADMIN THEME - High Contrast & Efficient ===== */
+
+.admin-theme {
+    --theme-primary: #2E004F;
+    --theme-accent: #FFD700;
+    --theme-bg: #F1F5F9;
+    --theme-card-bg: #FFFFFF;
+}
+
+/* Admin Body Background - Efficient and Serious */
+.admin-theme body,
+.admin-theme .main-content {
+    background: #F1F5F9;
+}
+
+/* Admin Cards - High Contrast for Data Visibility */
+.admin-theme .card,
+.admin-theme .card-enhanced,
+.admin-theme .glass-card {
+    background: #FFFFFF;
+    border: 2px solid #CBD5E1;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+.admin-theme .card:hover {
+    border-color: var(--uitm-purple-dark);
+    box-shadow: 0 8px 12px rgba(46, 0, 79, 0.15);
+}
+
+/* Admin Buttons - Bold and Actionable */
+.admin-theme .btn-primary,
+.admin-theme .btn-uitm-primary {
+    background: var(--uitm-purple-dark);
+    color: #FFFFFF;
+    font-weight: 700;
+    border-radius: 6px;
+    padding: 0.75rem 1.5rem;
+    box-shadow: 0 2px 4px rgba(46, 0, 79, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+}
+
+.admin-theme .btn-primary:hover {
+    background: #1A0030;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(46, 0, 79, 0.4);
+}
+
+.admin-theme .btn-gold,
+.admin-theme .btn-uitm-accent {
+    background: var(--uitm-gold);
+    color: #1E293B;
+    font-weight: 700;
+    border-radius: 6px;
+    padding: 0.75rem 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.875rem;
+    box-shadow: 0 2px 4px rgba(255, 215, 0, 0.3);
+}
+
+.admin-theme .btn-gold:hover {
+    background: #E6C200;
+    transform: translateY(-1px);
+}
+
+/* Admin Header - Strong and Prominent */
+.admin-theme .header,
+.admin-theme .header-uitm {
+    background: var(--uitm-purple-dark);
+    color: #FFFFFF;
+    border-bottom: 3px solid var(--uitm-gold);
+    box-shadow: 0 4px 8px rgba(46, 0, 79, 0.3);
+}
+
+.admin-theme .header .logo h1 {
+    color: #FFFFFF !important;
+}
+
+/* Ensure ALL header text is white */
+.admin-theme .header *,
+.admin-theme .header a,
+.admin-theme .header .nav-link,
+.admin-theme .main-nav a {
+    color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.admin-theme .header .logo h1 i {
+    color: var(--uitm-gold) !important;
+}
+
+/* Admin Navigation - Clear and Direct */
+.admin-theme .nav-item,
+.admin-theme .nav-link,
+.admin-theme .main-nav a {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 600;
+    padding: 0.625rem 1rem;
+    border-radius: 4px;
+}
+
+.admin-theme .nav-item:hover,
+.admin-theme .nav-link:hover,
+.admin-theme .main-nav a:hover {
+    color: #FFFFFF !important;
+    background: rgba(255, 215, 0, 0.2);
+}
+
+.admin-theme .nav-item.active,
+.admin-theme .nav-link.active {
+    color: var(--uitm-gold) !important;
+    background: rgba(255, 215, 0, 0.15);
+    font-weight: 700;
+}
+
+/* Admin header buttons */
+.admin-theme .header button,
+.admin-theme .header .btn {
+    background: rgba(255, 215, 0, 0.2);
+    color: #FFFFFF !important;
+    border: 1px solid rgba(255, 215, 0, 0.4);
+}
+
+.admin-theme .header button:hover,
+.admin-theme .header .btn:hover {
+    background: var(--uitm-gold);
+    color: #1E293B !important;
+}
+
+/* Admin Tables - Enhanced Data Visibility */
+.admin-theme table {
+    border: 2px solid #CBD5E1;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.admin-theme table thead {
+    background: var(--uitm-purple-dark);
+    color: #FFFFFF;
+}
+
+.admin-theme table thead th {
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.875rem;
+    padding: 1rem;
+}
+
+.admin-theme table tbody tr {
+    border-bottom: 1px solid #E2E8F0;
+    transition: background 0.2s ease;
+}
+
+.admin-theme table tbody tr:hover {
+    background: #F8FAFC;
+}
+
+.admin-theme table tbody tr:nth-child(even) {
+    background: #FAFAFA;
+}
+
+.admin-theme table tbody tr:nth-child(even):hover {
+    background: #F1F5F9;
+}
+
+/* Admin Typography - Strong Hierarchy */
+.admin-theme h1,
+.admin-theme h2,
+.admin-theme h3 {
+    color: var(--uitm-purple-dark);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.admin-theme .stat-card {
+    background: var(--uitm-purple-dark);
+    color: #FFFFFF !important;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(46, 0, 79, 0.2);
+    border-left: 4px solid var(--uitm-gold);
+}
+
+/* Ensure all stat card text is visible */
+.admin-theme .stat-card *,
+.admin-theme .stat-card h3,
+.admin-theme .stat-card p,
+.admin-theme .stat-content p {
+    color: #FFFFFF !important;
+}
+
+.admin-theme .stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--uitm-gold) !important;
+    margin: 0.5rem 0;
+}
+
+/* Stats grid icons */
+.admin-theme .stats-grid .stat-icon,
+.admin-theme .stat-icon {
+    color: var(--uitm-gold) !important;
+}
+
+/* All text in stats-grid */
+.admin-theme .stats-grid h3,
+.admin-theme .stats-grid p,
+.admin-theme .stats-grid span {
+    color: #FFFFFF !important;
+}
+
+/* Admin Priority Indicators */
+.admin-theme .priority-critical {
+    border-left: 4px solid #EF4444;
+    background: #FEF2F2;
+}
+
+.admin-theme .priority-high {
+    border-left: 4px solid #F59E0B;
+    background: #FFFBEB;
+}
+
+.admin-theme .priority-medium {
+    border-left: 4px solid #FFD700;
+    background: #FFFEF0;
+}
+
+.admin-theme .priority-low {
+    border-left: 4px solid #10B981;
+    background: #F0FDF4;
+}
+
+/* ===== Responsive Role-Based Styles ===== */
+
+@media (max-width: 768px) {
+
+    .student-theme .card,
+    .staff-theme .card,
+    .admin-theme .card {
+        border-radius: 12px;
+        padding: 1rem;
+    }
+
+    .student-theme .btn-primary,
+    .staff-theme .btn-primary,
+    .admin-theme .btn-primary {
+        padding: 0.625rem 1.25rem;
+        font-size: 0.9375rem;
+    }
+
+    .admin-theme table {
+        font-size: 0.875rem;
+    }
+
+    .admin-theme table thead th,
+    .admin-theme table tbody td {
+        padding: 0.75rem;
+    }
+}
+
+/* ===== Print Styles ===== */
+
+@media print {
+
+    .student-theme body,
+    .staff-theme body,
+    .admin-theme body {
+        background: white !important;
+    }
+
+    .student-theme .card,
+    .staff-theme .card,
+    .admin-theme .card {
+        border: 1px solid #ccc !important;
+        box-shadow: none !important;
+    }
+}

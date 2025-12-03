@@ -8,10 +8,17 @@
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="assets/css/animations.css">
     <link rel="stylesheet" href="assets/css/notifications.css">
+    <!-- UiTM Design System -->
+    <link rel="stylesheet" href="assets/css/uitm-glassmorphism.css">
+    <link rel="stylesheet" href="assets/css/uitm-animations.css">
+    <link rel="stylesheet" href="assets/css/role-based-styles.css">
+    <link rel="stylesheet" href="assets/css/icon-enhancements.css">
+    <link rel="stylesheet" href="assets/css/welcome-message.css">
+    <link rel="stylesheet" href="assets/css/header-balance.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
-<body>
+<body class="animated-gradient-subtle">
     <header class="header">
         <div class="container">
             <div class="header-content">
@@ -20,13 +27,19 @@
                 </div>
 
                 <nav class="main-nav">
-                    <a href="index.html" class="nav-link active">Home</a>
+                    <a href="index.html" class="nav-link active nav-icon-gold">
+                        <i class="fas fa-home"></i> Home
+                    </a>
                     <a href="pages/cart.html" class="nav-link">
                         <i class="fas fa-shopping-cart"></i> Cart
                         <span id="cartCount" class="badge" style="display: none;">0</span>
                     </a>
-                    <a href="pages/profile.html" class="nav-link">Profile</a>
-                    <a href="pages/admin.html" class="nav-link admin-only" style="display: none;">Admin</a>
+                    <a href="pages/profile.html" class="nav-link nav-icon-purple">
+                        <i class="fas fa-user-circle"></i> Profile
+                    </a>
+                    <a href="pages/admin.html" class="nav-link admin-only" style="display: none;">
+                        <i class="fas fa-user-shield"></i> Admin
+                    </a>
 
                     <!-- Notification Bell -->
                     <div class="notification-wrapper">
@@ -45,9 +58,14 @@
                         </div>
                     </div>
 
-                    <span id="welcomeMsg" class="nav-link"
-                        style="display: none; color: var(--primary-uitm); font-weight: bold;"></span>
-                    <button id="logoutBtn" class="btn btn-secondary">Logout</button>
+                    <div id="welcomeMsg" class="welcome-message" style="display: none;">
+                        <span class="welcome-greeting">Welcome back,</span>
+                        <span class="welcome-name"></span>
+                        <i class="fas fa-crown welcome-icon"></i>
+                    </div>
+                    <button id="logoutBtn" class="btn btn-secondary">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
                 </nav>
             </div>
         </div>
