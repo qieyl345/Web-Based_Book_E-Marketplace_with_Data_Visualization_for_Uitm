@@ -27,6 +27,40 @@ async function loadCart() {
         const cart = await Cart.getCart();
         cartItems = Object.values(cart.items || {});
 
+        // Validate book availability and remove sold items
+        const unavailableBooks = [];
+        const validItems = [];
+
+        for (const item of cartItems) {
+            try {
+                const bookSnapshot = await database.ref(`books/${item.bookDetails.id}`).once('value');
+                const bookData = bookSnapshot.val();
+
+                // Check if book exists and is still available
+                if (!bookData || bookData.status === 'sold') {
+                    unavailableBooks.push(item.bookDetails.title);
+                    // Remove from cart
+                    await Cart.removeItem(item.bookDetails.id);
+                } else {
+                    validItems.push(item);
+                }
+            } catch (error) {
+                console.error(`Error checking availability for book ${item.bookDetails.id}:`, error);
+            }
+        }
+
+        // Update cartItems to only include valid items
+        cartItems = validItems;
+
+        // Show notification if books were removed
+        if (unavailableBooks.length > 0) {
+            const bookList = unavailableBooks.join(', ');
+            showNotification(
+                `Some books in your cart are no longer available and have been removed: ${bookList}`,
+                "warning"
+            );
+        }
+
         if (cartItems.length === 0) {
             showEmptyCart();
         } else {

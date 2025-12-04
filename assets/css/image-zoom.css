@@ -8,7 +8,8 @@
 }
 
 .main-image::after {
-    content: '\f00e'; /* FontAwesome magnifying glass icon */
+    content: '\f00e';
+    /* FontAwesome magnifying glass icon */
     font-family: 'Font Awesome 6 Free';
     font-weight: 900;
     position: absolute;
@@ -66,6 +67,7 @@
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
@@ -101,7 +103,10 @@
     position: absolute;
     top: 20px;
     right: 40px;
-    font-size: 40px;
+    font-size: 32px;
+    /* Adjusted size for better centering */
+    line-height: 1;
+    /* Reset line height */
     color: #fff;
     cursor: pointer;
     background: rgba(123, 31, 162, 0.8);
@@ -114,6 +119,43 @@
     transition: all 0.3s ease;
     z-index: 10000;
     border: 2px solid rgba(255, 255, 255, 0.3);
+    padding-bottom: 4px;
+    /* Slight adjustment for visual center */
+}
+
+/* Navigation Buttons */
+.lightbox-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(123, 31, 162, 0.8);
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    font-size: 20px;
+    transition: all 0.3s ease;
+    z-index: 10000;
+    user-select: none;
+}
+
+.lightbox-nav-btn:hover {
+    background: rgba(183, 28, 28, 0.9);
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 0 20px rgba(183, 28, 28, 0.5);
+}
+
+.lightbox-prev {
+    left: 30px;
+}
+
+.lightbox-next {
+    right: 30px;
 }
 
 .lightbox-close:hover {
@@ -203,6 +245,7 @@
         opacity: 0;
         transform: translateX(-50%) translateY(-10px);
     }
+
     to {
         opacity: 1;
         transform: translateX(-50%) translateY(0);

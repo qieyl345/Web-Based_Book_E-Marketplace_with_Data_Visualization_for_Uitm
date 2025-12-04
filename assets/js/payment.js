@@ -104,9 +104,60 @@ function setupPayment() {
     }
 }
 
+async function validateBookAvailability() {
+    const unavailableBooks = [];
+    const availableItems = [];
+
+    for (const item of paymentItems) {
+        try {
+            const bookSnapshot = await database.ref(`books/${item.bookDetails.id}`).once('value');
+            const bookData = bookSnapshot.val();
+
+            // Check if book exists and is still available
+            if (!bookData || bookData.status === 'sold') {
+                unavailableBooks.push(item.bookDetails.title);
+                // Remove from cart
+                await Cart.removeItem(item.bookDetails.id);
+            } else {
+                availableItems.push(item);
+            }
+        } catch (error) {
+            console.error(`Error checking availability for book ${item.bookDetails.id}:`, error);
+            unavailableBooks.push(item.bookDetails.title);
+        }
+    }
+
+    return { unavailableBooks, availableItems };
+}
+
 async function processPayment() {
     if (!selectedBank) {
         showNotification("Please select a bank", "error");
+        return;
+    }
+
+    // Validate book availability before processing payment
+    const { unavailableBooks, availableItems } = await validateBookAvailability();
+
+    if (unavailableBooks.length > 0) {
+        const bookList = unavailableBooks.map(title => `• ${title}`).join('\n');
+        showNotification(
+            `The following book(s) are no longer available and have been removed from your cart:\n${bookList}`,
+            "error"
+        );
+
+        // If no books are left, redirect to cart
+        if (availableItems.length === 0) {
+            setTimeout(() => {
+                window.location.href = 'cart.html';
+            }, 3000);
+            return;
+        }
+
+        // Reload page to show updated cart
+        setTimeout(() => {
+            window.location.reload();
+        }, 3000);
         return;
     }
 

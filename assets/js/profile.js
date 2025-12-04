@@ -357,9 +357,17 @@ async function loadNegotiations() {
         const snapshot = await database.ref('offers').once('value');
         const negotiations = [];
 
+        // Extract student ID from email (e.g. 2023123456@student.uitm.edu.my -> 2023123456)
+        const studentId = userData.email ? userData.email.split('@')[0] : '';
+
         snapshot.forEach(child => {
             const offer = child.val();
-            if (offer.buyerId === currentUser.uid || offer.sellerId === currentUser.uid) {
+
+            // Check against both UID and Student ID (for legacy/seed data compatibility)
+            const isBuyer = offer.buyerId === currentUser.uid || (studentId && offer.buyerId === studentId);
+            const isSeller = offer.sellerId === currentUser.uid || (studentId && offer.sellerId === studentId);
+
+            if (isBuyer || isSeller) {
                 negotiations.push({ id: child.key, ...offer });
             }
         });
