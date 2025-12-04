@@ -1,0 +1,1193 @@
+{
+    "books": {
+        "DEMO_BOOK_001": {
+            "title": "Advanced Calculus",
+            "author": "Dr. Rahman Ali",
+            "price": 65,
+            "subjectCode": "MAT301",
+            "condition": "used",
+            "status": "sold",
+            "sellerId": "seller001",
+            "sellerName": "Siti Aminah",
+            "buyerId": "buyer123",
+            "soldAt": 1764720000000,
+            "createdAt": 1732960800000,
+            "campusLocation": "Library",
+            "isbn": "978-0134689500",
+            "viewCount": 15
+        },
+        "DEMO_BOOK_002": {
+            "title": "Data Structures in Java",
+            "author": "Prof. Lee Wei",
+            "price": 52,
+            "subjectCode": "CSC201",
+            "condition": "used",
+            "status": "sold",
+            "sellerId": "seller002",
+            "sellerName": "Ahmad Yusof",
+            "buyerId": "buyer234",
+            "soldAt": 1764633600000,
+            "createdAt": 1733047200000,
+            "campusLocation": "Block A",
+            "isbn": "978-1118290279",
+            "viewCount": 22
+        },
+        "DEMO_BOOK_003": {
+            "title": "Organic Chemistry",
+            "author": "Dr. Sarah Johnson",
+            "price": 78,
+            "subjectCode": "CHE201",
+            "condition": "new",
+            "status": "sold",
+            "sellerId": "seller003",
+            "sellerName": "Fatimah Zahra",
+            "buyerId": "buyer345",
+            "soldAt": 1764547200000,
+            "createdAt": 1733133600000,
+            "campusLocation": "Library",
+            "isbn": "978-0073402772",
+            "viewCount": 18
+        },
+        "DEMO_BOOK_004": {
+            "title": "Microeconomics Principles",
+            "author": "Prof. David Lee",
+            "price": 48,
+            "subjectCode": "ECO101",
+            "condition": "used",
+            "status": "sold",
+            "sellerId": "seller004",
+            "sellerName": "Zainab Mohd",
+            "buyerId": "buyer456",
+            "soldAt": 1764460800000,
+            "createdAt": 1733220000000,
+            "campusLocation": "Block B",
+            "isbn": "978-0134744513",
+            "viewCount": 12
+        },
+        "DEMO_BOOK_005": {
+            "title": "Python Programming",
+            "author": "Mark Sullivan",
+            "price": 42,
+            "subjectCode": "CSC101",
+            "condition": "used",
+            "status": "sold",
+            "sellerId": "seller005",
+            "sellerName": "Kamal Razak",
+            "buyerId": "buyer567",
+            "soldAt": 1764374400000,
+            "createdAt": 1732874400000,
+            "campusLocation": "Library",
+            "isbn": "978-1593279288",
+            "viewCount": 28
+        },
+        "DEMO_BOOK_006": {
+            "title": "Linear Algebra",
+            "author": "Dr. Wong Chen",
+            "price": 55,
+            "subjectCode": "MAT201",
+            "condition": "used",
+            "status": "sold",
+            "sellerId": "seller006",
+            "sellerName": "Rahman Ali",
+            "buyerId": "buyer678",
+            "soldAt": 1764288000000,
+            "createdAt": 1732788000000,
+            "campusLocation": "Block C",
+            "isbn": "978-0321982384",
+            "viewCount": 14
+        },
+        "DEMO_BOOK_007": {
+            "title": "Financial Accounting",
+            "author": "Prof. Tan Mei",
+            "price": 62,
+            "subjectCode": "ACC201",
+            "condition": "used",
+            "status": "sold",
+            "sellerId": "seller007",
+            "sellerName": "Ahmad Yusof",
+            "buyerId": "buyer789",
+            "soldAt": 1764201600000,
+            "createdAt": 1732701600000,
+            "campusLocation": "Library",
+            "isbn": "978-1118953914",
+            "viewCount": 19
+        },
+        "DEMO_BOOK_008": {
+            "title": "Physics Fundamentals",
+            "author": "Dr. Kumar Raj",
+            "price": 71,
+            "subjectCode": "PHY101",
+            "condition": "new",
+            "status": "sold",
+            "sellerId": "seller008",
+            "sellerName": "Siti Zaharah",
+            "buyerId": "buyer890",
+            "soldAt": 1764115200000,
+            "createdAt": 1732615200000,
+            "campusLocation": "Block A",
+            "isbn": "978-0134895949",
+            "viewCount": 16
+        },
+        "DEMO_BOOK_009": {
+            "title": "Business Management",
+            "author": "Prof. Lisa Wong",
+            "price": 58,
+            "subjectCode": "MGT101",
+            "condition": "used",
+            "status": "sold",
+            "sellerId": "seller009",
+            "sellerName": "Nora Ismail",
+            "buyerId": "buyer901",
+            "soldAt": 1764806400000,
+            "createdAt": 1732528800000,
+            "campusLocation": "Library",
+            "isbn": "978-0133254105",
+            "viewCount": 21
+        },
+        "DEMO_BOOK_010": {
+            "title": "Web Development",
+            "author": "John Smith",
+            "price": 45,
+            "subjectCode": "CSC301",
+            "condition": "used",
+            "status": "sold",
+            "sellerId": "seller010",
+            "sellerName": "Azman Ali",
+            "buyerId": "buyer112",
+            "soldAt": 1764720000000,
+            "createdAt": 1732442400000,
+            "campusLocation": "Block B",
+            "isbn": "978-1491991916",
+            "viewCount": 31
+        },
+        "DEMO_BOOK_011": {
+            "title": "Statistics for Engineers",
+            "author": "Dr. Hassan Ibrahim",
+            "price": 53,
+            "subjectCode": "MAT205",
+            "condition": "used",
+            "status": "available",
+            "sellerId": "seller001",
+            "sellerName": "Siti Aminah",
+            "createdAt": 1764700000000,
+            "campusLocation": "Library",
+            "isbn": "978-0134080390",
+            "viewCount": 8
+        },
+        "DEMO_BOOK_012": {
+            "title": "Database Systems",
+            "author": "Prof. Chen Li",
+            "price": 67,
+            "subjectCode": "CSC202",
+            "condition": "new",
+            "status": "sold",
+            "sellerId": "seller002",
+            "sellerName": "Ahmad Yusof",
+            "buyerId": "buyer223",
+            "soldAt": 1764633600000,
+            "createdAt": 1764600000000,
+            "campusLocation": "Block A",
+            "isbn": "978-0133970777",
+            "viewCount": 13
+        },
+        "DEMO_BOOK_013": {
+            "title": "English Literature",
+            "author": "Dr. Emma Watson",
+            "price": 38,
+            "subjectCode": "ENG201",
+            "condition": "used",
+            "status": "sold",
+            "sellerId": "seller003",
+            "sellerName": "Fatimah Zahra",
+            "buyerId": "buyer334",
+            "soldAt": 1764547200000,
+            "createdAt": 1764500000000,
+            "campusLocation": "Library",
+            "isbn": "978-0393938937",
+            "viewCount": 9
+        },
+        "DEMO_BOOK_014": {
+            "title": "Circuit Analysis",
+            "author": "Ir. Lee Kuan",
+            "price": 61,
+            "subjectCode": "ELE201",
+            "condition": "used",
+            "status": "sold",
+            "sellerId": "seller004",
+            "sellerName": "Zainab Mohd",
+            "buyerId": "buyer445",
+            "soldAt": 1764460800000,
+            "createdAt": 1764400000000,
+            "campusLocation": "Block C",
+            "isbn": "978-0133760033",
+            "viewCount": 11
+        },
+        "DEMO_BOOK_015": {
+            "title": "Artificial Intelligence",
+            "author": "Dr. Alan Turing",
+            "price": 82,
+            "subjectCode": "CSC401",
+            "condition": "new",
+            "status": "sold",
+            "sellerId": "seller005",
+            "sellerName": "Kamal Razak",
+            "buyerId": "buyer556",
+            "soldAt": 1764374400000,
+            "createdAt": 1764300000000,
+            "campusLocation": "Library",
+            "isbn": "978-0136042594",
+            "viewCount": 35
+        },
+        "DEMO_BOOK_016": {
+            "title": "Discrete Mathematics",
+            "author": "Prof. Kenneth Rosen",
+            "price": 59,
+            "subjectCode": "MAT203",
+            "condition": "used",
+            "status": "sold",
+            "sellerId": "seller006",
+            "sellerName": "Rahman Ali",
+            "buyerId": "buyer667",
+            "soldAt": 1764288000000,
+            "createdAt": 1764200000000,
+            "campusLocation": "Block A",
+            "isbn": "978-0073383095",
+            "viewCount": 17
+        },
+        "DEMO_BOOK_017": {
+            "title": "Marketing Fundamentals",
+            "author": "Dr. Philip Kotler",
+            "price": 51,
+            "subjectCode": "MGT201",
+            "condition": "used",
+            "status": "sold",
+            "sellerId": "seller007",
+            "sellerName": "Ahmad Yusof",
+            "buyerId": "buyer778",
+            "soldAt": 1764720000000,
+            "createdAt": 1764100000000,
+            "campusLocation": "Library",
+            "isbn": "978-0134292281",
+            "viewCount": 14
+        },
+        "DEMO_BOOK_018": {
+            "title": "Thermodynamics",
+            "author": "Dr. Wan Ahmad",
+            "price": 49,
+            "subjectCode": "EGM303",
+            "condition": "used",
+            "status": "available",
+            "sellerId": "seller008",
+            "sellerName": "Siti Zaharah",
+            "createdAt": 1764000000000,
+            "campusLocation": "Block B",
+            "isbn": "978-1118412930",
+            "viewCount": 6
+        },
+        "DEMO_BOOK_019": {
+            "title": "Operating Systems",
+            "author": "Prof. Abdullah Rahman",
+            "price": 44,
+            "subjectCode": "CSC301",
+            "condition": "used",
+            "status": "sold",
+            "sellerId": "seller009",
+            "sellerName": "Nora Ismail",
+            "buyerId": "buyer889",
+            "soldAt": 1764806400000,
+            "createdAt": 1763900000000,
+            "campusLocation": "Library",
+            "isbn": "978-1118063330",
+            "viewCount": 20
+        },
+        "DEMO_BOOK_020": {
+            "title": "Corporate Finance",
+            "author": "Prof. Ross Stephen",
+            "price": 75,
+            "subjectCode": "FIN301",
+            "condition": "new",
+            "status": "sold",
+            "sellerId": "seller010",
+            "sellerName": "Azman Ali",
+            "buyerId": "buyer990",
+            "soldAt": 1764115200000,
+            "createdAt": 1763800000000,
+            "campusLocation": "Block C",
+            "isbn": "978-0077861759",
+            "viewCount": 12
+        },
+        "DEMO_BOOK_021": {
+            "title": "Java Programming",
+            "author": "Herbert Schildt",
+            "price": 47,
+            "subjectCode": "CSC101",
+            "condition": "used",
+            "status": "sold",
+            "sellerId": "seller001",
+            "sellerName": "Siti Aminah",
+            "buyerId": "buyer111",
+            "soldAt": 1764720000000,
+            "createdAt": 1763700000000,
+            "campusLocation": "Library",
+            "isbn": "978-0071808552",
+            "viewCount": 25
+        },
+        "DEMO_BOOK_022": {
+            "title": "Calculus II",
+            "author": "James Stewart",
+            "price": 63,
+            "subjectCode": "MAT202",
+            "condition": "used",
+            "status": "sold",
+            "sellerId": "seller002",
+            "sellerName": "Ahmad Yusof",
+            "buyerId": "buyer222",
+            "soldAt": 1764633600000,
+            "createdAt": 1763600000000,
+            "campusLocation": "Block A",
+            "isbn": "978-1305272378",
+            "viewCount": 15
+        },
+        "DEMO_BOOK_023": {
+            "title": "Biology Fundamentals",
+            "author": "Dr. Campbell Neil",
+            "price": 69,
+            "subjectCode": "BIO101",
+            "condition": "new",
+            "status": "sold",
+            "sellerId": "seller003",
+            "sellerName": "Fatimah Zahra",
+            "buyerId": "buyer333",
+            "soldAt": 1764547200000,
+            "createdAt": 1763500000000,
+            "campusLocation": "Library",
+            "isbn": "978-0135188743",
+            "viewCount": 18
+        },
+        "DEMO_BOOK_024": {
+            "title": "Constitutional Law",
+            "author": "Dr. O'Brien David",
+            "price": 88,
+            "subjectCode": "LAW450",
+            "condition": "used",
+            "status": "sold",
+            "sellerId": "seller004",
+            "sellerName": "Zainab Mohd",
+            "buyerId": "buyer444",
+            "soldAt": 1764460800000,
+            "createdAt": 1763400000000,
+            "campusLocation": "Block B",
+            "isbn": "978-0393696721",
+            "viewCount": 10
+        },
+        "DEMO_BOOK_025": {
+            "title": "Software Engineering",
+            "author": "Ian Sommerville",
+            "price": 71,
+            "subjectCode": "CSC401",
+            "condition": "used",
+            "status": "sold",
+            "sellerId": "seller005",
+            "sellerName": "Kamal Razak",
+            "buyerId": "buyer555",
+            "soldAt": 1764806400000,
+            "createdAt": 1763300000000,
+            "campusLocation": "Library",
+            "isbn": "978-0133943030",
+            "viewCount": 22
+        }
+    },
+    "transactions": {
+        "DEMO_TXN_001": {
+            "transactionId": "DEMO_TXN_001",
+            "buyerId": "buyer123",
+            "buyerName": "Ahmad Abdullah",
+            "amount": 65.33,
+            "basePrice": 65,
+            "commissionFee": 0.33,
+            "status": "completed",
+            "deliveryStatus": "completed",
+            "createdAt": 1764720000000,
+            "fpxTransactionId": "FPXDEMO001",
+            "selectedBank": "maybank",
+            "items": [
+                {
+                    "bookId": "DEMO_BOOK_001",
+                    "price": 65,
+                    "quantity": 1
+                }
+            ]
+        },
+        "DEMO_TXN_002": {
+            "transactionId": "DEMO_TXN_002",
+            "buyerId": "buyer234",
+            "buyerName": "Nurul Huda",
+            "amount": 52.26,
+            "basePrice": 52,
+            "commissionFee": 0.26,
+            "status": "completed",
+            "deliveryStatus": "completed",
+            "createdAt": 1764633600000,
+            "fpxTransactionId": "FPXDEMO002",
+            "selectedBank": "cimb",
+            "items": [
+                {
+                    "bookId": "DEMO_BOOK_002",
+                    "price": 52,
+                    "quantity": 1
+                }
+            ]
+        },
+        "DEMO_TXN_003": {
+            "transactionId": "DEMO_TXN_003",
+            "buyerId": "buyer345",
+            "buyerName": "Hassan Ibrahim",
+            "amount": 78.39,
+            "basePrice": 78,
+            "commissionFee": 0.39,
+            "status": "completed",
+            "deliveryStatus": "completed",
+            "createdAt": 1764547200000,
+            "fpxTransactionId": "FPXDEMO003",
+            "selectedBank": "rhb",
+            "items": [
+                {
+                    "bookId": "DEMO_BOOK_003",
+                    "price": 78,
+                    "quantity": 1
+                }
+            ]
+        },
+        "DEMO_TXN_004": {
+            "transactionId": "DEMO_TXN_004",
+            "buyerId": "buyer456",
+            "buyerName": "Amirah Hassan",
+            "amount": 48.24,
+            "basePrice": 48,
+            "commissionFee": 0.24,
+            "status": "completed",
+            "deliveryStatus": "completed",
+            "createdAt": 1764460800000,
+            "fpxTransactionId": "FPXDEMO004",
+            "selectedBank": "publicbank",
+            "items": [
+                {
+                    "bookId": "DEMO_BOOK_004",
+                    "price": 48,
+                    "quantity": 1
+                }
+            ]
+        },
+        "DEMO_TXN_005": {
+            "transactionId": "DEMO_TXN_005",
+            "buyerId": "buyer567",
+            "buyerName": "Zulaikha Ismail",
+            "amount": 42.21,
+            "basePrice": 42,
+            "commissionFee": 0.21,
+            "status": "completed",
+            "deliveryStatus": "completed",
+            "createdAt": 1764374400000,
+            "fpxTransactionId": "FPXDEMO005",
+            "selectedBank": "maybank",
+            "items": [
+                {
+                    "bookId": "DEMO_BOOK_005",
+                    "price": 42,
+                    "quantity": 1
+                }
+            ]
+        },
+        "DEMO_TXN_006": {
+            "transactionId": "DEMO_TXN_006",
+            "buyerId": "buyer678",
+            "buyerName": "Safwan Hakim",
+            "amount": 55.28,
+            "basePrice": 55,
+            "commissionFee": 0.28,
+            "status": "completed",
+            "deliveryStatus": "completed",
+            "createdAt": 1764288000000,
+            "fpxTransactionId": "FPXDEMO006",
+            "selectedBank": "cimb",
+            "items": [
+                {
+                    "bookId": "DEMO_BOOK_006",
+                    "price": 55,
+                    "quantity": 1
+                }
+            ]
+        },
+        "DEMO_TXN_007": {
+            "transactionId": "DEMO_TXN_007",
+            "buyerId": "buyer789",
+            "buyerName": "Fatimah Zahra",
+            "amount": 62.31,
+            "basePrice": 62,
+            "commissionFee": 0.31,
+            "status": "completed",
+            "deliveryStatus": "completed",
+            "createdAt": 1764201600000,
+            "fpxTransactionId": "FPXDEMO007",
+            "selectedBank": "rhb",
+            "items": [
+                {
+                    "bookId": "DEMO_BOOK_007",
+                    "price": 62,
+                    "quantity": 1
+                }
+            ]
+        },
+        "DEMO_TXN_008": {
+            "transactionId": "DEMO_TXN_008",
+            "buyerId": "buyer890",
+            "buyerName": "Rizal Mokhtar",
+            "amount": 71.36,
+            "basePrice": 71,
+            "commissionFee": 0.36,
+            "status": "completed",
+            "deliveryStatus": "completed",
+            "createdAt": 1764115200000,
+            "fpxTransactionId": "FPXDEMO008",
+            "selectedBank": "publicbank",
+            "items": [
+                {
+                    "bookId": "DEMO_BOOK_008",
+                    "price": 71,
+                    "quantity": 1
+                }
+            ]
+        },
+        "DEMO_TXN_009": {
+            "transactionId": "DEMO_TXN_009",
+            "buyerId": "buyer901",
+            "buyerName": "Hanis Azmi",
+            "amount": 58.29,
+            "basePrice": 58,
+            "commissionFee": 0.29,
+            "status": "completed",
+            "deliveryStatus": "completed",
+            "createdAt": 1764806400000,
+            "fpxTransactionId": "FPXDEMO009",
+            "selectedBank": "maybank",
+            "items": [
+                {
+                    "bookId": "DEMO_BOOK_009",
+                    "price": 58,
+                    "quantity": 1
+                }
+            ]
+        },
+        "DEMO_TXN_010": {
+            "transactionId": "DEMO_TXN_010",
+            "buyerId": "buyer112",
+            "buyerName": "Khairul Anuar",
+            "amount": 45.23,
+            "basePrice": 45,
+            "commissionFee": 0.23,
+            "status": "completed",
+            "deliveryStatus": "completed",
+            "createdAt": 1764720000000,
+            "fpxTransactionId": "FPXDEMO010",
+            "selectedBank": "cimb",
+            "items": [
+                {
+                    "bookId": "DEMO_BOOK_010",
+                    "price": 45,
+                    "quantity": 1
+                }
+            ],
+            "fromOffer": true
+        },
+        "DEMO_TXN_011": {
+            "transactionId": "DEMO_TXN_011",
+            "buyerId": "buyer223",
+            "buyerName": "Aisyah Rahman",
+            "amount": 67.34,
+            "basePrice": 67,
+            "commissionFee": 0.34,
+            "status": "completed",
+            "deliveryStatus": "completed",
+            "createdAt": 1764633600000,
+            "fpxTransactionId": "FPXDEMO011",
+            "selectedBank": "rhb",
+            "items": [
+                {
+                    "bookId": "DEMO_BOOK_012",
+                    "price": 67,
+                    "quantity": 1
+                }
+            ]
+        },
+        "DEMO_TXN_012": {
+            "transactionId": "DEMO_TXN_012",
+            "buyerId": "buyer334",
+            "buyerName": "Sofia Karim",
+            "amount": 38.19,
+            "basePrice": 38,
+            "commissionFee": 0.19,
+            "status": "completed",
+            "deliveryStatus": "completed",
+            "createdAt": 1764547200000,
+            "fpxTransactionId": "FPXDEMO012",
+            "selectedBank": "maybank",
+            "items": [
+                {
+                    "bookId": "DEMO_BOOK_013",
+                    "price": 38,
+                    "quantity": 1
+                }
+            ]
+        },
+        "DEMO_TXN_013": {
+            "transactionId": "DEMO_TXN_013",
+            "buyerId": "buyer445",
+            "buyerName": "Danial Azhar",
+            "amount": 61.31,
+            "basePrice": 61,
+            "commissionFee": 0.31,
+            "status": "failed",
+            "deliveryStatus": "pending",
+            "createdAt": 1764460800000,
+            "fpxTransactionId": "FPXDEMO013",
+            "selectedBank": "publicbank",
+            "items": [
+                {
+                    "bookId": "DEMO_BOOK_014",
+                    "price": 61,
+                    "quantity": 1
+                }
+            ]
+        },
+        "DEMO_TXN_014": {
+            "transactionId": "DEMO_TXN_014",
+            "buyerId": "buyer556",
+            "buyerName": "Mariam Zain",
+            "amount": 82.41,
+            "basePrice": 82,
+            "commissionFee": 0.41,
+            "status": "completed",
+            "deliveryStatus": "completed",
+            "createdAt": 1764374400000,
+            "fpxTransactionId": "FPXDEMO014",
+            "selectedBank": "cimb",
+            "items": [
+                {
+                    "bookId": "DEMO_BOOK_015",
+                    "price": 82,
+                    "quantity": 1
+                }
+            ]
+        },
+        "DEMO_TXN_015": {
+            "transactionId": "DEMO_TXN_015",
+            "buyerId": "buyer667",
+            "buyerName": "Imran Hakim",
+            "amount": 59.30,
+            "basePrice": 59,
+            "commissionFee": 0.30,
+            "status": "completed",
+            "deliveryStatus": "completed",
+            "createdAt": 1764288000000,
+            "fpxTransactionId": "FPXDEMO015",
+            "selectedBank": "maybank",
+            "items": [
+                {
+                    "bookId": "DEMO_BOOK_016",
+                    "price": 59,
+                    "quantity": 1
+                }
+            ]
+        },
+        "DEMO_TXN_016": {
+            "transactionId": "DEMO_TXN_016",
+            "buyerId": "buyer778",
+            "buyerName": "Lily Wong",
+            "amount": 51.26,
+            "basePrice": 51,
+            "commissionFee": 0.26,
+            "status": "completed",
+            "deliveryStatus": "completed",
+            "createdAt": 1764720000000,
+            "fpxTransactionId": "FPXDEMO016",
+            "selectedBank": "rhb",
+            "items": [
+                {
+                    "bookId": "DEMO_BOOK_017",
+                    "price": 51,
+                    "quantity": 1
+                }
+            ],
+            "fromOffer": true
+        },
+        "DEMO_TXN_017": {
+            "transactionId": "DEMO_TXN_017",
+            "buyerId": "buyer889",
+            "buyerName": "Hafiz Zain",
+            "amount": 44.22,
+            "basePrice": 44,
+            "commissionFee": 0.22,
+            "status": "completed",
+            "deliveryStatus": "completed",
+            "createdAt": 1764806400000,
+            "fpxTransactionId": "FPXDEMO017",
+            "selectedBank": "publicbank",
+            "items": [
+                {
+                    "bookId": "DEMO_BOOK_019",
+                    "price": 44,
+                    "quantity": 1
+                }
+            ]
+        },
+        "DEMO_TXN_018": {
+            "transactionId": "DEMO_TXN_018",
+            "buyerId": "buyer990",
+            "buyerName": "Nadia Ahmad",
+            "amount": 75.38,
+            "basePrice": 75,
+            "commissionFee": 0.38,
+            "status": "cancelled",
+            "deliveryStatus": "cancelled",
+            "createdAt": 1764115200000,
+            "fpxTransactionId": "FPXDEMO018",
+            "selectedBank": "cimb",
+            "items": [
+                {
+                    "bookId": "DEMO_BOOK_020",
+                    "price": 75,
+                    "quantity": 1
+                }
+            ]
+        },
+        "DEMO_TXN_019": {
+            "transactionId": "DEMO_TXN_019",
+            "buyerId": "buyer111",
+            "buyerName": "Arif Ibrahim",
+            "amount": 47.24,
+            "basePrice": 47,
+            "commissionFee": 0.24,
+            "status": "completed",
+            "deliveryStatus": "completed",
+            "createdAt": 1764720000000,
+            "fpxTransactionId": "FPXDEMO019",
+            "selectedBank": "maybank",
+            "items": [
+                {
+                    "bookId": "DEMO_BOOK_021",
+                    "price": 47,
+                    "quantity": 1
+                }
+            ],
+            "fromOffer": true
+        },
+        "DEMO_TXN_020": {
+            "transactionId": "DEMO_TXN_020",
+            "buyerId": "buyer222",
+            "buyerName": "Suraya Daud",
+            "amount": 63.32,
+            "basePrice": 63,
+            "commissionFee": 0.32,
+            "status": "completed",
+            "deliveryStatus": "completed",
+            "createdAt": 1764633600000,
+            "fpxTransactionId": "FPXDEMO020",
+            "selectedBank": "rhb",
+            "items": [
+                {
+                    "bookId": "DEMO_BOOK_022",
+                    "price": 63,
+                    "quantity": 1
+                }
+            ]
+        },
+        "DEMO_TXN_021": {
+            "transactionId": "DEMO_TXN_021",
+            "buyerId": "buyer333",
+            "buyerName": "Zaki Rahman",
+            "amount": 69.35,
+            "basePrice": 69,
+            "commissionFee": 0.35,
+            "status": "completed",
+            "deliveryStatus": "completed",
+            "createdAt": 1764547200000,
+            "fpxTransactionId": "FPXDEMO021",
+            "selectedBank": "publicbank",
+            "items": [
+                {
+                    "bookId": "DEMO_BOOK_023",
+                    "price": 69,
+                    "quantity": 1
+                }
+            ]
+        },
+        "DEMO_TXN_022": {
+            "transactionId": "DEMO_TXN_022",
+            "buyerId": "buyer444",
+            "buyerName": "Emma Lee",
+            "amount": 88.44,
+            "basePrice": 88,
+            "commissionFee": 0.44,
+            "status": "failed",
+            "deliveryStatus": "pending",
+            "createdAt": 1764460800000,
+            "fpxTransactionId": "FPXDEMO022",
+            "selectedBank": "cimb",
+            "items": [
+                {
+                    "bookId": "DEMO_BOOK_024",
+                    "price": 88,
+                    "quantity": 1
+                }
+            ]
+        },
+        "DEMO_TXN_023": {
+            "transactionId": "DEMO_TXN_023",
+            "buyerId": "buyer555",
+            "buyerName": "Hadi Sulaiman",
+            "amount": 71.36,
+            "basePrice": 71,
+            "commissionFee": 0.36,
+            "status": "completed",
+            "deliveryStatus": "completed",
+            "createdAt": 1764806400000,
+            "fpxTransactionId": "FPXDEMO023",
+            "selectedBank": "maybank",
+            "items": [
+                {
+                    "bookId": "DEMO_BOOK_025",
+                    "price": 71,
+                    "quantity": 1
+                }
+            ],
+            "fromOffer": true
+        }
+    },
+    "feedback": {
+        "DEMO_FB_001": {
+            "buyerId": "buyer123",
+            "buyerName": "Ahmad Abdullah",
+            "sellerId": "seller001",
+            "sellerName": "Siti Aminah",
+            "transactionId": "DEMO_TXN_001",
+            "rating": 5,
+            "type": "feedback",
+            "comment": "Excellent book condition! Highly recommended seller.",
+            "status": "submitted",
+            "createdAt": 1764720100000
+        },
+        "DEMO_FB_002": {
+            "buyerId": "buyer234",
+            "buyerName": "Nurul Huda",
+            "sellerId": "seller002",
+            "sellerName": "Ahmad Yusof",
+            "transactionId": "DEMO_TXN_002",
+            "rating": 5,
+            "type": "feedback",
+            "comment": "Fast response and book as described.",
+            "status": "submitted",
+            "createdAt": 1764633700000
+        },
+        "DEMO_FB_003": {
+            "buyerId": "buyer345",
+            "buyerName": "Hassan Ibrahim",
+            "sellerId": "seller003",
+            "sellerName": "Fatimah Zahra",
+            "transactionId": "DEMO_TXN_003",
+            "rating": 4,
+            "type": "feedback",
+            "comment": "Good condition, slight wear on cover.",
+            "status": "submitted",
+            "createdAt": 1764547300000
+        },
+        "DEMO_FB_004": {
+            "buyerId": "buyer456",
+            "buyerName": "Amirah Hassan",
+            "sellerId": "seller004",
+            "sellerName": "Zainab Mohd",
+            "transactionId": "DEMO_TXN_004",
+            "rating": 4,
+            "type": "feedback",
+            "comment": "Friendly seller, book as described.",
+            "status": "submitted",
+            "createdAt": 1764460900000
+        },
+        "DEMO_FB_005": {
+            "buyerId": "buyer567",
+            "buyerName": "Zulaikha Ismail",
+            "sellerId": "seller005",
+            "sellerName": "Kamal Razak",
+            "transactionId": "DEMO_TXN_005",
+            "rating": 3,
+            "type": "feedback",
+            "comment": "Had some highlighted pages not mentioned.",
+            "status": "submitted",
+            "createdAt": 1764374500000
+        },
+        "DEMO_FB_006": {
+            "buyerId": "buyer678",
+            "buyerName": "Safwan Hakim",
+            "sellerId": "seller006",
+            "sellerName": "Rahman Ali",
+            "transactionId": "DEMO_TXN_006",
+            "rating": 5,
+            "type": "feedback",
+            "comment": "Perfect transaction!",
+            "status": "submitted",
+            "createdAt": 1764288100000
+        },
+        "DEMO_FB_007": {
+            "buyerId": "buyer789",
+            "buyerName": "Fatimah Zahra",
+            "sellerId": "seller007",
+            "sellerName": "Ahmad Yusof",
+            "transactionId": "DEMO_TXN_007",
+            "rating": 3,
+            "type": "feedback",
+            "comment": "More worn than expected.",
+            "status": "submitted",
+            "createdAt": 1764201700000
+        },
+        "DEMO_FB_008": {
+            "buyerId": "buyer890",
+            "buyerName": "Rizal Mokhtar",
+            "sellerId": "seller008",
+            "sellerName": "Siti Zaharah",
+            "transactionId": "DEMO_TXN_008",
+            "rating": 4,
+            "type": "feedback",
+            "comment": "Great seller, smooth transaction.",
+            "status": "submitted",
+            "createdAt": 1764115300000
+        },
+        "DEMO_FB_009": {
+            "buyerId": "buyer901",
+            "buyerName": "Hanis Azmi",
+            "sellerId": "seller009",
+            "sellerName": "Nora Ismail",
+            "transactionId": "DEMO_TXN_009",
+            "rating": 5,
+            "type": "feedback",
+            "comment": "Excellent condition!",
+            "status": "submitted",
+            "createdAt": 1764806500000
+        },
+        "DEMO_FB_010": {
+            "buyerId": "buyer112",
+            "buyerName": "Khairul Anuar",
+            "sellerId": "seller010",
+            "sellerName": "Azman Ali",
+            "transactionId": "DEMO_TXN_010",
+            "rating": 4,
+            "type": "feedback",
+            "comment": "Good book, fair price.",
+            "status": "submitted",
+            "createdAt": 1764720100000
+        },
+        "DEMO_DISPUTE_001": {
+            "buyerId": "buyer789",
+            "buyerName": "Fatimah Zahra",
+            "sellerId": "seller112",
+            "sellerName": "Bad Seller",
+            "transactionId": "TXNDISPUTE001",
+            "rating": 1,
+            "type": "dispute",
+            "comment": "Book severely damaged, pages torn.",
+            "status": "open",
+            "createdAt": 1764720000001,
+            "disputeType": "damaged_book"
+        },
+        "DEMO_DISPUTE_002": {
+            "buyerId": "buyer890",
+            "buyerName": "Rizal Mokhtar",
+            "sellerId": "seller223",
+            "sellerName": "No Show Seller",
+            "transactionId": "TXNDISPUTE002",
+            "rating": 1,
+            "type": "dispute",
+            "comment": "Seller didn't show up at meeting.",
+            "status": "resolved",
+            "createdAt": 1764633600001,
+            "resolvedAt": 1764670800001,
+            "disputeType": "seller_no_show"
+        },
+        "DEMO_DISPUTE_003": {
+            "buyerId": "buyer901",
+            "buyerName": "Hanis Azmi",
+            "sellerId": "seller334",
+            "sellerName": "Misleading Seller",
+            "transactionId": "TXNDISPUTE003",
+            "rating": 2,
+            "type": "dispute",
+            "comment": "Wrong edition received.",
+            "status": "resolved",
+            "createdAt": 1764547200001,
+            "resolvedAt": 1764633600001,
+            "disputeType": "wrong_item"
+        },
+        "DEMO_DISPUTE_004": {
+            "buyerId": "buyer112",
+            "buyerName": "Khairul Anuar",
+            "sellerId": "seller445",
+            "sellerName": "Wrong Edition",
+            "transactionId": "TXNDISPUTE004",
+            "rating": 1,
+            "type": "dispute",
+            "comment": "Not the edition specified.",
+            "status": "open",
+            "createdAt": 1764460800001,
+            "disputeType": "wrong_edition"
+        }
+    },
+    "offers": {
+        "DEMO_OFFER_001": {
+            "offerId": "DEMO_OFFER_001",
+            "bookId": "DEMO_BOOK_010",
+            "buyerId": "buyer112",
+            "sellerId": "seller010",
+            "buyerName": "Khairul Anuar",
+            "sellerName": "Azman Ali",
+            "bookTitle": "Web Development",
+            "originalPrice": 45,
+            "offerAmount": 40,
+            "status": "accepted",
+            "createdAt": 1764719000000,
+            "acceptedAt": 1764719500000,
+            "updatedAt": 1764719500000
+        },
+        "DEMO_OFFER_002": {
+            "offerId": "DEMO_OFFER_002",
+            "bookId": "DEMO_BOOK_016",
+            "buyerId": "buyer778",
+            "sellerId": "seller007",
+            "buyerName": "Lily Wong",
+            "sellerName": "Ahmad Yusof",
+            "bookTitle": "Marketing Fundamentals",
+            "originalPrice": 51,
+            "offerAmount": 48,
+            "currentPrice": 51,
+            "status": "accepted",
+            "createdAt": 1764718000000,
+            "acceptedAt": 1764718800000,
+            "updatedAt": 1764718800000,
+            "fromOffer": true
+        },
+        "DEMO_OFFER_003": {
+            "offerId": "DEMO_OFFER_003",
+            "bookId": "DEMO_BOOK_019",
+            "buyerId": "buyer111",
+            "sellerId": "seller001",
+            "buyerName": "Arif Ibrahim",
+            "sellerName": "Siti Aminah",
+            "bookTitle": "Java Programming",
+            "originalPrice": 47,
+            "offerAmount": 45,
+            "status": "accepted",
+            "createdAt": 1764717000000,
+            "acceptedAt": 1764717600000,
+            "updatedAt": 1764717600000,
+            "fromOffer": true
+        },
+        "DEMO_OFFER_004": {
+            "offerId": "DEMO_OFFER_004",
+            "bookId": "DEMO_BOOK_025",
+            "buyerId": "buyer555",
+            "sellerId": "seller005",
+            "buyerName": "Hadi Sulaiman",
+            "sellerName": "Kamal Razak",
+            "bookTitle": "Software Engineering",
+            "originalPrice": 71,
+            "offerAmount": 68,
+            "currentPrice": 71,
+            "status": "accepted",
+            "createdAt": 1764806000000,
+            "acceptedAt": 1764806200000,
+            "updatedAt": 1764806200000,
+            "fromOffer": true
+        },
+        "DEMO_OFFER_005": {
+            "offerId": "DEMO_OFFER_005",
+            "bookId": "book005",
+            "buyerId": "buyer567",
+            "sellerId": "seller005",
+            "buyerName": "Zulaikha Ismail",
+            "sellerName": "Kamal Razak",
+            "bookTitle": "Thermodynamics",
+            "originalPrice": 55,
+            "offerAmount": 35,
+            "rejectionReason": "Offer price too low",
+            "status": "rejected",
+            "createdAt": 1732788000000,
+            "updatedAt": 1732791600000
+        },
+        "DEMO_OFFER_006": {
+            "offerId": "DEMO_OFFER_006",
+            "bookId": "book006",
+            "buyerId": "buyer678",
+            "sellerId": "seller006",
+            "buyerName": "Safwan Hakim",
+            "sellerName": "Rahman Ali",
+            "bookTitle": "Circuit Analysis",
+            "originalPrice": 65,
+            "offerAmount": 48,
+            "status": "pending",
+            "createdAt": 1733220000000
+        },
+        "DEMO_OFFER_007": {
+            "offerId": "DEMO_OFFER_007",
+            "bookId": "book007",
+            "buyerId": "buyer789",
+            "sellerId": "seller007",
+            "buyerName": "Fatimah Zahra",
+            "sellerName": "Ahmad Yusof",
+            "bookTitle": "Data Structures",
+            "originalPrice": 58,
+            "offerAmount": 42,
+            "status": "pending",
+            "createdAt": 1733306400000
+        },
+        "DEMO_OFFER_008": {
+            "offerId": "DEMO_OFFER_008",
+            "bookId": "book008",
+            "buyerId": "buyer890",
+            "sellerId": "seller008",
+            "buyerName": "Rizal Mokhtar",
+            "sellerName": "Siti Zaharah",
+            "bookTitle": "Microprocessor Systems",
+            "originalPrice": 68,
+            "offerAmount": 55,
+            "counterAmount": 60,
+            "status": "counter_offered",
+            "createdAt": 1733047200000,
+            "updatedAt": 1733050800000
+        },
+        "DEMO_OFFER_009": {
+            "offerId": "DEMO_OFFER_009",
+            "bookId": "book009",
+            "buyerId": "buyer901",
+            "sellerId": "seller009",
+            "buyerName": "Hanis Azmi",
+            "sellerName": "Nora Ismail",
+            "bookTitle": "Operating Systems",
+            "originalPrice": 45,
+            "offerAmount": 32,
+            "status": "pending",
+            "createdAt": 1732960800000
+        },
+        "DEMO_OFFER_010": {
+            "offerId": "DEMO_OFFER_010",
+            "bookId": "book010",
+            "buyerId": "buyer112",
+            "sellerId": "seller010",
+            "buyerName": "Khairul Anuar",
+            "sellerName": "Azman Ali",
+            "bookTitle": "Software Engineering",
+            "originalPrice": 62,
+            "offerAmount": 50,
+            "rejectionReason": "Already have another buyer",
+            "status": "rejected",
+            "createdAt": 1732874400000,
+            "updatedAt": 1732878000000
+        }
+    }
+}

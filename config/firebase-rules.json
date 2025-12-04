@@ -1,16 +1,21 @@
 {
     "rules": {
         "users": {
-            ".read": "auth != null && root.child('users/' + auth.uid + '/role').val() == 'admin'",
+            ".read": "auth != null",
+            ".indexOn": [
+                "role"
+            ],
             "$uid": {
-                ".read": "auth != null && (auth.uid == $uid || root.child('users/' + auth.uid + '/role').val() == 'admin')",
                 ".write": "auth != null && (auth.uid == $uid || root.child('users/' + auth.uid + '/role').val() == 'admin')"
             }
         },
         "books": {
             ".read": "auth != null",
             "$bookId": {
-                ".write": "auth != null && (!data.exists() || data.child('sellerId').val() == auth.uid || root.child('users/' + auth.uid + '/role').val() == 'admin' || (newData.child('status').val() == 'sold' && data.child('status').val() == 'available'))"
+                ".write": "auth != null && (!data.exists() || data.child('sellerId').val() == auth.uid || root.child('users/' + auth.uid + '/role').val() == 'admin' || (newData.child('status').val() == 'sold' && data.child('status').val() == 'available'))",
+                "viewCount": {
+                    ".write": "auth != null"
+                }
             }
         },
         "transactions": {
@@ -41,6 +46,9 @@
         },
         "notifications": {
             ".read": "auth != null",
+            ".indexOn": [
+                "recipientId"
+            ],
             "$notificationId": {
                 ".read": "auth != null && data.child('recipientId').val() == auth.uid",
                 ".write": "auth != null"
@@ -50,7 +58,7 @@
             ".read": "auth != null && root.child('users/' + auth.uid + '/role').val() == 'admin'",
             "$feedbackId": {
                 ".read": "auth != null",
-                ".write": "auth != null && (!data.exists() || data.child('buyerId').val() == auth.uid)"
+                ".write": "auth != null && (!data.exists() || data.child('buyerId').val() == auth.uid || root.child('users/' + auth.uid + '/role').val() == 'admin')"
             }
         }
     }
