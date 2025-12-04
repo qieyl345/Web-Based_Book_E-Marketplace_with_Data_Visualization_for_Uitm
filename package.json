@@ -1,0 +1,30 @@
+{
+    "name": "uitm-emplc",
+    "version": "1.0.0",
+    "description": "UiTM Book e-Marketplace Platform - A peer-to-peer marketplace for textbooks within UiTM Tapah Campus",
+    "main": "index.html",
+    "scripts": {
+        "dev": "npx http-server -p 8080",
+        "start": "npx http-server -p 8080",
+        "serve": "npx http-server -p 8080 -o"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/qieyl345/UITM-EMPLC_design-ver1"
+    },
+    "keywords": [
+        "marketplace",
+        "textbooks",
+        "uitm",
+        "e-commerce",
+        "firebase"
+    ],
+    "author": "UITM EMPLC Team",
+    "license": "ISC",
+    "devDependencies": {
+        "http-server": "^14.1.1"
+    },
+    "engines": {
+        "node": ">=14.0.0"
+    }
+}
