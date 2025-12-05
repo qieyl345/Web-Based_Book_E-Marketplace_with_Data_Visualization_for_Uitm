@@ -71,3 +71,82 @@
 .bank-option.selected h3 {
     color: white !important;
 }
+
+/* 7. Admin Page - Feedback Table Date Column Width */
+.admin-page .table-card:nth-child(3) table th:first-child,
+.admin-page .table-card:nth-child(3) table td:first-child {
+    min-width: 140px !important;
+    white-space: nowrap;
+}
+
+/* 8. Admin Page - Notification Dropdown Visibility */
+/* Using higher specificity to ensure these styles are applied */
+.admin-theme .notification-dropdown,
+body.admin-theme .notification-dropdown,
+.admin-page .notification-dropdown {
+    background: #FFFFFF !important;
+    background: rgba(255, 255, 255, 0.98) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 2px solid #3A0B61 !important;
+    border: 2px solid rgba(58, 11, 97, 0.4) !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Ensure dropdown header is visible */
+.admin-theme .notification-header,
+body.admin-theme .notification-header {
+    background: rgba(58, 11, 97, 0.08) !important;
+    border-bottom: 2px solid rgba(58, 11, 97, 0.2) !important;
+}
+
+/* Ensure empty state message is visible */
+.admin-theme .notification-empty,
+body.admin-theme .notification-empty {
+    color: #64748B !important;
+    padding: 3rem 1.5rem !important;
+}
+
+.admin-theme .notification-empty i,
+body.admin-theme .notification-empty i {
+    color: #3A0B61 !important;
+    opacity: 0.4 !important;
+}
+
+/* Ensure notification list background is visible */
+.admin-theme .notification-list,
+body.admin-theme .notification-list {
+    background: transparent !important;
+}
+
+/* Make all notification dropdown text black for better visibility */
+.admin-theme .notification-dropdown,
+.admin-theme .notification-dropdown * {
+    color: #000000 !important;
+}
+
+/* Notification header text */
+.admin-theme .notification-header h3 {
+    color: #000000 !important;
+}
+
+/* Notification message text */
+.admin-theme .notification-message {
+    color: #000000 !important;
+}
+
+/* Empty state text */
+.admin-theme .notification-empty,
+.admin-theme .notification-empty p {
+    color: #000000 !important;
+}
+
+/* Mark as read button text */
+.admin-theme .mark-read-btn {
+    color: #000000 !important;
+}
+
+/* Time text - slightly lighter but still visible */
+.admin-theme .notification-time {
+    color: #333333 !important;
+}

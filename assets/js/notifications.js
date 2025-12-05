@@ -78,25 +78,32 @@ function handleNotificationUpdate(snapshot) {
 
     console.log(`📊 [NOTIF] Found ${notifications.length} total notifications`);
 
-    // Sort by timestamp (newest first)
-    notifications.sort((a, b) => b.createdAt - a.createdAt);
+    // Filter notifications for admin users - only show dispute notifications
+    let filteredNotifications = notifications;
+    if (userData && userData.role === 'admin') {
+        filteredNotifications = notifications.filter(n => n.type === 'admin_dispute');
+        console.log(`📊 [NOTIF] Admin user - filtered to ${filteredNotifications.length} dispute notifications`);
+    }
 
-    // Count unread
-    const newUnreadCount = notifications.filter(n => !n.read).length;
+    // Sort by timestamp (newest first)
+    filteredNotifications.sort((a, b) => b.createdAt - a.createdAt);
+
+    // Count unread (from filtered notifications)
+    const newUnreadCount = filteredNotifications.filter(n => !n.read).length;
     console.log(`📊 [NOTIF] Unread: ${newUnreadCount}`);
 
     // Check if this is a NEW notification (sound/alert)
     if (newUnreadCount > unreadNotificationCount && unreadNotificationCount > 0) {
         console.log('🆕 [NOTIF] NEW notification detected!');
         playNotificationSound();
-        showBrowserNotification(notifications.find(n => !n.read));
+        showBrowserNotification(filteredNotifications.find(n => !n.read));
     }
 
     unreadNotificationCount = newUnreadCount;
 
     // Update UI
     updateNotificationBadge(newUnreadCount);
-    updateNotificationList(notifications);
+    updateNotificationList(filteredNotifications);
 }
 
 // ============================================================================
