@@ -253,7 +253,23 @@ async function unreceiveOrder(transactionId) {
             disputeCreatedAt: Date.now()
         });
 
-        showNotification("Order marked as unreceived. Please complete the feedback form.", "info");
+        // 2. IMMEDIATELY notify admin about the unreceive (don't wait for feedback modal)
+        if (typeof sendAdminNotification === 'function') {
+            await sendAdminNotification(
+                'admin_dispute',
+                `🚨 Book Unreceived: ${userData.fullName} reported issue with received book`,
+                {
+                    transactionId: transactionId,
+                    buyerId: currentUser.uid,
+                    buyerName: userData.fullName,
+                    reason: reason
+                },
+                'critical'  // Critical priority - book was received but has issues!
+            );
+            console.log('[UNRECEIVE] Admin notified about book unreceive');
+        }
+
+        showNotification("Order marked as unreceived. Admin has been notified. Please complete the feedback form.", "info");
 
         // Reload purchase history
         await loadPurchaseHistory();
@@ -689,6 +705,7 @@ async function checkForAutoDisputes() {
         const now = Date.now();
         const updates = {};
         let disputeCount = 0;
+        const disputedTransactions = []; // Track transactions that need admin notification
 
         snapshot.forEach(childSnapshot => {
             const transaction = childSnapshot.val();
@@ -700,16 +717,45 @@ async function checkForAutoDisputes() {
                     // Mark as disputed
                     updates[`transactions/${transactionId}/deliveryStatus`] = 'disputed';
                     updates[`transactions/${transactionId}/disputeCreatedAt`] = now;
+                    updates[`transactions/${transactionId}/disputeReason`] = 'Buyer did not confirm receipt within 7 days';
                     disputeCount++;
+
+                    // Store transaction info for admin notification
+                    disputedTransactions.push({
+                        transactionId: transactionId,
+                        buyerId: transaction.buyerId,
+                        buyerName: transaction.buyerName,
+                        amount: transaction.amount
+                    });
                 }
             }
         });
 
         // Apply all updates at once
         if (Object.keys(updates).length > 0) {
+            // Send admin notifications FIRST (before database update)
+            if (disputedTransactions.length > 0 && typeof sendAdminNotification === 'function') {
+                for (const dispute of disputedTransactions) {
+                    await sendAdminNotification(
+                        'admin_dispute',
+                        `🚨 Auto-Dispute: Order #${dispute.transactionId.substring(0, 8)} expired - buyer didn't confirm delivery`,
+                        {
+                            transactionId: dispute.transactionId,
+                            buyerId: dispute.buyerId,
+                            buyerName: dispute.buyerName,
+                            amount: dispute.amount,
+                            reason: 'Buyer did not confirm receipt within 7 days'
+                        },
+                        'high'
+                    );
+                }
+                console.log(`[AUTO-DISPUTE] Notified admin about ${disputedTransactions.length} expired order(s)`);
+            }
+
+            // Now update the database
             await database.ref().update(updates);
             if (disputeCount > 0) {
-                console.log(`Marked ${disputeCount} order(s) as disputed`);
+                console.log(`Marked ${disputeCount} order(s) as disputed and notified admins`);
             }
         }
     } catch (error) {
