@@ -473,81 +473,6 @@ body.admin-theme .notification-list {
 .stat-value {
     color: #0f172a !important;
     /* Almost black for better contrast */
-    font-size: 2rem !important;
-    font-weight: 800 !important;
-    background: none !important;
-    -webkit-text-fill-color: #0f172a !important;
-    margin-bottom: 0.25rem !important;
-    text-shadow: none !important;
-}
-
-.stat-label {
-    color: #334155 !important;
-    /* Darker grey */
-    font-size: 0.75rem !important;
-    font-weight: 700 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 1.5px !important;
-    background: none !important;
-    -webkit-text-fill-color: #334155 !important;
-    opacity: 1 !important;
-}
-
-background: none !important;
-/* Reset existing backgrounds */
-}
-
-/* 1. Listings Card - Purple Theme */
-.profile-stats-row>div:nth-child(1) {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.25) 0%, rgba(139, 92, 246, 0.15) 100%) !important;
-    border: 1px solid rgba(139, 92, 246, 0.4) !important;
-}
-
-.profile-stats-row>div:nth-child(1):hover {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.35) 0%, rgba(139, 92, 246, 0.25) 100%) !important;
-    border-color: rgba(139, 92, 246, 0.6) !important;
-}
-
-.profile-stats-row>div:nth-child(1) .stat-icon {
-    background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%) !important;
-    box-shadow: 0 8px 16px rgba(139, 92, 246, 0.3) !important;
-}
-
-/* 2. Sales Card - Pink/Rose Theme */
-.profile-stats-row>div:nth-child(2) {
-    background: linear-gradient(135deg, rgba(244, 114, 182, 0.25) 0%, rgba(244, 114, 182, 0.15) 100%) !important;
-    border: 1px solid rgba(244, 114, 182, 0.4) !important;
-}
-
-.profile-stats-row>div:nth-child(2):hover {
-    background: linear-gradient(135deg, rgba(244, 114, 182, 0.35) 0%, rgba(244, 114, 182, 0.25) 100%) !important;
-    border-color: rgba(244, 114, 182, 0.6) !important;
-}
-
-.profile-stats-row>div:nth-child(2) .stat-icon {
-    background: linear-gradient(135deg, #f9a8d4 0%, #f472b6 100%) !important;
-    box-shadow: 0 8px 16px rgba(244, 114, 182, 0.3) !important;
-}
-
-/* 3. Bought Card - Cyan/Blue Theme */
-.profile-stats-row>div:nth-child(3) {
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.25) 0%, rgba(34, 211, 238, 0.15) 100%) !important;
-    border: 1px solid rgba(34, 211, 238, 0.4) !important;
-}
-
-.profile-stats-row>div:nth-child(3):hover {
-    background: linear-gradient(135deg, rgba(34, 211, 238, 0.35) 0%, rgba(34, 211, 238, 0.25) 100%) !important;
-    border-color: rgba(34, 211, 238, 0.6) !important;
-}
-
-.profile-stats-row>div:nth-child(3) .stat-icon {
-    background: linear-gradient(135deg, #67e8f9 0%, #22d3ee 100%) !important;
-    box-shadow: 0 8px 16px rgba(34, 211, 238, 0.3) !important;
-}
-
-/* Typography Styling */
-.stat-value {
-    color: #0f172a !important;
     font-size: 2.5rem !important;
     /* Increased from 2rem */
     font-weight: 900 !important;
@@ -560,6 +485,7 @@ background: none !important;
 
 .stat-label {
     color: #334155 !important;
+    /* Darker grey */
     font-size: 0.85rem !important;
     /* Increased from 0.75rem */
     font-weight: 800 !important;

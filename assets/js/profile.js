@@ -37,14 +37,20 @@ async function loadProfile() {
         // Update edit form
         document.getElementById('editFullName').value = userData.fullName;
         document.getElementById('editPhoneNumber').value = userData.phoneNumber || '';
-
-        // Update stats
-        document.getElementById('totalListings').textContent = myListings.length;
-        document.getElementById('totalSales').textContent = userData.totalSales || 0;
-        document.getElementById('totalPurchases').textContent = userData.totalPurchases || 0;
     } catch (error) {
         console.error("Error loading profile:", error);
         showNotification("Error loading profile", "error");
+    }
+}
+
+// Update all stats
+function updateStats() {
+    try {
+        document.getElementById('totalListings').textContent = myListings.length;
+        document.getElementById('totalSales').textContent = salesHistory.length;
+        document.getElementById('totalPurchases').textContent = purchaseHistory.length;
+    } catch (error) {
+        console.error("Error updating stats:", error);
     }
 }
 
@@ -60,6 +66,7 @@ async function loadMyListings() {
         });
 
         displayMyListings();
+        updateStats(); // Update stats after loading
     } catch (error) {
         console.error("Error loading listings:", error);
     }
@@ -128,6 +135,7 @@ async function loadPurchaseHistory() {
         purchaseHistory.sort((a, b) => b.createdAt - a.createdAt);
 
         displayPurchaseHistory();
+        updateStats(); // Update stats after loading
     } catch (error) {
         console.error("Error loading purchase history:", error);
     }
@@ -284,6 +292,7 @@ async function loadSalesHistory() {
         salesHistory.sort((a, b) => b.createdAt - a.createdAt);
 
         displaySalesHistory();
+        updateStats(); // Update stats after loading
     } catch (error) {
         console.error("Error loading sales history:", error);
     }

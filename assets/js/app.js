@@ -393,9 +393,23 @@ const Books = {
         }
     },
 
-    // Increment view count
+    // Increment view count (only once per session per user)
     async incrementViewCount(bookId) {
         try {
+            // Check if this user has already viewed this book in this session
+            const viewedBooksKey = 'viewedBooks';
+            let viewedBooks = sessionStorage.getItem(viewedBooksKey);
+
+            // Parse existing viewed books or create empty array
+            viewedBooks = viewedBooks ? JSON.parse(viewedBooks) : [];
+
+            // If this book has already been viewed in this session, don't increment
+            if (viewedBooks.includes(bookId)) {
+                console.log('Book already viewed in this session, skipping increment');
+                return;
+            }
+
+            // Increment the view count in Firebase
             const bookRef = database.ref(`books/${bookId}`);
             const snapshot = await bookRef.once('value');
             const book = snapshot.val();
@@ -403,6 +417,11 @@ const Books = {
             if (book) {
                 const viewCount = (book.viewCount || 0) + 1;
                 await bookRef.update({ viewCount });
+
+                // Mark this book as viewed in this session
+                viewedBooks.push(bookId);
+                sessionStorage.setItem(viewedBooksKey, JSON.stringify(viewedBooks));
+                console.log('View count incremented successfully');
             }
         } catch (error) {
             console.error("Increment view count error:", error);
