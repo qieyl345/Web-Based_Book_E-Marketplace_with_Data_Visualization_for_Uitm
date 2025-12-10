@@ -22,7 +22,8 @@
     "author": "UITM EMPLC Team",
     "license": "ISC",
     "devDependencies": {
-        "http-server": "^14.1.1"
+        "http-server": "^14.1.1",
+        "wrangler": "^4.53.0"
     },
     "engines": {
         "node": ">=14.0.0"

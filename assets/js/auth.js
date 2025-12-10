@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-if (window.location.pathname.includes('pages/login.html')) {
+if (window.location.pathname.includes('/login')) {
     document.addEventListener('DOMContentLoaded', () => {
         const loginForm = document.getElementById('loginForm');
         const forgotPasswordLink = document.getElementById('forgotPassword');
@@ -234,7 +234,7 @@ if (window.location.pathname.includes('pages/login.html')) {
 }
 
 // Event listeners for signup page
-if (window.location.pathname.includes('pages/signup.html')) {
+if (window.location.pathname.includes('/signup')) {
     document.addEventListener('DOMContentLoaded', () => {
         const signupForm = document.getElementById('signupForm');
         const loadingOverlay = document.getElementById('loadingOverlay');
@@ -288,7 +288,7 @@ if (window.location.pathname.includes('pages/signup.html')) {
 }
 
 // Event listeners for verify email page
-if (window.location.pathname.includes('pages/verify-email.html')) {
+if (window.location.pathname.includes('/verify-email')) {
     document.addEventListener('DOMContentLoaded', () => {
         const resendBtn = document.getElementById('resendEmail');
         const emailContainer = document.getElementById('emailContainer');
