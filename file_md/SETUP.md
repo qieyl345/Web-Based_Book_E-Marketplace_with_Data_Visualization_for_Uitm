@@ -135,11 +135,11 @@ To make yourself an admin:
 
 ## 9. Commission Rate
 
-Current rate: 0.5% (can be changed in `assets/js/firebase-config.js`)
+Current rate: 10% (can be changed in `assets/js/firebase-config.js`)
 
 To modify:
 ```javascript
-const COMMISSION_RATE = 0.005; // 0.5%
+const COMMISSION_RATE = 0.10; // 10%
 ```
 
 ## 10. Troubleshooting

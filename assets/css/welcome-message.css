@@ -137,3 +137,131 @@
         animation: none !important;
     }
 }
+
+/* =============================================
+   Role-Specific Welcome Message Styling
+   ============================================= */
+
+/* === STUDENT THEME === */
+.welcome-message.welcome-student {
+    background: linear-gradient(135deg,
+            rgba(58, 11, 97, 0.08) 0%,
+            rgba(255, 215, 0, 0.12) 100%);
+}
+
+.welcome-message.welcome-student::before {
+    background: linear-gradient(135deg,
+            #3A0B61 0%,
+            #FFD700 50%,
+            #3A0B61 100%);
+    background-size: 200% 200%;
+}
+
+.welcome-message.welcome-student .welcome-name {
+    background: linear-gradient(135deg, #3A0B61 0%, #FFD700 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.welcome-message.welcome-student .welcome-icon {
+    color: #FFD700;
+    animation: studentIconBounce 2s ease-in-out infinite;
+}
+
+@keyframes studentIconBounce {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-2px) rotate(-5deg); }
+    75% { transform: translateY(-2px) rotate(5deg); }
+}
+
+/* === STAFF THEME === */
+.welcome-message.welcome-staff {
+    background: linear-gradient(135deg,
+            rgba(30, 58, 138, 0.08) 0%,
+            rgba(59, 130, 246, 0.12) 100%);
+}
+
+.welcome-message.welcome-staff::before {
+    background: linear-gradient(135deg,
+            #1E3A8A 0%,
+            #3B82F6 50%,
+            #1E3A8A 100%);
+    background-size: 200% 200%;
+}
+
+.welcome-message.welcome-staff .welcome-name {
+    background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.welcome-message.welcome-staff .welcome-icon {
+    color: #3B82F6;
+    animation: staffIconPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes staffIconPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.9; }
+}
+
+/* === ROLE BADGE STYLING === */
+.welcome-role-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-radius: 20px;
+    margin-left: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+/* Student Badge */
+.role-badge-student {
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    color: #3A0B61;
+    box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+}
+
+/* Staff Badge */
+.role-badge-staff {
+    background: linear-gradient(135deg, #3B82F6 0%, #1E3A8A 100%);
+    color: #FFFFFF;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+}
+
+/* Admin Badge (for reference, not used on non-admin pages) */
+.role-badge-admin {
+    background: linear-gradient(135deg, #7C3AED 0%, #4C1D95 100%);
+    color: #FFFFFF;
+    box-shadow: 0 2px 8px rgba(124, 58, 237, 0.4);
+}
+
+/* Hover effects for role badges */
+.welcome-message:hover .welcome-role-badge {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Staff role-specific hover effect */
+.welcome-message.welcome-staff:hover {
+    box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
+}
+
+.welcome-message.welcome-staff:hover .welcome-icon {
+    transform: scale(1.15);
+    animation: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .welcome-role-badge {
+        padding: 0.15rem 0.4rem;
+        font-size: 0.55rem;
+    }
+}

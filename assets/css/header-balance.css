@@ -1,24 +1,28 @@
 /* =============================================
    Header Balance & Alignment Enhancements
-   Description: Improved spacing and icon alignment for balanced header
+   Description: Balanced flexbox header layout
    ============================================= */
 
-/* Header Content - Flex Container */
+/* Header Content - Flexbox Space Between */
 .header-content {
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
-    gap: 2rem;
-    /* Space between logo and nav */
+    gap: 1.5rem;
+    padding: 0.5rem 0;
+    min-height: 60px;
 }
 
-/* Logo Title - Enforce Single Line */
+/* Logo - Left Side */
+.logo {
+    flex-shrink: 0;
+}
+
 .logo h1 {
     white-space: nowrap !important;
     display: flex !important;
     align-items: center !important;
-    font-size: 1.5rem !important;
-    /* Adjusted size to fit */
+    font-size: 1.35rem !important;
     margin: 0 !important;
 }
 
@@ -26,32 +30,29 @@
     margin-right: 0.5rem !important;
 }
 
-/* Main Navigation - Split Layout Strategy */
+/* Main Navigation - Flex container for all nav items */
 .main-nav {
     display: flex !important;
     align-items: center !important;
-    flex: 1 !important;
-    /* Take up remaining space */
     gap: 0.5rem;
 }
 
-/* Navigation Links - Consistent Icon Spacing */
+/* Navigation Links - Compact styling */
 .main-nav .nav-link {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.625rem 1rem;
+    gap: 0.4rem;
+    padding: 0.5rem 0.85rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     white-space: nowrap;
     border-radius: 8px;
     color: #4A5568;
-    /* Neutral color for links */
     font-weight: 600;
+    font-size: 0.875rem;
 }
 
 .main-nav .nav-link:hover {
     background: rgba(58, 11, 97, 0.05);
-    /* Subtle hover background */
     color: var(--uitm-purple, #3A0B61);
 }
 
@@ -61,10 +62,10 @@
 }
 
 .main-nav .nav-link i {
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
-/* Admin Link Icon - Shield Style */
+/* Admin Link Icon */
 .admin-only i.fa-user-shield {
     color: #DC2626;
 }
@@ -73,44 +74,45 @@
     color: #B91C1C;
 }
 
-/* Notification Wrapper - PUSH TO RIGHT */
-/* This is the key to the balanced layout: margin-left: auto pushes this and following items to the far right */
+/* Notification Wrapper - Visual separator from nav links */
 .notification-wrapper {
     display: flex;
     align-items: center;
-    margin-left: auto !important;
-    padding-left: 1.5rem;
+    margin-left: 0.75rem;
+    padding-left: 0.75rem;
     position: relative;
 }
 
-/* Vertical Divider */
+/* Subtle vertical divider before notification section */
 .notification-wrapper::before {
     content: '';
     position: absolute;
     left: 0;
-    height: 24px;
+    height: 20px;
     width: 1px;
     background-color: rgba(0, 0, 0, 0.1);
 }
 
-/* Welcome Message - Proper Spacing */
+/* Welcome Message - Balanced sizing */
 .welcome-message {
     margin: 0 0.5rem;
     white-space: nowrap;
+    padding: 0.5rem 0.9rem !important;
 }
 
-/* Logout Button - Icon Enhancement */
+/* Logout Button - Matching nav link style */
 #logoutBtn {
     display: inline-flex !important;
     align-items: center !important;
-    gap: 0.5rem !important;
-    padding: 0.625rem 1.25rem !important;
+    gap: 0.4rem !important;
+    padding: 0.5rem 0.9rem !important;
     white-space: nowrap;
-    margin-left: 0.5rem;
+    margin-left: 0.25rem;
+    font-size: 0.875rem;
 }
 
 #logoutBtn i {
-    font-size: 1rem;
+    font-size: 0.9rem;
 }
 
 /* Responsive Header Balance */
@@ -120,42 +122,40 @@
     }
 
     .logo h1 {
-        font-size: 1.25rem !important;
-        /* Smaller font on tablets */
+        font-size: 1.2rem !important;
     }
 
     .main-nav {
-        gap: 0.25rem;
-    }
-
-    .notification-wrapper {
-        padding-left: 0.75rem;
+        gap: 0.35rem;
     }
 
     .main-nav .nav-link {
-        padding: 0.5rem 0.75rem;
-        font-size: 0.9rem;
+        padding: 0.45rem 0.65rem;
+        font-size: 0.825rem;
+    }
+
+    .welcome-message {
+        padding: 0.45rem 0.7rem !important;
     }
 }
 
 @media (max-width: 768px) {
     .header-content {
         flex-direction: column;
-        gap: 1rem;
-        padding-bottom: 1rem;
+        gap: 0.75rem;
+        padding-bottom: 0.75rem;
     }
 
     .main-nav {
         width: 100%;
-        justify-content: space-between;
+        justify-content: center;
+        flex-wrap: wrap;
         gap: 0.25rem;
     }
 
-    /* On mobile, remove the "push right" behavior to center everything */
     .notification-wrapper {
-        margin-left: 0 !important;
+        margin-left: 0;
         padding-left: 0;
-        border: none;
     }
 
     .notification-wrapper::before {
@@ -163,19 +163,19 @@
     }
 
     .main-nav .nav-link {
-        padding: 0.5rem;
+        padding: 0.4rem 0.5rem;
+        font-size: 0.8rem;
     }
 
     /* Hide text labels on mobile, keep icons */
     .main-nav .nav-link span:not(.badge),
-    .welcome-greeting,
-    .welcome-name {
+    .welcome-greeting {
         display: none;
     }
 
     .welcome-message {
         margin: 0;
-        padding: 0.5rem;
+        padding: 0.4rem 0.6rem !important;
     }
 
     #logoutBtn span {
@@ -183,6 +183,6 @@
     }
 
     #logoutBtn {
-        padding: 0.5rem;
+        padding: 0.4rem 0.5rem;
     }
 }

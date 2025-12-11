@@ -792,14 +792,13 @@ function createTransactionSuccessChart() {
     new Chart(ctx.getContext('2d'), {
         type: 'doughnut',
         data: {
-            labels: ['Successful', 'Failed', 'Cancelled'],
+            labels: ['Successful', 'Failed'],
             datasets: [{
                 data: [
                     successData.successful,
-                    successData.failed,
-                    successData.cancelled
+                    successData.failed
                 ],
-                backgroundColor: ['#00A86B', '#EF4444', '#FFB81C'],
+                backgroundColor: ['#00A86B', '#EF4444'],
                 borderWidth: 0
             }]
         },
@@ -828,24 +827,22 @@ function createTransactionSuccessChart() {
 }
 
 function calculateTransactionSuccessRate() {
-    let successful = 0, failed = 0, cancelled = 0;
+    let successful = 0, failed = 0;
 
     allTransactions.forEach(txn => {
         const status = txn.status?.toLowerCase() || 'unknown';
         if (status === 'completed' || status === 'successful') {
             successful++;
-        } else if (status === 'failed') {
+        } else {
+            // Count failed, cancelled, and any other status as failed
             failed++;
-        } else if (status === 'cancelled') {
-            cancelled++;
         }
     });
 
     return {
         successful,
         failed,
-        cancelled,
-        total: successful + failed + cancelled
+        total: successful + failed
     };
 }
 

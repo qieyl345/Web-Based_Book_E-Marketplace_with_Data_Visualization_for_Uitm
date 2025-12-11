@@ -34,7 +34,7 @@ let authInitialized = false;
 let authCheckPromise = null;
 
 // System constants
-const COMMISSION_RATE = 0.025; // 2.5% commission fee on all transactions
+const COMMISSION_RATE = 0.10; // 10% commission fee on all transactions
 
 // Wait for Firebase auth to initialize
 function waitForAuth() {
@@ -116,15 +116,65 @@ function updateUIForUser() {
         profileLinks.forEach(link => link.style.display = 'block');
     }
 
-    // Display welcome message
+    // Display welcome message with role-specific styling
     const welcomeMsg = document.getElementById('welcomeMsg');
     if (welcomeMsg && userData.fullName) {
+        // Determine user role based on email domain or role field
+        let userRole = 'student'; // Default role
+        if (userData.role === 'staff' || (userData.email && userData.email.includes('@staff.uitm.edu.my'))) {
+            userRole = 'staff';
+        } else if (userData.role === 'admin' || isAdmin()) {
+            userRole = 'admin';
+        }
+
+        // Role-specific icon and label configuration
+        const roleConfig = {
+            student: {
+                icon: 'fa-graduation-cap',
+                label: 'Student',
+                className: 'welcome-student'
+            },
+            staff: {
+                icon: 'fa-user-tie',
+                label: 'Staff',
+                className: 'welcome-staff'
+            },
+            admin: {
+                icon: 'fa-user-shield',
+                label: 'Admin',
+                className: 'welcome-admin'
+            }
+        };
+
+        const config = roleConfig[userRole];
+
         // Check if new structure exists (with .welcome-name span)
         const welcomeNameSpan = welcomeMsg.querySelector('.welcome-name');
+        const welcomeIcon = welcomeMsg.querySelector('.welcome-icon');
+        let roleBadge = welcomeMsg.querySelector('.welcome-role-badge');
+
         if (welcomeNameSpan) {
             // New structure with separate spans
             welcomeNameSpan.textContent = userData.fullName;
             welcomeMsg.style.display = 'inline-flex';
+
+            // Update icon based on role
+            if (welcomeIcon) {
+                welcomeIcon.className = `fas ${config.icon} welcome-icon`;
+            }
+
+            // Add role badge if it doesn't exist
+            if (!roleBadge) {
+                roleBadge = document.createElement('span');
+                roleBadge.className = 'welcome-role-badge';
+                welcomeMsg.appendChild(roleBadge);
+            }
+            roleBadge.textContent = config.label;
+            roleBadge.className = `welcome-role-badge role-badge-${userRole}`;
+
+            // Add role-specific class to welcome message
+            welcomeMsg.classList.remove('welcome-student', 'welcome-staff', 'welcome-admin');
+            welcomeMsg.classList.add(config.className);
         } else {
             // Old structure fallback
             welcomeMsg.textContent = `Welcome, ${userData.fullName}`;

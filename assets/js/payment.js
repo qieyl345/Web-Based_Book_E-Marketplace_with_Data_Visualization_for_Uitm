@@ -181,6 +181,29 @@ async function processPayment() {
             showNotification("Payment failed. Please try again.", "error");
         }
     } else {
+        // Save failed transaction to Firebase for analytics tracking
+        try {
+            const failedTransactionId = 'TXN' + Date.now();
+            const failedTransaction = {
+                transactionId: failedTransactionId,
+                buyerId: currentUser.uid,
+                buyerName: userData?.fullName || 'Unknown',
+                buyerEmail: userData?.email || currentUser.email,
+                items: paymentItems,
+                amount: paymentTotal,
+                basePrice: paymentItems.reduce((sum, item) => sum + item.bookDetails.price, 0),
+                commissionFee: paymentTotal - paymentItems.reduce((sum, item) => sum + item.bookDetails.price, 0),
+                status: 'failed',
+                selectedBank,
+                createdAt: Date.now(),
+                failureReason: 'FPX payment processing failed'
+            };
+            await database.ref(`transactions/${failedTransactionId}`).set(failedTransaction);
+            console.log('[PAYMENT] Failed transaction recorded:', failedTransactionId);
+        } catch (error) {
+            console.error('[PAYMENT] Error recording failed transaction:', error);
+        }
+
         processingModal.style.display = 'none';
         showPaymentFailure();
     }

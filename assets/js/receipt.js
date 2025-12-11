@@ -167,7 +167,7 @@ function generatePDF() {
     doc.text('Subtotal:', 120, yPos);
     doc.text(formatCurrency(currentTransaction.basePrice), 150, yPos);
     yPos += 7;
-    doc.text('Admin Fee (0.5%):', 120, yPos);
+    doc.text('Admin Fee (10%):', 120, yPos);
     doc.text(formatCurrency(currentTransaction.commissionFee), 150, yPos);
     yPos += 7;
     doc.setFont('helvetica', 'bold');
