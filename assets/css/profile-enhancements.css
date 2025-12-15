@@ -385,3 +385,30 @@ body.profile-page main {
         transform: none !important;
     }
 }
+
+/* ===== Sales History Button Centering ===== */
+#salesHistory>div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#salesHistory>div>.btn,
+#salesHistory>div>button {
+    display: block !important;
+    margin: 1rem auto !important;
+    text-align: center !important;
+    width: fit-content !important;
+    min-width: 200px !important;
+    padding: 0.75rem 2rem !important;
+}
+
+/* Ensure the card content stays left-aligned but button is centered */
+#salesHistory .escrow-info-box,
+#salesHistory .transaction-timeline {
+    width: 100%;
+}
+
+#salesHistory .status-badge {
+    display: inline-block;
+}

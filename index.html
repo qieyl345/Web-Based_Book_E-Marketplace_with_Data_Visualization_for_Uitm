@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="assets/css/welcome-message.css">
     <link rel="stylesheet" href="assets/css/header-balance.css">
     <link rel="stylesheet" href="assets/css/ui-fixes.css">
+    <link rel="stylesheet" href="assets/css/info-tooltips.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
@@ -120,7 +121,9 @@
                         </div>
 
                         <div class="filter-group">
-                            <h4>Campus Location</h4>
+                            <h4>Campus Location <span class="info-tooltip"
+                                    data-tooltip="The campus area where you can meet up face-to-face with the seller to collect the book."><i
+                                        class="fas fa-info-circle"></i></span></h4>
                             <select id="campusFilter">
                                 <option value="">All Locations</option>
                                 <option value="Block A">Block A</option>
@@ -218,7 +221,9 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="campusLocation">Campus Location *</label>
+                    <label for="campusLocation">Campus Location * <span class="info-tooltip"
+                            data-tooltip="This is where you will meet the buyer face-to-face to hand over the book. Choose a convenient campus location."><i
+                                class="fas fa-info-circle" style="color: #6366f1; cursor: help;"></i></span></label>
                     <select id="campusLocation" required>
                         <option value="">Select location</option>
                         <option value="Block A">Block A</option>

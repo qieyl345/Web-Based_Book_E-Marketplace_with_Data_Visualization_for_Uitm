@@ -1,0 +1,368 @@
+/* Transaction Timeline Tracker Styles - Premium Design */
+
+.transaction-timeline {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin: 1.5rem 0;
+    padding: 1.75rem 3rem;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%);
+    border-radius: 16px;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.timeline-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 2;
+    flex: 1;
+    text-align: center;
+}
+
+.timeline-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 3px solid #e2e8f0;
+    background: white;
+    color: #94a3b8;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.timeline-step.completed .timeline-icon {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border-color: #10b981;
+    color: white;
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
+    transform: scale(1.05);
+}
+
+.timeline-step.active .timeline-icon {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    border-color: #f59e0b;
+    color: white;
+    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);
+    animation: pulseGlow 2s ease-in-out infinite;
+}
+
+.timeline-step.disputed .timeline-icon {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    border-color: #ef4444;
+    color: white;
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.35);
+    animation: shake 0.5s ease-in-out;
+}
+
+.timeline-step.refunded .timeline-icon {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    border-color: #8b5cf6;
+    color: white;
+    box-shadow: 0 4px 16px rgba(139, 92, 246, 0.35);
+}
+
+.timeline-label {
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #64748b;
+    text-align: center;
+    letter-spacing: 0.025em;
+}
+
+.timeline-step.completed .timeline-label {
+    color: #059669;
+    font-weight: 700;
+}
+
+.timeline-step.active .timeline-label {
+    color: #d97706;
+    font-weight: 700;
+}
+
+.timeline-step.disputed .timeline-label {
+    color: #dc2626;
+    font-weight: 700;
+}
+
+.timeline-step.refunded .timeline-label {
+    color: #7c3aed;
+    font-weight: 700;
+}
+
+/* Progress line between steps */
+.timeline-progress {
+    position: absolute;
+    top: 44px;
+    left: 15%;
+    right: 15%;
+    height: 4px;
+    background: linear-gradient(90deg, #e2e8f0 0%, #cbd5e1 100%);
+    z-index: 1;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.timeline-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #10b981 0%, #34d399 50%, #059669 100%);
+    border-radius: 4px;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+}
+
+/* Pulse animation with glow for active step */
+@keyframes pulseGlow {
+
+    0%,
+    100% {
+        transform: scale(1);
+        box-shadow: 0 4px 20px rgba(245, 158, 11, 0.4);
+    }
+
+    50% {
+        transform: scale(1.08);
+        box-shadow: 0 6px 30px rgba(245, 158, 11, 0.6);
+    }
+}
+
+/* Shake animation for disputed */
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-3px);
+    }
+
+    75% {
+        transform: translateX(3px);
+    }
+}
+
+/* Timestamp display */
+.timeline-timestamp {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    margin-top: 0.35rem;
+    font-weight: 500;
+}
+
+.timeline-step.completed .timeline-timestamp {
+    color: #10b981;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .transaction-timeline {
+        padding: 1.25rem 1rem;
+        margin: 1rem 0;
+    }
+
+    .timeline-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+
+    .timeline-label {
+        font-size: 0.7rem;
+    }
+
+    .timeline-progress {
+        top: 36px;
+        left: 10%;
+        right: 10%;
+    }
+}
+
+/* ================================== */
+/* Escrow Info Box - Premium Design  */
+/* ================================== */
+
+.escrow-info-box {
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    border: 1px solid #93c5fd;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.escrow-info-box:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.escrow-info-box.warning {
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+    border-color: #fbbf24;
+    border-left: 4px solid #f59e0b;
+}
+
+.escrow-info-box.danger {
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+    border-color: #f87171;
+    border-left: 4px solid #ef4444;
+}
+
+.escrow-info-box.success {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border-color: #4ade80;
+    border-left: 4px solid #22c55e;
+}
+
+.escrow-info-icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.escrow-info-text {
+    font-size: 0.9rem;
+    color: #1e293b;
+    line-height: 1.4;
+    text-align: center;
+}
+
+.escrow-info-text strong {
+    font-weight: 700;
+    display: inline;
+    margin-right: 0.25rem;
+}
+
+/* ================================== */
+/* Purchase Item Card Enhancement    */
+/* ================================== */
+
+.purchase-item {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(226, 232, 240, 0.6);
+    transition: all 0.3s ease;
+}
+
+.purchase-item:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+/* Action buttons container */
+.purchase-action-buttons {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    justify-content: center;
+    width: 100%;
+    padding-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.purchase-action-buttons .btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Status badges enhancement */
+.status-badge.status-payment_held {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.status-badge.status-completed {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.status-badge.status-dispute_open {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.status-badge.status-refunded {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Action buttons enhancement */
+.purchase-item .btn-success,
+.purchase-action-buttons .btn-success {
+    background: linear-gradient(135deg, #10b981, #059669) !important;
+    border: none !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    transition: all 0.3s ease;
+}
+
+.purchase-item .btn-success:hover,
+.purchase-action-buttons .btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+}
+
+.purchase-item .btn-danger,
+.purchase-action-buttons .btn-danger {
+    background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+    border: none !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    transition: all 0.3s ease;
+}
+
+.purchase-item .btn-danger:hover,
+.purchase-action-buttons .btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+}

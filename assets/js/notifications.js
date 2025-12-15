@@ -162,8 +162,21 @@ function updateNotificationList(notifications) {
         `;
     }).join('');
 
-    listElement.innerHTML = html;
-    console.log(`📋 [NOTIF] Displayed ${notifications.length} notifications`);
+    // Determine the path to notifications page
+    const isInPagesDir = window.location.pathname.includes('/pages/');
+    const notifPagePath = isInPagesDir ? 'notifications.html' : 'pages/notifications.html';
+
+    // Add View All link at the bottom
+    const viewAllLink = `
+        <div class="notification-view-all" style="text-align: center; padding: 0.75rem; border-top: 1px solid #e2e8f0;">
+            <a href="${notifPagePath}" style="color: #3b82f6; font-size: 0.875rem; font-weight: 600; text-decoration: none;">
+                <i class="fas fa-list"></i> View All Notifications
+            </a>
+        </div>
+    `;
+
+    listElement.innerHTML = html + viewAllLink;
+    console.log(`📋 [NOTIF] Displayed ${notifications.length} notifications with View All link`);
 }
 
 // ============================================================================

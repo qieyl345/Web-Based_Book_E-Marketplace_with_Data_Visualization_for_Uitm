@@ -229,7 +229,7 @@ async function completeTransaction() {
         amount: paymentTotal,
         basePrice: paymentItems.reduce((sum, item) => sum + item.bookDetails.price, 0),
         commissionFee: paymentTotal - paymentItems.reduce((sum, item) => sum + item.bookDetails.price, 0),
-        status: 'payment_held',  // ESCROW: Money held until buyer confirms
+        status: 'completed',
         fpxTransactionId,
         selectedBank,
         createdAt: Date.now(),
@@ -240,11 +240,7 @@ async function completeTransaction() {
         expectedDeliveryDate: Date.now() + (7 * 24 * 60 * 60 * 1000), // 7 days from now
         actualDeliveryDate: null,
         deliveryConfirmedBy: null,
-        disputeCreatedAt: null,
-        // ESCROW fields
-        escrowHeldAt: Date.now(),
-        autoReleaseAt: Date.now() + (7 * 24 * 60 * 60 * 1000),
-        sellerPaidOut: false
+        disputeCreatedAt: null
     };
 
     // Save transaction
@@ -299,22 +295,6 @@ async function completeTransaction() {
 
     // Clear cart
     await Cart.clear();
-
-    // ESCROW: Add to seller's pending escrow (not withdrawable yet)
-    for (const item of paymentItems) {
-        try {
-            const sellerWalletRef = database.ref(`users/${item.bookDetails.sellerId}/wallet`);
-            const walletSnapshot = await sellerWalletRef.once('value');
-            const wallet = walletSnapshot.val() || {};
-
-            await sellerWalletRef.update({
-                pendingEscrow: (wallet.pendingEscrow || 0) + item.bookDetails.price
-            });
-            console.log(`[ESCROW] Added RM${item.bookDetails.price} to seller's pendingEscrow`);
-        } catch (error) {
-            console.warn(`[ESCROW] Failed to update seller wallet:`, error);
-        }
-    }
 
     return transactionId;
 }
