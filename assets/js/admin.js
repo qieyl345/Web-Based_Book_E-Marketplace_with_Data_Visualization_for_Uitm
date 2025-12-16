@@ -2269,6 +2269,17 @@ async function loadReviewsAndDisputes() {
         const reviews = allFeedback.filter(f => f.rating >= 4 && f.feedbackType !== 'dispute');
         const disputes = allFeedback.filter(f => f.rating < 4 || f.feedbackType === 'dispute');
 
+        // Helper to truncate and make expandable comment
+        const formatComment = (comment, maxLength = 50) => {
+            if (!comment) return '-';
+            const escaped = comment.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+            if (comment.length <= maxLength) {
+                return comment;
+            }
+            const truncated = comment.substring(0, maxLength) + '...';
+            return `<span class="comment-preview" title="${escaped}" style="cursor: pointer;" onclick="showFullComment('${escaped}')">${truncated} <i class="fas fa-expand-alt" style="color: #3b82f6; font-size: 0.7rem;"></i></span>`;
+        };
+
         // Render reviews
         const reviewsTable = document.getElementById('reviewsTable');
         const reviewsCount = document.getElementById('reviewsCount');
@@ -2284,7 +2295,7 @@ async function loadReviewsAndDisputes() {
                         <td>${formatDate(f.createdAt)}</td>
                         <td>${f.buyerName || 'Unknown'}</td>
                         <td>${'⭐'.repeat(f.rating || 0)}</td>
-                        <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${f.comment || '-'}</td>
+                        <td style="max-width: 250px;">${formatComment(f.comment, 60)}</td>
                     </tr>
                 `).join('');
             }
@@ -2310,7 +2321,7 @@ async function loadReviewsAndDisputes() {
                             <td>${formatDate(f.createdAt)}</td>
                             <td>${f.buyerName || 'Unknown'}</td>
                             <td>${'⭐'.repeat(f.rating || 0)}</td>
-                            <td style="max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${f.comment || '-'}</td>
+                            <td style="max-width: 250px;">${formatComment(f.comment, 60)}</td>
                             <td>${statusBadge}</td>
                             <td>
                                 ${!f.resolved ? `<button class="btn btn-sm btn-success" onclick="resolveFeedback('${f.id}')">Resolve</button>` : '-'}
@@ -2324,6 +2335,58 @@ async function loadReviewsAndDisputes() {
         console.log('[ADMIN] Loaded reviews:', reviews.length, 'disputes:', disputes.length);
     } catch (error) {
         console.error('[ADMIN] Error loading reviews/disputes:', error);
+    }
+}
+
+// Show full comment in alert/modal
+function showFullComment(comment) {
+    // Create a nice modal for viewing full comment
+    const modalHTML = `
+        <div id="commentModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; display: flex; align-items: center; justify-content: center;">
+            <div style="background: white; border-radius: 12px; padding: 1.5rem; max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3 style="margin: 0; color: #1e293b;"><i class="fas fa-comment" style="color: #3b82f6;"></i> Full Comment</h3>
+                    <button onclick="document.getElementById('commentModal').remove()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #94a3b8;">&times;</button>
+                </div>
+                <div style="background: #f8fafc; border-radius: 8px; padding: 1rem; color: #334155; line-height: 1.6; white-space: pre-wrap; word-wrap: break-word;">
+                    ${comment.replace(/&quot;/g, '"')}
+                </div>
+                <button onclick="document.getElementById('commentModal').remove()" class="btn btn-primary" style="margin-top: 1rem; width: 100%;">Close</button>
+            </div>
+        </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+}
+
+// Resolve feedback/dispute - mark as resolved
+async function resolveFeedback(feedbackId) {
+    if (!confirm('Mark this feedback/dispute as resolved?')) {
+        return;
+    }
+
+    try {
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        if (loadingOverlay) loadingOverlay.style.display = 'flex';
+
+        // Update feedback status
+        await database.ref(`feedback/${feedbackId}`).update({
+            resolved: true,
+            resolvedAt: Date.now(),
+            resolvedBy: currentUser.uid,
+            status: 'resolved'
+        });
+
+        showNotification('Feedback marked as resolved!', 'success');
+
+        // Reload the disputes/reviews section
+        await loadReviewsAndDisputes();
+
+    } catch (error) {
+        console.error('[ADMIN] Error resolving feedback:', error);
+        showNotification('Error resolving feedback: ' + error.message, 'error');
+    } finally {
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        if (loadingOverlay) loadingOverlay.style.display = 'none';
     }
 }
 
