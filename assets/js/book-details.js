@@ -265,8 +265,7 @@ function setupActionButtons() {
 
     if (editBookBtn) {
         editBookBtn.addEventListener('click', () => {
-            // TODO: Implement edit book modal
-            showNotification("Edit book feature coming soon!", "info");
+            openEditModal();
         });
     }
 
@@ -274,6 +273,91 @@ function setupActionButtons() {
         deleteBookBtn.addEventListener('click', showDeleteConfirmation);
     }
 }
+
+// Edit Book Modal Functions
+function openEditModal() {
+    const modal = document.getElementById('editBookModal');
+    if (!modal || !currentBook) return;
+
+    // Populate form with current book data
+    document.getElementById('editBookTitle').value = currentBook.title || '';
+    document.getElementById('editBookAuthor').value = currentBook.author || '';
+    document.getElementById('editBookISBN').value = currentBook.isbn || '';
+    document.getElementById('editSubjectCode').value = currentBook.subjectCode || '';
+    document.getElementById('editBookCondition').value = currentBook.condition || 'used';
+    document.getElementById('editBookPrice').value = currentBook.price || '';
+    document.getElementById('editCampusLocation').value = currentBook.campusLocation || 'Block A';
+    document.getElementById('editBookDescription').value = currentBook.description || '';
+
+    modal.style.display = 'flex';
+    setupEditFormHandler();
+}
+
+function closeEditModal() {
+    const modal = document.getElementById('editBookModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+function setupEditFormHandler() {
+    const form = document.getElementById('editBookForm');
+    if (!form) return;
+
+    // Remove existing listener to prevent duplicates
+    const newForm = form.cloneNode(true);
+    form.parentNode.replaceChild(newForm, form);
+
+    newForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        loadingOverlay.style.display = 'flex';
+
+        try {
+            const updatedData = {
+                title: document.getElementById('editBookTitle').value.trim(),
+                author: document.getElementById('editBookAuthor').value.trim(),
+                isbn: document.getElementById('editBookISBN').value.trim(),
+                subjectCode: document.getElementById('editSubjectCode').value.trim().toUpperCase(),
+                condition: document.getElementById('editBookCondition').value,
+                price: parseFloat(document.getElementById('editBookPrice').value),
+                campusLocation: document.getElementById('editCampusLocation').value,
+                description: document.getElementById('editBookDescription').value.trim(),
+                updatedAt: Date.now()
+            };
+
+            // Validate required fields
+            if (!updatedData.title || !updatedData.author || !updatedData.subjectCode || !updatedData.price) {
+                throw new Error('Please fill in all required fields');
+            }
+
+            if (updatedData.price <= 0) {
+                throw new Error('Price must be greater than 0');
+            }
+
+            // Update in Firebase
+            await database.ref(`books/${currentBook.id}`).update(updatedData);
+
+            // Update local book object
+            Object.assign(currentBook, updatedData);
+
+            // Refresh display
+            displayBookDetails();
+            closeEditModal();
+
+            showNotification('Book updated successfully!', 'success');
+        } catch (error) {
+            console.error('Error updating book:', error);
+            showNotification(error.message || 'Failed to update book', 'error');
+        } finally {
+            loadingOverlay.style.display = 'none';
+        }
+    });
+}
+
+// Make functions globally accessible
+window.closeEditModal = closeEditModal;
 
 function showDeleteConfirmation() {
     const deleteModal = document.getElementById('deleteModal');

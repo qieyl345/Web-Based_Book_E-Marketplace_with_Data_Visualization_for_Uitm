@@ -1,0 +1,61 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "script"
+    },
+    "globals": {
+        "firebase": "readonly",
+        "database": "readonly",
+        "auth": "readonly",
+        "currentUser": "readonly",
+        "userData": "readonly",
+        "showNotification": "readonly",
+        "formatCurrency": "readonly",
+        "formatDate": "readonly",
+        "isAdmin": "readonly",
+        "waitForAuth": "readonly",
+        "requireAuth": "readonly",
+        "getUrlParameter": "readonly",
+        "Books": "readonly",
+        "Cart": "readonly",
+        "COMMISSION_RATE": "readonly",
+        "TRANSACTION_STATUS": "readonly",
+        "Chart": "readonly"
+    },
+    "rules": {
+        "no-unused-vars": "warn",
+        "no-undef": "error",
+        "no-console": "off",
+        "semi": [
+            "warn",
+            "always"
+        ],
+        "quotes": [
+            "warn",
+            "single",
+            {
+                "allowTemplateLiterals": true
+            }
+        ],
+        "indent": [
+            "warn",
+            4
+        ],
+        "no-trailing-spaces": "warn",
+        "eqeqeq": [
+            "warn",
+            "always"
+        ],
+        "curly": [
+            "warn",
+            "all"
+        ],
+        "no-var": "warn",
+        "prefer-const": "warn"
+    }
+}

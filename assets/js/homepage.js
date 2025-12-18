@@ -28,7 +28,34 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function loadBooks() {
     try {
         const booksGrid = document.getElementById('booksGrid');
-        booksGrid.innerHTML = '<div class="loading-placeholder">Loading books...</div>';
+
+        // Show skeleton cards while loading for polished UX
+        booksGrid.innerHTML = `
+            <div class="skeleton-book-card fade-in">
+                <div class="skeleton skeleton-image"></div>
+                <div class="skeleton-content">
+                    <div class="skeleton skeleton-title"></div>
+                    <div class="skeleton skeleton-text"></div>
+                    <div class="skeleton skeleton-text short"></div>
+                </div>
+            </div>
+            <div class="skeleton-book-card fade-in">
+                <div class="skeleton skeleton-image"></div>
+                <div class="skeleton-content">
+                    <div class="skeleton skeleton-title"></div>
+                    <div class="skeleton skeleton-text"></div>
+                    <div class="skeleton skeleton-text short"></div>
+                </div>
+            </div>
+            <div class="skeleton-book-card fade-in">
+                <div class="skeleton skeleton-image"></div>
+                <div class="skeleton-content">
+                    <div class="skeleton skeleton-title"></div>
+                    <div class="skeleton skeleton-text"></div>
+                    <div class="skeleton skeleton-text short"></div>
+                </div>
+            </div>
+        `;
 
         allBooks = await Books.getBooks();
         filteredBooks = [...allBooks];
@@ -36,7 +63,11 @@ async function loadBooks() {
         displayBooks();
     } catch (error) {
         console.error("Error loading books:", error);
-        showNotification("Error loading books", "error");
+        if (typeof handleError === 'function') {
+            handleError(error, "Error loading books. Please refresh the page.");
+        } else {
+            showNotification("Error loading books", "error");
+        }
     }
 }
 

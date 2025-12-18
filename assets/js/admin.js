@@ -783,10 +783,77 @@ function setupExportButton() {
     const exportBtn = document.getElementById('exportTransactions');
     if (exportBtn) {
         exportBtn.addEventListener('click', () => {
-            // TODO: Implement CSV export
-            showNotification("Export feature coming soon!", "info");
+            exportTransactionsToCSV();
         });
     }
+}
+
+// CSV Export Implementation
+function exportTransactionsToCSV() {
+    if (!allTransactions || allTransactions.length === 0) {
+        showNotification("No transactions to export", "info");
+        return;
+    }
+
+    // Define CSV headers
+    const headers = [
+        'Transaction ID',
+        'Date',
+        'Buyer Email',
+        'Seller Email',
+        'Book Title',
+        'Book Price (RM)',
+        'Commission (RM)',
+        'Total Amount (RM)',
+        'Status',
+        'Payment Method'
+    ];
+
+    // Build CSV rows
+    const rows = allTransactions.map(txn => {
+        const bookTitle = txn.items && txn.items[0] && txn.items[0].bookDetails
+            ? txn.items[0].bookDetails.title
+            : 'N/A';
+        const sellerEmail = txn.items && txn.items[0] && txn.items[0].bookDetails
+            ? (txn.items[0].bookDetails.sellerEmail || 'N/A')
+            : 'N/A';
+        const bookPrice = txn.basePrice || (txn.items && txn.items[0] ? txn.items[0].bookDetails.price : 0);
+
+        return [
+            txn.id || 'N/A',
+            txn.createdAt ? new Date(txn.createdAt).toLocaleString('en-MY') : 'N/A',
+            txn.buyerEmail || 'N/A',
+            sellerEmail,
+            `"${bookTitle.replace(/"/g, '""')}"`, // Escape quotes in title
+            bookPrice.toFixed(2),
+            (txn.commissionFee || 0).toFixed(2),
+            (txn.amount || 0).toFixed(2),
+            txn.status || 'N/A',
+            txn.paymentMethod || 'FPX'
+        ];
+    });
+
+    // Combine headers and rows
+    const csvContent = [
+        headers.join(','),
+        ...rows.map(row => row.join(','))
+    ].join('\n');
+
+    // Create and trigger download
+    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+
+    link.setAttribute('href', url);
+    link.setAttribute('download', `transactions_export_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.style.visibility = 'hidden';
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+    showNotification(`Exported ${allTransactions.length} transactions to CSV`, "success");
 }
 
 function setupUserSearch() {

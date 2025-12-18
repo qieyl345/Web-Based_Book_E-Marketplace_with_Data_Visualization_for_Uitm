@@ -6,7 +6,8 @@
     "scripts": {
         "dev": "npx http-server -p 8080",
         "start": "npx http-server -p 8080",
-        "serve": "npx http-server -p 8080 -o"
+        "serve": "npx http-server -p 8080 -o",
+        "lint": "npx eslint assets/js/*.js --fix"
     },
     "repository": {
         "type": "git",
