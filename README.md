@@ -39,24 +39,181 @@
 
 ## Features
 
-### For Buyers
-- Browse and search textbooks by title, author, or subject code
-- Filter books by condition, price range, and campus location
-- Add books to cart or make price offers
-- Secure FPX payment simulation
-- 7-day warranty protection with dispute filing
+### 🔐 Authentication & User Management
 
-### For Sellers
-- List books with multiple images (via ImageBB)
-- Receive and respond to price negotiations
-- Track sales and wallet balance
-- Automatic payout after warranty period
+| Feature | Description |
+|---------|-------------|
+| **UiTM Email Restriction** | Only `@student.uitm.edu.my` and `@staff.uitm.edu.my` domains allowed |
+| **Email Verification** | Users must verify email before accessing the platform |
+| **Role-Based Access** | Student, Staff, and Admin roles with different permissions |
+| **Remember Me** | Optional session persistence for convenience |
+| **Password Reset** | Email-based password recovery |
+| **Profile Management** | Edit name, phone number, upload avatar |
+| **Auto-Admin Creation** | First admin auto-created with special credentials |
 
-### For Administrators
-- Dashboard with real-time analytics
-- User management and activity monitoring
-- Dispute resolution (refund buyer or pay seller)
-- Transaction CSV export
+### 📚 Book Browsing & Search
+
+| Feature | Description |
+|---------|-------------|
+| **Book Grid Display** | Visual cards with images, price, condition |
+| **Real-time Search** | Search by title, author, or subject code |
+| **Advanced Filters** | Filter by condition (New/Used), price range, campus location |
+| **Sorting Options** | Sort by price (low/high), popularity, date added |
+| **Book Details View** | Full info with image gallery, seller info |
+| **View Count Tracking** | Track how many times a book is viewed |
+| **Image Zoom** | Zoom into book images for detailed inspection |
+| **Skeleton Loaders** | Smooth loading animations while fetching data |
+
+### 🛒 Shopping Cart
+
+| Feature | Description |
+|---------|-------------|
+| **Add to Cart** | Add multiple books from different sellers |
+| **Cart Persistence** | Cart saved to database, accessible across devices |
+| **Remove Items** | Remove individual items from cart |
+| **Price Summary** | Subtotal, commission fee (10%), and total display |
+| **Availability Check** | Prevents purchasing already-sold books |
+
+### 💬 Negotiation System
+
+| Feature | Description |
+|---------|-------------|
+| **Make Offer** | Buyers can propose their own price |
+| **Real-time Chat** | Live messaging between buyer and seller |
+| **Counter Offers** | Back-and-forth price negotiation |
+| **Accept/Reject** | Clear actions for offer management |
+| **10x Price Cap** | Offers cannot exceed 10x original price |
+| **System Messages** | Automated messages for actions taken |
+| **Notifications** | Instant alerts for new offers and responses |
+| **Proceed to Payment** | Direct checkout after offer acceptance |
+
+### 💳 Payment System
+
+| Feature | Description |
+|---------|-------------|
+| **FPX Simulation** | Malaysian bank payment simulation |
+| **Bank Selection** | Choose from multiple Malaysian banks |
+| **Meeting Scheduler** | Set date/time for book handover |
+| **Price Breakdown** | Clear display of base price + 10% commission |
+| **Race Condition Prevention** | Validates book availability before payment |
+| **Payment Success/Failure** | Clear feedback with receipt generation |
+
+### 🛡️ Escrow & Warranty System
+
+| Feature | Description |
+|---------|-------------|
+| **Escrow Hold** | Payment held for 7 days after purchase |
+| **7-Day Warranty** | Buyer protection period for quality issues |
+| **Confirm Receipt** | Buyer confirms satisfactory delivery |
+| **Claim Warranty** | Report issues within warranty period |
+| **Report Issue Modal** | Detailed issue reporting (wrong item, damaged, not received) |
+| **Return Process** | Buyer sends item back, seller confirms receipt |
+| **Auto-Payout** | Automatic release to seller after 7 days if no issues |
+| **Funds Freezing** | Disputed funds frozen pending admin review |
+
+### 👤 User Profile
+
+| Feature | Description |
+|---------|-------------|
+| **Profile Header** | Avatar, name, email, role badge, join date |
+| **Statistics Display** | Total listings, sales, purchases count |
+| **My Listings Tab** | View all books currently listed |
+| **Purchase History Tab** | View all purchases with timeline tracking |
+| **Sales History Tab** | View all sales with payout status |
+| **Negotiations Tab** | Manage active price negotiations |
+| **Wallet Tab** | View balance, pending, frozen, total earned |
+| **Edit Book Modal** | Edit existing book listings |
+| **Delete Book** | Remove book listings |
+| **Avatar Upload** | Custom profile picture via ImageBB |
+
+### 💰 Wallet System
+
+| Feature | Description |
+|---------|-------------|
+| **Available Balance** | Ready-to-withdraw earnings |
+| **Pending Payout** | Funds in warranty period |
+| **Frozen (Disputes)** | Funds under admin review |
+| **Total Earned** | Lifetime earnings tracker |
+| **Payout History** | Full history of received payouts |
+| **Automatic Payouts** | System processes payouts after warranty |
+
+### 📊 Transaction Timeline
+
+| Feature | Description |
+|---------|-------------|
+| **Visual Progress** | Step-by-step transaction visualization |
+| **Buyer Timeline** | Paid → Escrow → Received → Warranty → Payout |
+| **Seller Timeline** | Listed → Sold → Delivered → Warranty → Paid |
+| **Timestamps** | Date/time for each milestone |
+| **Status Indicators** | Color-coded progress (complete/active/pending) |
+| **Tooltips** | Hover info explaining each step |
+
+### 🔔 Notification System
+
+| Feature | Description |
+|---------|-------------|
+| **Real-time Notifications** | Instant updates via Firebase |
+| **Bell Icon Badge** | Unread count display |
+| **Dropdown Preview** | Quick view of recent notifications |
+| **Notification History Page** | Full notification archive |
+| **Type Icons** | Different icons for offers, purchases, disputes |
+| **Mark as Read** | Individual and bulk read marking |
+| **Click Navigation** | Direct link to relevant pages |
+| **Delete Notifications** | Remove unwanted notifications |
+
+### ⭐ Feedback System
+
+| Feature | Description |
+|---------|-------------|
+| **Star Ratings** | 1-5 star rating system |
+| **Feedback Types** | General feedback or dispute report |
+| **Comment Box** | Detailed written feedback |
+| **View Submitted Feedback** | Review your own feedback |
+| **Dispute Escalation** | Flag issues for admin review |
+
+### 🛠️ Admin Dashboard
+
+| Feature | Description |
+|---------|-------------|
+| **Dashboard Overview** | Total users, transactions, revenue at a glance |
+| **Sales Trend Chart** | Line chart of transaction volume over time |
+| **Revenue Chart** | Bar chart of commission earnings |
+| **Top Books Chart** | Most sold books visualization |
+| **Subject Distribution** | Pie chart of book categories |
+| **Transaction Success Rate** | Doughnut chart of success/failure |
+| **Feedback Distribution** | Bar chart of rating distribution |
+| **Dispute Metrics** | Opened vs resolved with resolution rate |
+| **Offer Funnel** | Conversion tracking from offers to purchases |
+| **Chart Filters** | Filter by time period (7 days, 30 days, all time) |
+| **Recent Transactions** | Quick view of latest transactions |
+| **User Management** | Search and view user details |
+| **Feedback Review** | View all user feedback and disputes |
+| **Dispute Resolution** | Refund buyer OR pay seller actions |
+| **CSV Export** | Download transactions as spreadsheet |
+
+### 🎨 UI/UX Features
+
+| Feature | Description |
+|---------|-------------|
+| **Glassmorphism Design** | Modern frosted glass effects |
+| **Role-Based Theming** | Purple accent for students, gold for staff |
+| **Smooth Animations** | CSS transitions and micro-animations |
+| **Skeleton Loaders** | Shimmer loading placeholders |
+| **Toast Notifications** | Non-intrusive success/error messages |
+| **Responsive Design** | Mobile-friendly layouts |
+| **Loading Overlays** | Full-screen spinners for long operations |
+| **Modal Dialogs** | Clean popup interfaces |
+| **Welcome Messages** | Personalized greeting with role icon |
+
+### 🔧 Developer Features
+
+| Feature | Description |
+|---------|-------------|
+| **ESLint Configuration** | Code quality enforcement |
+| **Utility Helpers** | Sanitization, validation, debounce functions |
+| **Centralized Constants** | COMMISSION_RATE, WARRANTY_PERIOD, etc. |
+| **Error Handling** | Consistent error messaging |
+| **PDF Receipt Generation** | jsPDF integration for receipts |
 
 ---
 

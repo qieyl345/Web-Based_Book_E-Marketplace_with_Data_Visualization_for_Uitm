@@ -1,151 +1,742 @@
-# UiTM e-Marketplace - Web-Based Book Marketplace
+# 📚 UiTM Book e-Marketplace - Complete Technical Documentation
 
-A comprehensive web-based book e-marketplace for Universiti Teknologi Malaysia, Tapah campus that enables students and staff to buy/sell new/used books with commission-based administration, real-time negotiation system, data visualization, FPX payment simulation, and feedback system.
+> A peer-to-peer textbook marketplace platform for UiTM Tapah Campus with negotiation, escrow, and real-time analytics.
+
+![Version](https://img.shields.io/badge/version-1.0.0-blue)
+![License](https://img.shields.io/badge/license-ISC-green)
+![Firebase](https://img.shields.io/badge/Firebase-Realtime%20Database-orange)
+![Commission](https://img.shields.io/badge/Commission-10%25-red)
+
+---
+
+## 📑 Table of Contents
+
+1. [Overview](#overview)
+2. [Features](#features)
+3. [Technology Stack](#technology-stack)
+4. [Project Structure](#project-structure)
+5. [System Workflows](#system-workflows)
+6. [🔧 Core System Code](#-core-system-code)
+7. [Database Schema](#database-schema)
+8. [Security Rules](#security-rules)
+9. [Installation & Setup](#installation--setup)
+10. [UI/UX Design System](#uiux-design-system)
+11. [Troubleshooting](#troubleshooting)
+
+---
+
+## Overview
+
+**UiTM Book e-Marketplace** is a web-based platform that facilitates the buying and selling of textbooks within the UiTM Tapah Campus community. The platform features a secure escrow-based payment system, real-time negotiations, warranty protection, and comprehensive admin management.
+
+### Key Highlights
+
+| Feature | Description |
+|---------|-------------|
+| 🔐 **UiTM-only authentication** | Restricted to `@student.uitm.edu.my` and `@staff.uitm.edu.my` domains |
+| 💳 **Escrow payment system** | Funds held securely until transaction completion |
+| 🛡️ **7-day warranty protection** | Buyer protection for quality assurance |
+| 💬 **Real-time negotiations** | Buyers and sellers can negotiate prices |
+| 📊 **Admin dashboard** | 8 interactive charts with comprehensive analytics |
+| 💰 **10% commission** | Platform fee automatically deducted from seller earnings |
+
+---
 
 ## Features
 
-### Core Features
-- ✅ **User Authentication** - Firebase Auth with UiTM email domain validation (@student.uitm.edu.my, @staff.uitm.edu.my)
-- ✅ **Book Listing** - Sellers can list books with up to 5 images via ImageBB
-- ✅ **Search & Filter** - Real-time search by title, author, subject code with price and condition filters
-- ✅ **Shopping Cart** - Add, remove, and manage book purchases
-- ✅ **Payment Simulation** - FPX payment simulation with 90% success rate
-- ✅ **Receipt Generation** - PDF download with complete transaction details
-- ✅ **Admin Dashboard** - Real-time data visualization with charts and analytics
-- ✅ **User Profiles** - Edit profile, view listings, purchase/sales history
-- ✅ **Role-Based Access** - Student, Staff, and Admin roles
+### 🔐 Authentication & User Management
 
-### Negotiation System
-- ✅ **Offer Management** - Buyers can make initial offers on books
-- ✅ **Real-time Chat** - Direct messaging between buyers and sellers
-- ✅ **Counter Offers** - Sellers and buyers can counter offer with custom prices
-- ✅ **Offer Status Tracking** - Track offer status (pending, accepted, rejected, counter-offered)
-- ✅ **Offer History** - Complete history of all offer interactions
-- ✅ **System Messages** - Automated notifications for offer actions
+| Feature | Description |
+|---------|-------------|
+| **UiTM Email Restriction** | Only UiTM domains allowed |
+| **Email Verification** | Users must verify email before access |
+| **Role-Based Access** | Student, Staff, and Admin roles |
+| **Auto-Admin Creation** | First admin auto-created with special credentials |
+| **Profile Management** | Edit name, phone, upload avatar |
 
-### Feedback & Rating System
-- ✅ **Transaction Feedback** - Buyers can rate and review sellers after transactions
-- ✅ **Star Rating** - 5-star rating system with visual feedback
-- ✅ **Feedback Types** - Support for general feedback and dispute reporting
-- ✅ **Admin Review** - All feedback marked for admin review
-- ✅ **Comment System** - Detailed written feedback for each transaction
+### 📚 Book Browsing & Search
 
-### Additional Features
-- Commission tracking (0.5% on all transactions)
-- View count tracking for books
-- Face-to-face meeting coordination
-- Responsive design for mobile, tablet, and desktop
-- Image hosting and management via ImageBB
-- Firebase Realtime Database integration
+| Feature | Description |
+|---------|-------------|
+| **Book Grid Display** | Visual cards with images, price, condition |
+| **Real-time Search** | Search by title, author, or subject code |
+| **Advanced Filters** | Filter by condition, price range, campus |
+| **Sorting Options** | Sort by price, popularity, date |
+| **Image Zoom** | Zoom into book images for inspection |
+
+### 💬 Negotiation System
+
+| Feature | Description |
+|---------|-------------|
+| **Make Offer** | Buyers can propose their own price |
+| **Real-time Chat** | Live messaging between buyer and seller |
+| **Counter Offers** | Back-and-forth price negotiation |
+| **10x Price Cap** | Offers cannot exceed 10x original price |
+| **RM 0.50 Minimum Difference** | Counter-offers must differ by at least RM 0.50 |
+| **2-Second Rate Limit** | Prevents spam in chat |
+
+### 💳 Payment & Escrow System
+
+| Feature | Description |
+|---------|-------------|
+| **FPX Simulation** | 90% success rate simulation |
+| **10% Commission** | Platform fee on all transactions |
+| **Escrow Hold** | Payment held for 7 days after purchase |
+| **Auto-Payout** | Automatic release to seller after warranty |
+| **Race Condition Prevention** | Validates book availability before payment |
+
+### 🛡️ Warranty System
+
+| Feature | Description |
+|---------|-------------|
+| **7-Day Warranty** | Buyer protection period after delivery |
+| **Claim Warranty** | Report issues within warranty period |
+| **Return Process** | Buyer returns book, seller confirms |
+| **Admin Resolution** | Admin decides refund or seller payout |
+| **Auto-Dispute** | System flags unconfirmed deliveries after 7 days |
+
+### 📊 Admin Dashboard
+
+| Feature | Description |
+|---------|-------------|
+| **8 Interactive Charts** | Sales, Revenue, Top Books, Subject Distribution, etc. |
+| **Time Filters** | 7 days, 30 days, 90 days, All Time |
+| **User Management** | Search and view user details |
+| **Dispute Resolution** | Refund buyer OR pay seller actions |
+| **CSV Export** | Download transactions as spreadsheet |
+
+---
 
 ## Technology Stack
 
-- **Frontend**: HTML5, CSS3, JavaScript (Vanilla)
-- **Backend**: Firebase Realtime Database
-- **Authentication**: Firebase Authentication
-- **Image Hosting**: ImageBB API
-- **Charts**: Chart.js
-- **PDF Generation**: jsPDF
-- **Icons**: Font Awesome 6.4.0
+| Category | Technology |
+|----------|------------|
+| **Frontend** | HTML5, CSS3, JavaScript (ES6+) |
+| **Backend** | Firebase Realtime Database |
+| **Authentication** | Firebase Authentication |
+| **Image Hosting** | ImageBB API |
+| **Charts** | Chart.js v4.4.1 |
+| **Icons** | Font Awesome 6.4 |
+| **PDF Generation** | jsPDF |
+
+---
 
 ## Project Structure
 
 ```
-UiTM e-Marketplace/
-├── index.html              # Homepage with book listings
-├── login.html              # Login page
-├── signup.html             # Registration page
-├── verify-email.html       # Email verification
-├── book-details.html       # Individual book details
-├── cart.html               # Shopping cart
-├── payment.html            # FPX payment simulation
-├── receipt.html            # Transaction receipt
-├── profile.html            # User profile
-├── admin.html              # Admin dashboard
-├── chat.html               # Negotiation chat interface
-├── feedback.html           # Transaction feedback & rating
-├── firebase-rules.json     # Firebase security rules
-├── NEGOTIATION_SYSTEM_DESIGN.md  # Negotiation system documentation
-├── README.md               # Documentation
+UITM-EMPLC_ver1/
+│
+├── index.html                    # Homepage - Book browsing
+│
+├── pages/
+│   ├── admin.html               # Admin dashboard (8 charts)
+│   ├── auth.html                # Login/Signup page
+│   ├── book-details.html        # Individual book view
+│   ├── cart.html                # Shopping cart
+│   ├── chat.html                # Negotiation chat
+│   ├── feedback.html            # Feedback form
+│   ├── notification-history.html # All notifications
+│   ├── payment.html             # Payment processing
+│   ├── profile.html             # User profile & wallet
+│   └── receipt.html             # Transaction receipt
+│
 ├── assets/
-│   ├── css/
-│   │   └── styles.css      # Complete UI design system
-│   ├── js/
-│   │   ├── firebase-config.js  # Firebase setup
-│   │   ├── auth.js          # Authentication logic
-│   │   ├── app.js           # Shared app functionality
-│   │   ├── homepage.js      # Homepage features
-│   │   ├── book-details.js  # Book details page (includes Make Offer)
-│   │   ├── cart.js          # Shopping cart
-│   │   ├── payment.js       # Payment processing
-│   │   ├── receipt.js       # Receipt generation
-│   │   ├── profile.js       # User profile
-│   │   ├── admin.js         # Admin dashboard
-│   │   ├── chat.js          # Negotiation chat & offers
-│   │   └── verify-email.js  # Email verification
-│   └── images/              # Static images
+│   ├── css/                     # 20 CSS files
+│   │   ├── styles.css           # Main stylesheet (83KB)
+│   │   ├── uitm-glassmorphism.css # Glassmorphism effects
+│   │   ├── role-based-styles.css  # Student/Staff theming
+│   │   └── transaction-timeline.css # Timeline UI
+│   │
+│   ├── js/                      # 21 JavaScript modules
+│   │   ├── firebase-config.js   # Firebase setup & constants
+│   │   ├── auth.js              # Authentication logic
+│   │   ├── admin.js             # Admin dashboard (2500+ lines)
+│   │   ├── profile.js           # Profile & wallet (1700+ lines)
+│   │   ├── payment.js           # Payment & escrow
+│   │   ├── chat.js              # Negotiation system
+│   │   └── utils.js             # Utility helpers
+│   │
+│   └── images/                  # Static assets
+│
+├── config/
+│   ├── firebase-config.json     # Firebase credentials
+│   └── firebase-rules.json      # Security rules
+│
+└── file_md/                     # Documentation
+    ├── systemWalkthrough.md     # Complete system guide
+    ├── Chapter4.md              # FYP Chapter 4
+    ├── Chapter5.md              # FYP Chapter 5
+    └── Chapter6.md              # FYP Chapter 6
 ```
 
-## Setup Instructions
+---
 
-### 1. Firebase Setup
+## System Workflows
 
-1. Create a Firebase project at https://console.firebase.google.com
-2. Enable Realtime Database
-3. Enable Authentication with Email/Password
-4. Add your database URL to `assets/js/firebase-config.js`
-5. Deploy security rules from `firebase-rules.json`:
-   ```bash
-   firebase deploy --only database
-   ```
+### Authentication Flow
 
-### 2. ImageBB Setup
+```
+User enters ID → Check format (10-digit=Student, 6-digit=Staff, "admin"=Admin)
+    → Append email domain → Firebase signInWithEmailAndPassword
+    → Load user data → Redirect based on role
+```
 
-1. Create account at https://api.imgbb.com
-2. Get your API key
-3. Update `IMGBB_API_KEY` in `assets/js/firebase-config.js`
+### Buyer Purchase Flow
 
-### 3. Configuration
+```
+Browse Books → View Details → Make Offer/Buy Now → Chat Negotiation
+    → Offer Accepted → Add to Cart → Payment (90% success)
+    → Escrow Held → Meet Seller → Confirm Receipt
+    → 7-Day Warranty → No Issues → Auto-Payout to Seller
+```
 
-Update the following in `assets/js/firebase-config.js`:
+### Escrow & Warranty Flow
+
+```
+Payment Success → Status: "payment_held" → Buyer Confirms Receipt
+    → Status: "delivered" → Warranty Period (7 days)
+    → No Issues: Auto-Payout / Issue: Claim Warranty
+    → Return Book → Seller Confirms → Admin Resolves
+```
+
+---
+
+## 🔧 Core System Code
+
+This section documents the crucial code that powers the system's core functionality.
+
+### System Constants
+
+**File:** `assets/js/firebase-config.js` (Lines 36-59)
 
 ```javascript
-const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    databaseURL: "YOUR_DATABASE_URL",  // https://uitm-emarketplace-default-rtdb.asia-southeast1.firebasedatabase.app/
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+// System constants
+const COMMISSION_RATE = 0.10; // 10% commission fee on all transactions
+
+// Transaction Status Constants (Enhanced Escrow + Warranty Model)
+const TRANSACTION_STATUS = {
+    PENDING_PAYMENT: 'pending_payment',     // Checkout initiated
+    PAYMENT_HELD: 'payment_held',           // Money held in escrow
+    DELIVERED: 'delivered',                 // Buyer confirmed, warranty active
+    WARRANTY_CLAIMED: 'warranty_claimed',   // Buyer claimed warranty issue
+    RETURN_SENT: 'return_sent',             // Buyer sent book back
+    RETURN_RECEIVED: 'return_received',     // Seller received returned book
+    COMPLETED: 'completed',                 // Warranty expired, seller paid
+    DISPUTE_OPEN: 'dispute_open',           // Legacy dispute status
+    REFUNDED: 'refunded',                   // Admin refunded buyer
+    CANCELLED: 'cancelled'                  // Transaction cancelled
 };
 
-const IMGBB_API_KEY = "YOUR_IMGBB_API_KEY";  // d4ab9f9c60c5209559c71421e10bab2b
+// Warranty period (7 days in milliseconds)
+const WARRANTY_PERIOD_DAYS = 7;
+const WARRANTY_PERIOD_MS = WARRANTY_PERIOD_DAYS * 24 * 60 * 60 * 1000;
+
+// Auto-release timer (7 days in milliseconds)
+const AUTO_RELEASE_DAYS = 7;
+const AUTO_RELEASE_MS = AUTO_RELEASE_DAYS * 24 * 60 * 60 * 1000;
 ```
 
-### 4. Admin Access
+---
 
-Add admin emails in `assets/js/firebase-config.js`:
+### UiTM Email Validation
+
+**File:** `assets/js/firebase-config.js` (Lines 260-264)
 
 ```javascript
-const ADMIN_EMAILS = [
-    "admin@student.uitm.edu.my",
-    "admin@staff.uitm.edu.my"
-];
+// Validate UiTM email domain
+function validateUitmEmail(email) {
+    const allowedDomains = ['@student.uitm.edu.my', '@staff.uitm.edu.my'];
+    return allowedDomains.some(domain => email.endsWith(domain));
+}
 ```
 
-### 5. Running the Application
+---
 
-1. Open `login.html` in a web browser
-2. Or serve via local web server:
-   ```bash
-   # Using Python
-   python -m http.server 8000
+### Counter-Offer Validation
 
-   # Using Node.js
-   npx http-server
-   ```
-3. Navigate to http://localhost:8000
+**File:** `assets/js/chat.js` (Lines 352-404)
+
+```javascript
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const price = parseFloat(priceInput.value);
+    priceError.style.display = 'none';
+
+    // Validation 1: Price must be positive
+    if (isNaN(price) || price <= 0) {
+        priceError.textContent = 'Please enter a valid price greater than RM 0.00';
+        priceError.style.display = 'block';
+        return;
+    }
+
+    // Validation 2: Cannot exceed 10x original price
+    const maxPrice = currentOffer.bookPrice * 10;
+    if (price > maxPrice) {
+        priceError.textContent = `Price cannot exceed ${formatCurrency(maxPrice)} (10x the original price)`;
+        priceError.style.display = 'block';
+        return;
+    }
+
+    // Validation 3: Must differ by at least RM 0.50
+    const priceDiff = Math.abs(price - currentOffer.currentPrice);
+    if (priceDiff < 0.50) {
+        priceError.textContent = 'Counter-offer must differ by at least RM 0.50';
+        priceError.style.display = 'block';
+        return;
+    }
+
+    // Submit counter-offer
+    await database.ref(`offers/${currentOfferId}`).update({
+        currentPrice: price,
+        status: 'counter_offered',
+        lastActionBy: currentUser.uid,
+        updatedAt: Date.now()
+    });
+
+    // Add system message and notify other party
+    await addSystemMessage(`${userData.fullName} sent a counter-offer of ${formatCurrency(price)}`);
+    const otherUserId = currentUser.uid === currentOffer.buyerId 
+        ? currentOffer.sellerId 
+        : currentOffer.buyerId;
+    await sendNotification(otherUserId, 'counter_offer', 
+        `${userData.fullName} sent a counter-offer of ${formatCurrency(price)}`);
+});
+```
+
+---
+
+### Payment & Escrow Creation
+
+**File:** `assets/js/payment.js` (Lines 212-265)
+
+```javascript
+async function completeTransaction() {
+    const transactionId = 'TXN' + Date.now();
+    const fpxTransactionId = 'FPX' + Math.random().toString(36).substr(2, 9).toUpperCase();
+
+    // Create transaction record with ESCROW status
+    const transaction = {
+        transactionId,
+        buyerId: currentUser.uid,
+        buyerName: userData.fullName || 'Unknown',
+        buyerEmail: userData.email || currentUser.email,
+        items: paymentItems,
+        amount: paymentTotal,
+        basePrice: paymentItems.reduce((sum, item) => sum + item.bookDetails.price, 0),
+        commissionFee: paymentTotal - paymentItems.reduce((sum, item) => sum + item.bookDetails.price, 0),
+        status: 'payment_held',  // ESCROW: Money held until buyer confirms
+        fpxTransactionId,
+        selectedBank,
+        createdAt: Date.now(),
+        meetingLocation: paymentItems[0]?.bookDetails?.campusLocation || 'TBD',
+        meetingDate: Date.now() + 86400000, // Tomorrow
+        
+        // Delivery tracking fields
+        deliveryStatus: 'pending',
+        expectedDeliveryDate: Date.now() + (7 * 24 * 60 * 60 * 1000), // 7 days
+        actualDeliveryDate: null,
+        
+        // ESCROW fields
+        escrowHeldAt: Date.now(),
+        autoReleaseAt: Date.now() + (7 * 24 * 60 * 60 * 1000), // 7 days
+        sellerPaidOut: false
+    };
+
+    // Save transaction
+    await database.ref(`transactions/${transactionId}`).set(transaction);
+
+    // Mark books as 'sold'
+    for (const item of paymentItems) {
+        await database.ref(`books/${item.bookDetails.id}`).update({
+            status: 'sold',
+            soldAt: Date.now(),
+            buyerId: currentUser.uid
+        });
+    }
+
+    return transactionId;
+}
+```
+
+---
+
+### Confirm Order Received (Starts 7-Day Warranty)
+
+**File:** `assets/js/profile.js` (Lines 1357-1403)
+
+```javascript
+// Confirm order received by buyer - STARTS WARRANTY PERIOD (seller not paid yet!)
+async function confirmOrderReceived(transactionId) {
+    console.log('[WARRANTY] confirmOrderReceived called with transactionId:', transactionId);
+
+    try {
+        // Get transaction details
+        const txnSnapshot = await database.ref(`transactions/${transactionId}`).once('value');
+        const txn = txnSnapshot.val();
+        if (!txn) throw new Error('Transaction not found');
+
+        const now = Date.now();
+        const warrantyExpiresAt = now + WARRANTY_PERIOD_MS; // WARRANTY_PERIOD_MS = 7 days
+
+        // Update transaction status to DELIVERED (NOT completed!)
+        // Seller payment is HELD until warranty expires
+        await database.ref(`transactions/${transactionId}`).update({
+            status: 'delivered',                    // Warranty period starts
+            deliveryStatus: 'received',
+            actualDeliveryDate: now,
+            deliveryConfirmedBy: currentUser.uid,
+            warrantyExpiresAt: warrantyExpiresAt,   // 7 days from now
+            sellerPaidOut: false,                   // NOT paid yet!
+            payoutScheduledAt: warrantyExpiresAt    // Scheduled payout date
+        });
+
+        console.log(`[WARRANTY] Status set to 'delivered'. Warranty expires at: ${new Date(warrantyExpiresAt)}`);
+        console.log(`[WARRANTY] Seller payout scheduled for after warranty period (7 days)`);
+
+        showNotification("Order confirmed! You have 7 days to claim warranty.", "success");
+        await loadPurchaseHistory();
+
+        // Show feedback modal
+        if (typeof showFeedbackModal === 'function') {
+            await showFeedbackModal(transactionId, 'general', '');
+        }
+    } catch (error) {
+        console.error("Error confirming order:", error);
+        showNotification("Failed to confirm order", "error");
+    }
+}
+```
+
+---
+
+### Claim Warranty (Within 7 Days)
+
+**File:** `assets/js/profile.js` (Lines 1406-1437)
+
+```javascript
+// Claim warranty - buyer reports issue within 7 days of receiving book
+async function claimWarranty(transactionId) {
+    console.log('[WARRANTY] claimWarranty called with transactionId:', transactionId);
+
+    try {
+        // Get transaction details
+        const txnSnapshot = await database.ref(`transactions/${transactionId}`).once('value');
+        const txn = txnSnapshot.val();
+
+        if (!txn) throw new Error('Transaction not found');
+        if (txn.status !== 'delivered') throw new Error('Cannot claim warranty - order not in delivered status');
+
+        // Check if warranty period has expired
+        const now = Date.now();
+        if (now > txn.warrantyExpiresAt) {
+            throw new Error('Warranty period has expired (7 days)');
+        }
+
+        // Show the warranty claim modal for user to fill in details
+        document.getElementById('reportTransactionId').value = transactionId;
+        document.getElementById('reportIssueForm').reset();
+        document.getElementById('reportIssueModal').style.display = 'flex';
+
+    } catch (error) {
+        console.error("Error claiming warranty:", error);
+        showNotification(error.message || "Failed to claim warranty", "error");
+    }
+}
+```
+
+---
+
+### Auto-Payout System (After 7 Days)
+
+**File:** `assets/js/firebase-config.js` (Lines 348-472)
+
+```javascript
+// Check and process any expired warranty payouts
+async function checkAndProcessAutoPayouts() {
+    if (autoPayoutRunning) {
+        console.log('[AUTO-PAYOUT] Already running, skipping...');
+        return;
+    }
+
+    autoPayoutRunning = true;
+    console.log('[AUTO-PAYOUT] Checking for expired warranty payouts...');
+
+    try {
+        // Get all transactions with 'delivered' status (in warranty period)
+        const snapshot = await database.ref('transactions')
+            .orderByChild('status')
+            .equalTo('delivered')
+            .once('value');
+
+        if (!snapshot.exists()) {
+            console.log('[AUTO-PAYOUT] No delivered transactions found');
+            return;
+        }
+
+        const now = Date.now();
+        const promises = [];
+
+        snapshot.forEach(childSnapshot => {
+            const txn = childSnapshot.val();
+            const txnId = childSnapshot.key;
+
+            // Check if payout is scheduled and warranty expired
+            if (txn.payoutScheduledAt && txn.payoutScheduledAt <= now) {
+                // Skip if warranty was claimed
+                if (txn.warrantyClaimDismissed === false) return;
+
+                console.log(`[AUTO-PAYOUT] Processing payout for ${txnId}`);
+                promises.push(processAutoPayout(txnId, txn));
+            }
+        });
+
+        if (promises.length > 0) {
+            await Promise.all(promises);
+            console.log(`[AUTO-PAYOUT] Processed ${promises.length} payouts`);
+        }
+    } catch (error) {
+        console.error('[AUTO-PAYOUT] Error:', error);
+    } finally {
+        autoPayoutRunning = false;
+    }
+}
+
+// Process a single auto-payout
+async function processAutoPayout(transactionId, txn) {
+    const amount = txn.amount || txn.basePrice || 0;
+    const commission = amount * COMMISSION_RATE;  // 10% commission
+    const sellerPayout = amount - commission;
+
+    const sellerId = txn.items?.[0]?.bookDetails?.sellerId;
+    if (!sellerId) return;
+
+    // 1. Update transaction status to completed
+    await database.ref(`transactions/${transactionId}`).update({
+        status: 'completed',
+        autoPayoutProcessed: true,
+        payoutProcessedAt: Date.now(),
+        sellerPayoutAmount: sellerPayout,
+        commissionAmount: commission
+    });
+
+    // 2. Update seller wallet
+    const sellerWalletRef = database.ref(`users/${sellerId}/wallet`);
+    const sellerWallet = (await sellerWalletRef.once('value')).val() || {};
+
+    await sellerWalletRef.update({
+        balance: (sellerWallet.balance || 0) + sellerPayout,
+        pendingEscrow: Math.max(0, (sellerWallet.pendingEscrow || 0) - amount),
+        totalEarned: (sellerWallet.totalEarned || 0) + sellerPayout
+    });
+
+    // 3. Notify seller about payout
+    await database.ref('notifications').push({
+        recipientId: sellerId,
+        senderId: 'system',
+        type: 'payout_received',
+        message: `💰 You received RM${sellerPayout.toFixed(2)} for order #${transactionId.substring(0, 8)}! (10% commission deducted)`,
+        transactionId: transactionId,
+        read: false,
+        createdAt: Date.now()
+    });
+
+    console.log(`[AUTO-PAYOUT] Released RM${sellerPayout.toFixed(2)} to seller`);
+}
+
+// Run auto-payout check when auth is ready
+auth.onAuthStateChanged(async (user) => {
+    if (user) {
+        setTimeout(() => {
+            checkAndProcessAutoPayouts();
+        }, 3000);  // Wait 3 seconds after login
+    }
+});
+```
+
+---
+
+### Auto-Dispute Check (7 Days Unconfirmed)
+
+**File:** `assets/js/profile.js` (Lines 1292-1354)
+
+```javascript
+// Check for auto-disputes on pending orders (7 days unconfirmed)
+async function checkForAutoDisputes() {
+    try {
+        const snapshot = await database.ref('transactions').once('value');
+        const now = Date.now();
+        const updates = {};
+        const disputedTransactions = [];
+
+        snapshot.forEach(childSnapshot => {
+            const transaction = childSnapshot.val();
+            const transactionId = childSnapshot.key;
+
+            // Check if order is pending and past expected delivery date (7 days)
+            if (transaction.deliveryStatus === 'pending' && transaction.expectedDeliveryDate) {
+                if (now > transaction.expectedDeliveryDate) {
+                    // Mark as disputed
+                    updates[`transactions/${transactionId}/deliveryStatus`] = 'disputed';
+                    updates[`transactions/${transactionId}/disputeCreatedAt`] = now;
+                    updates[`transactions/${transactionId}/disputeReason`] = 
+                        'Buyer did not confirm receipt within 7 days';
+
+                    disputedTransactions.push({
+                        transactionId,
+                        buyerId: transaction.buyerId,
+                        buyerName: transaction.buyerName,
+                        amount: transaction.amount
+                    });
+                }
+            }
+        });
+
+        // Send admin notifications for auto-disputes
+        if (disputedTransactions.length > 0 && typeof sendAdminNotification === 'function') {
+            for (const dispute of disputedTransactions) {
+                await sendAdminNotification(
+                    'admin_dispute',
+                    `🚨 Auto-Dispute: Order #${dispute.transactionId.substring(0, 8)} expired`,
+                    {
+                        transactionId: dispute.transactionId,
+                        buyerId: dispute.buyerId,
+                        reason: 'Buyer did not confirm receipt within 7 days'
+                    },
+                    'high'
+                );
+            }
+        }
+
+        // Apply updates
+        if (Object.keys(updates).length > 0) {
+            await database.ref().update(updates);
+            console.log(`[AUTO-DISPUTE] Marked ${disputedTransactions.length} order(s) as disputed`);
+        }
+    } catch (error) {
+        console.error("[AUTO-DISPUTE] Error:", error);
+    }
+}
+```
+
+---
+
+### Return Flow (Warranty Claim)
+
+**File:** `assets/js/profile.js` (Lines 1440-1648)
+
+```javascript
+// Confirm return sent - buyer confirms they've returned the book
+async function confirmReturnSent(transactionId) {
+    console.log('[WARRANTY] confirmReturnSent called');
+
+    // Get transaction for seller info
+    const txnSnapshot = await database.ref(`transactions/${transactionId}`).once('value');
+    const txn = txnSnapshot.val();
+
+    await database.ref(`transactions/${transactionId}`).update({
+        status: 'return_sent',
+        returnSentAt: Date.now(),
+        returnSentBy: currentUser.uid
+    });
+
+    // Notify seller that buyer is returning the book
+    if (txn && txn.items) {
+        for (const item of txn.items) {
+            await database.ref('notifications').push({
+                recipientId: item.bookDetails.sellerId,
+                senderId: currentUser.uid,
+                senderName: userData.fullName,
+                type: 'return_sent',
+                message: `📦 ${userData.fullName} sent back "${item.bookDetails.title}". Please confirm when you receive it.`,
+                transactionId: transactionId,
+                read: false,
+                createdAt: Date.now()
+            });
+        }
+    }
+
+    showNotification("Return confirmed! Please meet the seller to handover the book.", "success");
+}
+
+// Seller: Confirm received returned book
+async function confirmReturnReceived(transactionId) {
+    console.log('[WARRANTY] confirmReturnReceived called by seller');
+
+    await database.ref(`transactions/${transactionId}`).update({
+        status: 'return_received',
+        returnReceivedAt: Date.now(),
+        returnReceivedBy: currentUser.uid
+    });
+
+    // Get transaction details
+    const txnSnapshot = await database.ref(`transactions/${transactionId}`).once('value');
+    const txn = txnSnapshot.val();
+
+    // Notify admin that both parties confirmed - ready for refund
+    if (typeof sendAdminNotification === 'function') {
+        await sendAdminNotification(
+            'admin_dispute',
+            `✅ Return Confirmed: Both parties confirmed for order #${transactionId.substring(0, 8)}`,
+            {
+                transactionId: transactionId,
+                buyerId: txn.buyerId,
+                action: 'ready_for_refund'
+            },
+            'high'
+        );
+    }
+
+    // Notify buyer that seller confirmed
+    await database.ref('notifications').push({
+        recipientId: txn.buyerId,
+        senderId: currentUser.uid,
+        senderName: userData.fullName,
+        type: 'return_received',
+        message: `✅ Seller confirmed receiving your returned book. Admin will process your refund within 24-48 hours.`,
+        transactionId: transactionId,
+        read: false,
+        createdAt: Date.now()
+    });
+
+    showNotification("Return confirmed! Admin will now process the refund.", "success");
+}
+```
+
+---
+
+### Commission Calculation
+
+```javascript
+// Commission calculation (10% fee)
+const COMMISSION_RATE = 0.10;
+
+// Example calculation:
+const bookPrice = 50.00;                           // Buyer sees this price
+const commission = bookPrice * COMMISSION_RATE;    // RM 5.00 commission
+const buyerPays = bookPrice + commission;          // RM 55.00 total
+const sellerReceives = bookPrice - commission;     // RM 45.00 payout
+```
+
+---
+
+### Chat Rate Limiting
+
+**File:** `assets/js/chat.js` (Lines 6-7, 238-243)
+
+```javascript
+const MESSAGE_COOLDOWN = 2000; // 2 seconds between messages
+
+// Rate limiting check
+const now = Date.now();
+if (now - lastMessageTime < MESSAGE_COOLDOWN) {
+    const remaining = Math.ceil((MESSAGE_COOLDOWN - (now - lastMessageTime)) / 1000);
+    showNotification(`Please wait ${remaining} second(s)`, "warning");
+    return;
+}
+lastMessageTime = now;
+```
+
+---
 
 ## Database Schema
 
@@ -154,15 +745,19 @@ const ADMIN_EMAILS = [
 {
   "users": {
     "uid": {
-      "email": "string",
-      "role": "student|staff|admin",
-      "fullName": "string",
-      "profilePic": "string",
-      "phoneNumber": "string",
-      "createdAt": "timestamp",
-      "totalSales": "number",
-      "totalPurchases": "number",
-      "isSeller": "boolean"
+      "email": "2024745815@student.uitm.edu.my",
+      "fullName": "Ahmad Razif",
+      "phoneNumber": "0123456789",
+      "role": "student",
+      "totalSales": 5,
+      "totalPurchases": 3,
+      "wallet": {
+        "balance": 125.50,
+        "pendingEscrow": 45.00,
+        "frozenDispute": 0,
+        "totalEarned": 170.50
+      },
+      "createdAt": 1702450000000
     }
   }
 }
@@ -173,20 +768,20 @@ const ADMIN_EMAILS = [
 {
   "books": {
     "bookId": {
-      "title": "string",
-      "author": "string",
-      "isbn": "string",
-      "subjectCode": "string",
-      "condition": "new|used",
-      "price": "number",
-      "description": "text",
-      "images": ["array", "of", "ImageBB", "URLs"],
-      "sellerId": "uid",
-      "sellerName": "string",
-      "status": "available|pending|sold",
-      "campusLocation": "string",
-      "createdAt": "timestamp",
-      "viewCount": "number"
+      "title": "Data Structures and Algorithms",
+      "author": "Thomas H. Cormen",
+      "isbn": "978-0262033848",
+      "subjectCode": "CSC203",
+      "condition": "Good",
+      "price": 45.00,
+      "description": "Minor highlighting",
+      "campusLocation": "UiTM Tapah",
+      "images": ["https://i.ibb.co/..."],
+      "sellerId": "uid123",
+      "sellerName": "Ahmad Razif",
+      "status": "available",
+      "viewCount": 42,
+      "createdAt": 1702450000000
     }
   }
 }
@@ -196,32 +791,19 @@ const ADMIN_EMAILS = [
 ```json
 {
   "transactions": {
-    "transactionId": {
-      "buyerId": "uid",
-      "buyerName": "string",
-      "buyerEmail": "string",
-      "items": "array",
-      "amount": "number",
-      "basePrice": "number",
-      "commissionFee": "number",
-      "status": "pending|completed|cancelled",
-      "fpxTransactionId": "string",
-      "selectedBank": "string",
-      "createdAt": "timestamp",
-      "meetingLocation": "string",
-      "meetingDate": "timestamp"
-    }
-  }
-}
-```
-
-### Carts Collection
-```json
-{
-  "carts": {
-    "uid": {
-      "items": "object",
-      "totalItems": "number"
+    "TXN1702450000000": {
+      "transactionId": "TXN1702450000000",
+      "buyerId": "uid456",
+      "buyerName": "Siti Aminah",
+      "items": [{ "bookDetails": {...} }],
+      "amount": 49.50,
+      "basePrice": 45.00,
+      "commissionFee": 4.50,
+      "status": "payment_held",
+      "escrowHeldAt": 1702450000000,
+      "autoReleaseAt": 1703054800000,
+      "warrantyExpiresAt": null,
+      "sellerPaidOut": false
     }
   }
 }
@@ -231,245 +813,134 @@ const ADMIN_EMAILS = [
 ```json
 {
   "offers": {
-    "$offerId": {
-      "bookId": "string",
-      "bookTitle": "string",
-      "bookPrice": "number",
-      "buyerId": "string",
-      "buyerName": "string",
-      "sellerId": "string",
-      "sellerName": "string",
-      "currentPrice": "number",
-      "status": "pending|accepted|rejected|counter_offered",
-      "lastActionBy": "string",
-      "createdAt": "timestamp",
-      "updatedAt": "timestamp"
+    "offerId": {
+      "bookId": "bookId123",
+      "bookTitle": "Data Structures",
+      "bookPrice": 45.00,
+      "buyerId": "uid456",
+      "sellerId": "uid123",
+      "currentPrice": 40.00,
+      "status": "counter_offered",
+      "lastActionBy": "uid123",
+      "createdAt": 1702450000000
     }
   }
 }
 ```
 
-### Chats Collection
+---
+
+## Security Rules
+
+**File:** `config/firebase-rules.json`
+
 ```json
 {
-  "chats": {
-    "$offerId": {
-      "messages": {
-        "$messageId": {
-          "senderId": "string",
-          "senderName": "string",
-          "text": "string",
-          "type": "text|system",
-          "timestamp": "timestamp"
-        }
-      },
-      "participants": {
-        "$uid": true
-      },
-      "lastMessage": "string",
-      "lastMessageTimestamp": "timestamp"
+  "rules": {
+    "users": {
+      ".read": "auth != null",
+      "$uid": {
+        ".write": "auth != null && (auth.uid == $uid || root.child('users/' + auth.uid + '/role').val() == 'admin')"
+      }
+    },
+    "books": {
+      ".read": "auth != null",
+      "$bookId": {
+        ".write": "auth != null && (!data.exists() || data.child('sellerId').val() == auth.uid || root.child('users/' + auth.uid + '/role').val() == 'admin' || (newData.child('status').val() == 'sold' && data.child('status').val() == 'available'))"
+      }
+    },
+    "offers": {
+      "$offerId": {
+        ".read": "auth != null && (data.child('buyerId').val() == auth.uid || data.child('sellerId').val() == auth.uid || root.child('users/' + auth.uid + '/role').val() == 'admin')",
+        ".write": "auth != null && (data.child('buyerId').val() == auth.uid || data.child('sellerId').val() == auth.uid || !data.exists())"
+      }
+    },
+    "chats": {
+      "$offerId": {
+        ".read": "auth != null && (root.child('offers/' + $offerId + '/buyerId').val() == auth.uid || root.child('offers/' + $offerId + '/sellerId').val() == auth.uid)"
+      }
+    },
+    "feedback": {
+      ".read": "auth != null && root.child('users/' + auth.uid + '/role').val() == 'admin'"
     }
   }
 }
 ```
 
-### Feedback Collection
-```json
-{
-  "feedback": {
-    "$feedbackId": {
-      "transactionId": "string",
-      "sellerId": "string",
-      "buyerId": "string",
-      "buyerName": "string",
-      "rating": "number",
-      "type": "general|dispute",
-      "comment": "string",
-      "createdAt": "timestamp",
-      "status": "pending|reviewed"
-    }
-  }
-}
+---
+
+## Installation & Setup
+
+### Prerequisites
+- Node.js ≥14.0.0
+- Firebase project
+
+### Quick Start
+
+```bash
+# Clone the repository
+git clone https://github.com/qieyl345/UITM-EMPLC_design-ver1.git
+
+# Navigate to project
+cd UITM-EMPLC_ver1
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
 ```
+
+### Test Credentials
+
+| Role | ID | Password |
+|------|-----|----------|
+| Student | `2024745815` | `2024745815` |
+| Staff | `709265` | `70926500` |
+| Admin | `admin` | `admin123` |
+
+---
 
 ## UI/UX Design System
 
 ### Color Palette
-- **Primary**: #005C99 (UiTM Blue)
-- **Secondary**: #00A86B (Success Green)
-- **Accent**: #FFB81C (UiTM Gold)
-- **Background**: #FFFFFF, #F8FAFC, #F1F5F9
-- **Text**: #1E293B, #475569, #64748B
+| Color | Hex | Usage |
+|-------|-----|-------|
+| **Primary** | #005C99 | UiTM Blue |
+| **Secondary** | #00A86B | Success Green |
+| **Accent** | #FFB81C | UiTM Gold |
+| **Student Theme** | #7C3AED | Purple accent |
+| **Staff Theme** | #D97706 | Gold accent |
 
-### Typography
-- Font Family: Inter, Poppins, Roboto
-- H1: 2.5rem
-- H2: 2rem
-- H3: 1.5rem
-- Body: 1rem
-
-### Components
-- Cards with 12px border-radius
-- Buttons with 8px border-radius
-- Inputs with 8px border-radius
-- Box shadows: `0 1px 3px rgba(0, 0, 0, 0.05)` and `0 4px 6px rgba(0, 0, 0, 0.07)`
-
-## Features Implementation
-
-### Payment Flow
-1. User adds items to cart
-2. Cart review with commission calculation (0.5%)
-3. Bank selection (Maybank, CIMB, Public Bank, etc.)
-4. FPX simulation (3-second processing)
-5. 90% success rate
-6. Transaction record creation
-7. Receipt generation and PDF download
-
-### Negotiation Flow
-1. **Buyer makes initial offer**: Click "Make Offer" button on book details page
-2. **Enter offer price**: Modal popup to enter desired price
-3. **Chat session created**: Automatic redirect to chat.html with offer ID
-4. **Seller receives notification**: Appears in "My Offers" section in profile
-5. **Seller responses**: Accept, Reject, or Counter offer
-6. **Real-time updates**: Both parties see live status updates
-7. **System messages**: Automated messages for each action
-8. **Finalization**: Once accepted, proceed to payment flow
-
-### Feedback & Rating Flow
-1. **Transaction completion**: Feedback link available on receipt
-2. **Navigate to feedback**: Click feedback link with transaction ID and seller ID
-3. **Rate transaction**: Select 1-5 stars with visual feedback
-4. **Choose feedback type**: General feedback or dispute report
-5. **Add comments**: Detailed written feedback
-6. **Admin review**: All feedback marked pending for admin review
-7. **View history**: Check past feedback in user profile
-
-### Admin Dashboard
-- Stats cards: Total transactions, Commission earned, Active users, Books listed
-- Charts: Sales trend, Revenue overview, Top selling books, Subject distribution
-- Tables: Recent transactions, All users
-- Feedback management: View and manage user feedback
-- Settings: Commission rate, Max images per book
-
-### Search & Filter
-- Real-time search with 500ms debouncing
-- Filter by: condition (new/used), price range, campus location
-- Sort by: date, price (low-high/high-low), popularity
-
-## Security Rules
-
-Firebase Realtime Database rules implemented:
-
-### Users Collection
-- Users can read/write their own data
-- Admins can read/write all user data
-
-### Books Collection
-- Any authenticated user can read books
-- Only seller or admin can write/update book data
-
-### Transactions Collection
-- Buyer, seller, or admin can read transaction details
-- Buyer or admin can create/update transactions
-
-### Carts Collection
-- Private to each user (auth.uid must match cart owner)
-- Only cart owner can read/write their cart
-
-### Offers Collection
-- Read/Write access for buyer or seller only
-- Must be participant in the offer (buyerId or sellerId matches auth.uid)
-- Admin has full access
-
-### Chats Collection
-- Read/Write access only to offer participants
-- Participants are verified via offer ownership
-- Admin has full access
-
-### Feedback Collection
-- Any authenticated user can read all feedback
-- Any authenticated user can write feedback (for transactions)
-- Admin can update feedback status
-
-## Browser Compatibility
-
-- Chrome 80+
-- Firefox 75+
-- Safari 13+
-- Edge 80+
-
-## Recent Updates (v2.0)
-
-### Negotiation System Implementation
-- **NEW**: Complete real-time negotiation system with chat interface
-- **NEW**: Make Offer functionality on book details page
-- **NEW**: Counter-offer capabilities for both buyers and sellers
-- **NEW**: Offer status tracking (pending, accepted, rejected, counter-offered)
-- **NEW**: System-generated messages for offer actions
-- **NEW**: Complete offer history and audit trail
-
-### Feedback & Rating System
-- **NEW**: 5-star rating system for transactions
-- **NEW**: Transaction feedback page with visual star ratings
-- **NEW**: Support for general feedback and dispute reporting
-- **NEW**: Admin review workflow for all feedback
-- **NEW**: Feedback collection and storage in Firebase
-
-### Technical Improvements
-- **UPDATED**: Firebase security rules for offers, chats, and feedback
-- **UPDATED**: Enhanced admin dashboard with feedback management
-- **NEW**: NEGOTIATION_SYSTEM_DESIGN.md documentation
-
-## Future Enhancements
-
-- [ ] Book wishlist feature
-- [ ] Notification system (email/push notifications for offers, messages)
-- [ ] Book comparison feature
-- [ ] Saved searches
-- [ ] Mobile app development (React Native/Flutter)
-- [ ] Advanced analytics for admin
-- [ ] Bulk listing import/export
-- [ ] Book condition verification system
-- [ ] Seller verification badges
-- [ ] Book rental option
-- [ ] Wishlist to offer automation
-- [ ] Price history charts for books
-- [ ] Multi-language support (Bahasa Malaysia)
-- [ ] Book recommendations based on purchase history
-- [ ] Integration with university course registration system
-
-## Troubleshooting
-
-### Authentication Issues
-- Ensure email verification is enabled in Firebase console
-- Check Firebase Auth settings
-- Verify email domain validation
-
-### Image Upload Issues
-- Check ImageBB API key validity
-- Verify network connectivity
-- Check file size limits (32MB max)
-
-### Database Connection
-- Verify Firebase configuration
-- Check database URL
-- Ensure rules are deployed
-
-## Support
-
-For issues and questions:
-- Email: support@uitm-marketplace.edu.my
-- Documentation: Refer to this README
-- Firebase Docs: https://firebase.google.com/docs
-
-## License
-
-This project is developed for UiTM Tapah Campus educational purposes.
-
-## Contributors
-
-- UiTM Tapah Campus Development Team
+### Design Features
+- Glassmorphism effects
+- Role-based theming (Student: Purple, Staff: Gold)
+- Smooth CSS transitions
+- Skeleton loaders
+- Toast notifications
+- Responsive design
 
 ---
 
-**UiTM e-Marketplace** - Empowering academic community through digital book trading
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| **Auth Issues** | Check Firebase Auth settings, verify UiTM email domain |
+| **Image Upload Fails** | Check ImageBB API key, file size < 5MB |
+| **Database Connection** | Verify Firebase config, check security rules |
+| **Charts Not Loading** | Ensure Chart.js CDN is accessible |
+| **Payment Always Fails** | Normal - 10% failure rate is intentional |
+
+---
+
+## License
+
+This project is licensed under the ISC License.
+
+---
+
+<p align="center">
+  <strong>UiTM Book e-Marketplace</strong><br>
+  Built with ❤️ for UiTM Tapah Campus
+</p>
