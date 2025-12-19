@@ -21,6 +21,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupModal();
     setupFeedbackModals();
     setupReportIssueForm(); // Setup report issue modal form
+
+    // Initialize live countdown timers for warranty/escrow tracking
+    if (window.CountdownTimer) {
+        window.CountdownTimer.initializeCountdownTimers();
+    }
 });
 
 async function loadProfile() {
@@ -202,34 +207,37 @@ function displayPurchaseHistory() {
         let showConfirmReturnButton = false;
 
         if (status === 'payment_held') {
-            // Awaiting buyer confirmation
-            const timeRemaining = transaction.expectedDeliveryDate - now;
-            const daysRemaining = Math.ceil(timeRemaining / (24 * 60 * 60 * 1000));
+            // Awaiting buyer confirmation - LIVE COUNTDOWN
+            const startTime = transaction.createdAt;
+            const endTime = transaction.expectedDeliveryDate;
 
             escrowInfoHTML = `
                 <div class="escrow-info-box warning">
                     <i class="fas fa-shield-alt escrow-info-icon" style="color: #f59e0b;"></i>
                     <div class="escrow-info-text">
                         <strong>💰 Money held in escrow.</strong> 
-                        Please confirm received within ${Math.max(0, daysRemaining)} day(s) to start the warranty period.
+                        Please confirm receipt to start the warranty period.
                     </div>
                 </div>
+                ${window.CountdownTimer ? window.CountdownTimer.generateCountdownWidgetHTML(endTime, startTime, 'Time to Confirm Receipt', '⏳') : ''}
             `;
             showConfirmButton = true;
 
         } else if (status === 'delivered') {
-            // Warranty period active - buyer can claim warranty
+            // Warranty period active - buyer can claim warranty - LIVE COUNTDOWN
             const warrantyTimeLeft = transaction.warrantyExpiresAt - now;
-            const warrantyDaysLeft = Math.ceil(warrantyTimeLeft / (24 * 60 * 60 * 1000));
+            const startTime = transaction.actualDeliveryDate || transaction.receivedAt || (transaction.warrantyExpiresAt - (7 * 24 * 60 * 60 * 1000));
+            const endTime = transaction.warrantyExpiresAt;
 
-            if (warrantyDaysLeft > 0) {
+            if (warrantyTimeLeft > 0) {
                 escrowInfoHTML = `
                     <div class="escrow-info-box warning">
                         <i class="fas fa-clock escrow-info-icon" style="color: #f59e0b;"></i>
                         <div class="escrow-info-text">
-                            <strong>🛡️ Warranty Active:</strong> ${warrantyDaysLeft} day(s) left to report issues. Seller payout after warranty.
+                            <strong>🛡️ Warranty Active:</strong> Report issues before expiry. Seller payout after warranty.
                         </div>
                     </div>
+                    ${window.CountdownTimer ? window.CountdownTimer.generateCountdownWidgetHTML(endTime, startTime, 'Warranty Period', '🛡️') : ''}
                 `;
                 showClaimWarrantyButton = true;
             } else {
@@ -244,12 +252,11 @@ function displayPurchaseHistory() {
             }
 
         } else if (status === 'warranty_claimed') {
-            // Buyer claimed warranty, need to return book within 7 days
+            // Buyer claimed warranty, need to return book within 7 days - LIVE COUNTDOWN
             const claimedAt = transaction.warrantyClaimedAt || Date.now();
             const returnDeadline = claimedAt + (7 * 24 * 60 * 60 * 1000); // 7 days
             const now = Date.now();
             const timeLeft = returnDeadline - now;
-            const daysLeft = Math.ceil(timeLeft / (24 * 60 * 60 * 1000));
 
             if (timeLeft > 0) {
                 // Still have time to return
@@ -258,10 +265,10 @@ function displayPurchaseHistory() {
                         <i class="fas fa-exclamation-triangle escrow-info-icon" style="color: #ef4444;"></i>
                         <div class="escrow-info-text">
                             <strong>📦 Return Required:</strong> Meet at ${transaction.items?.[0]?.bookDetails?.meetupLocation || 'agreed location'}.<br>
-                            <span style="color: #f59e0b; font-weight: 600;">⏰ ${daysLeft} day(s) left to send return</span><br>
                             <small style="color: #94a3b8;">Claim will be auto-dismissed if not returned within 7 days.</small>
                         </div>
                     </div>
+                    ${window.CountdownTimer ? window.CountdownTimer.generateCountdownWidgetHTML(returnDeadline, claimedAt, 'Return Deadline', '⏰') : ''}
                 `;
                 showConfirmReturnButton = true;
             } else {
@@ -880,16 +887,18 @@ function displaySalesHistory() {
             </div>`;
 
         } else if (status === 'delivered') {
-            // Warranty period - seller waits for payout
+            // Warranty period - seller waits for payout - LIVE COUNTDOWN
             const payoutTime = transaction.payoutScheduledAt - now;
-            const payoutDays = Math.ceil(payoutTime / (24 * 60 * 60 * 1000));
+            const startTime = transaction.actualDeliveryDate || transaction.receivedAt || (transaction.payoutScheduledAt - (7 * 24 * 60 * 60 * 1000));
+            const endTime = transaction.payoutScheduledAt;
 
-            if (payoutDays > 0) {
+            if (payoutTime > 0) {
                 statusBadge = `<span class="status-badge" style="background: #f59e0b; color: white;">🛡️ Warranty Period</span>`;
                 statusInfo = `<div class="escrow-info-box warning" style="margin-top: 0.75rem;">
                     <i class="fas fa-clock" style="color: #f59e0b;"></i>
-                    <div class="escrow-info-text"><strong>Payout in ${payoutDays} day(s)</strong><br>Funds held until warranty period expires.</div>
-                </div>`;
+                    <div class="escrow-info-text">Funds held until warranty period expires. Payment will be released automatically.</div>
+                </div>
+                ${window.CountdownTimer ? window.CountdownTimer.generateCountdownWidgetHTML(endTime, startTime, 'Payout Countdown', '💰') : ''}`;
             } else {
                 statusBadge = `<span class="status-badge" style="background: #10b981; color: white;">💰 Payout Processing</span>`;
                 statusInfo = `<div class="escrow-info-box success" style="margin-top: 0.75rem;">
