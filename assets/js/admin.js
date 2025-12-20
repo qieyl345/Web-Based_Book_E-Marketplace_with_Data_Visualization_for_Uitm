@@ -1,5 +1,10 @@
 // Admin dashboard functionality
 
+// Debug mode - set to true for verbose console logging
+const ADMIN_DEBUG_MODE = false;
+function debugLog(...args) {
+    if (ADMIN_DEBUG_MODE) console.log('[ADMIN]', ...args);
+}
 let allUsers = [];
 let allTransactions = [];
 let allBooks = [];
@@ -593,7 +598,7 @@ async function loadCharts() {
         } else {
             const topBooksData = calculateTopBooks();
             console.log('[ADMIN] Top books data:', topBooksData);
-            new Chart(topBooksCtx.getContext('2d'), {
+            topBooksChartInstance = new Chart(topBooksCtx.getContext('2d'), {
                 type: 'bar',
                 data: {
                     labels: topBooksData.labels,
@@ -634,7 +639,7 @@ async function loadCharts() {
         } else {
             const subjectData = calculateSubjectDistribution();
             console.log('[ADMIN] Subject data:', subjectData);
-            new Chart(subjectCtx.getContext('2d'), {
+            subjectChartInstance = new Chart(subjectCtx.getContext('2d'), {
                 type: 'pie',
                 data: {
                     labels: subjectData.labels,
@@ -1049,7 +1054,7 @@ function createTransactionSuccessChart() {
 
     const successData = calculateTransactionSuccessRate();
 
-    new Chart(ctx.getContext('2d'), {
+    transactionSuccessChartInstance = new Chart(ctx.getContext('2d'), {
         type: 'doughnut',
         data: {
             labels: ['Successful', 'Failed'],
@@ -1087,22 +1092,31 @@ function createTransactionSuccessChart() {
 }
 
 function calculateTransactionSuccessRate() {
-    let successful = 0, failed = 0;
+    let successful = 0, failed = 0, inProgress = 0;
+
+    // Define status categories for accurate reporting
+    const successStatuses = ['completed', 'successful'];
+    const failedStatuses = ['cancelled', 'failed', 'refunded'];
+    // Everything else is considered in-progress
 
     allTransactions.forEach(txn => {
         const status = txn.status?.toLowerCase() || 'unknown';
-        if (status === 'completed' || status === 'successful') {
+        if (successStatuses.includes(status)) {
             successful++;
-        } else {
-            // Count failed, cancelled, and any other status as failed
+        } else if (failedStatuses.includes(status)) {
             failed++;
+        } else {
+            // in-progress: payment_held, delivered, warranty_claimed, return_sent, return_received
+            inProgress++;
         }
     });
 
+    // For the chart, only show completed vs truly failed (exclude in-progress)
     return {
         successful,
         failed,
-        total: successful + failed
+        inProgress,
+        total: successful + failed + inProgress
     };
 }
 
@@ -1112,7 +1126,7 @@ async function createFeedbackDistributionChart() {
 
     const distribution = await calculateFeedbackDistribution();
 
-    new Chart(ctx.getContext('2d'), {
+    feedbackDistributionChartInstance = new Chart(ctx.getContext('2d'), {
         type: 'bar',
         data: {
             labels: ['1 Star', '2 Stars', '3 Stars', '4 Stars', '5 Stars'],
@@ -1309,7 +1323,7 @@ function createOfferFunnelChart() {
 
     const funnelData = calculateOfferFunnel();
 
-    new Chart(ctx.getContext('2d'), {
+    offerFunnelChartInstance = new Chart(ctx.getContext('2d'), {
         type: 'bar',
         data: {
             labels: [
@@ -1459,7 +1473,20 @@ function setupChartFilters() {
     }
 }
 
+// Helper: Show loading state on chart card during updates
+function showChartLoading(chartId, isLoading) {
+    const canvas = document.getElementById(chartId);
+    if (!canvas) return;
+    const chartCard = canvas.closest('.chart-card');
+    if (chartCard) {
+        chartCard.style.opacity = isLoading ? '0.6' : '1';
+        chartCard.style.pointerEvents = isLoading ? 'none' : 'auto';
+        chartCard.style.transition = 'opacity 0.2s ease';
+    }
+}
+
 function updateSalesChart(range) {
+    showChartLoading('salesChart', true);
     const salesData = calculateSalesTrendWithFilter(range);
 
     if (salesChartInstance) {
@@ -1467,9 +1494,11 @@ function updateSalesChart(range) {
         salesChartInstance.data.datasets[0].data = salesData.data;
         salesChartInstance.update();
     }
+    showChartLoading('salesChart', false);
 }
 
 function updateRevenueChart(range) {
+    showChartLoading('revenueChart', true);
     const revenueData = calculateRevenueTrendWithFilter(range);
 
     if (revenueChartInstance) {
@@ -1477,9 +1506,11 @@ function updateRevenueChart(range) {
         revenueChartInstance.data.datasets[0].data = revenueData.data;
         revenueChartInstance.update();
     }
+    showChartLoading('revenueChart', false);
 }
 
 function updateDisputeMetricsChart(range) {
+    showChartLoading('disputeMetricsChart', true);
     const metricsData = calculateDisputeMetricsWithFilter(range);
 
     if (disputeMetricsChartInstance) {
@@ -1489,6 +1520,7 @@ function updateDisputeMetricsChart(range) {
         disputeMetricsChartInstance.data.datasets[2].data = metricsData.resolutionRate;
         disputeMetricsChartInstance.update();
     }
+    showChartLoading('disputeMetricsChart', false);
 }
 
 function calculateSalesTrendWithFilter(range) {
@@ -1688,45 +1720,55 @@ async function calculateAllTimeDisputeMetrics() {
 // ===== UPDATE FUNCTIONS FOR REMAINING CHARTS =====
 
 function updateTopBooksChart(range) {
+    showChartLoading('topBooksChart', true);
     const data = calculateTopBooksWithFilter(range);
     if (topBooksChartInstance) {
         topBooksChartInstance.data.labels = data.labels;
         topBooksChartInstance.data.datasets[0].data = data.data;
         topBooksChartInstance.update();
     }
+    showChartLoading('topBooksChart', false);
 }
 
 function updateSubjectChart(range) {
+    showChartLoading('subjectChart', true);
     const data = calculateSubjectDistributionWithFilter(range);
     if (subjectChartInstance) {
         subjectChartInstance.data.labels = data.labels;
         subjectChartInstance.data.datasets[0].data = data.data;
         subjectChartInstance.update();
     }
+    showChartLoading('subjectChart', false);
 }
 
 function updateTransactionSuccessChart(range) {
+    showChartLoading('transactionSuccessChart', true);
     const data = calculateTransactionSuccessWithFilter(range);
     if (transactionSuccessChartInstance) {
         transactionSuccessChartInstance.data.datasets[0].data = data.counts;
         transactionSuccessChartInstance.update();
     }
+    showChartLoading('transactionSuccessChart', false);
 }
 
 async function updateFeedbackDistributionChart(range) {
+    showChartLoading('feedbackDistributionChart', true);
     const data = await calculateFeedbackDistributionWithFilter(range);
     if (feedbackDistributionChartInstance) {
         feedbackDistributionChartInstance.data.datasets[0].data = data.counts;
         feedbackDistributionChartInstance.update();
     }
+    showChartLoading('feedbackDistributionChart', false);
 }
 
 async function updateOfferFunnelChart(range) {
+    showChartLoading('offerFunnelChart', true);
     const data = await calculateOfferFunnelWithFilter(range);
     if (offerFunnelChartInstance) {
         offerFunnelChartInstance.data.datasets[0].data = data.counts;
         offerFunnelChartInstance.update();
     }
+    showChartLoading('offerFunnelChart', false);
 }
 
 // ===== CALCULATION FUNCTIONS WITH FILTERS =====
@@ -2160,7 +2202,7 @@ async function processPaySeller(transactionId) {
 
         if (!txn) throw new Error('Transaction not found');
 
-        const COMMISSION_RATE = 0.10;
+        // Use global COMMISSION_RATE from firebase-config.js
         const basePrice = txn.items.reduce((sum, item) => sum + item.bookDetails.price, 0);
         const commission = basePrice * COMMISSION_RATE;
         const sellerPayout = basePrice - commission;
@@ -2479,16 +2521,35 @@ async function loadSellerLeaderboard() {
                 if (!sellerId) return;
 
                 if (!sellerStats[sellerId]) {
-                    sellerStats[sellerId] = { name: sellerName, sales: 0, revenue: 0 };
+                    sellerStats[sellerId] = { name: sellerName, sales: 0, revenue: 0, ratings: [] };
                 }
                 sellerStats[sellerId].sales++;
                 sellerStats[sellerId].revenue += price;
             });
         });
 
+        // Fetch feedback to calculate actual seller ratings
+        try {
+            const feedbackSnapshot = await database.ref('feedback').once('value');
+            feedbackSnapshot.forEach(child => {
+                const feedback = child.val();
+                const sellerId = feedback.sellerId;
+                if (sellerId && sellerStats[sellerId] && feedback.rating) {
+                    sellerStats[sellerId].ratings.push(feedback.rating);
+                }
+            });
+        } catch (e) {
+            console.warn('[ADMIN] Could not fetch feedback for seller ratings:', e);
+        }
+
         // Convert to array and sort by revenue
         const leaderboard = Object.entries(sellerStats)
-            .map(([id, stats]) => ({ id, ...stats }))
+            .map(([id, stats]) => {
+                const avgRating = stats.ratings.length > 0
+                    ? (stats.ratings.reduce((a, b) => a + b, 0) / stats.ratings.length)
+                    : null;
+                return { id, ...stats, avgRating };
+            })
             .sort((a, b) => b.revenue - a.revenue)
             .slice(0, 5);
 
@@ -2498,15 +2559,20 @@ async function loadSellerLeaderboard() {
         }
 
         const medals = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
-        tableBody.innerHTML = leaderboard.map((seller, index) => `
-            <tr>
-                <td style="font-size: 1.25rem;">${medals[index] || index + 1}</td>
-                <td><strong>${seller.name}</strong></td>
-                <td>${seller.sales}</td>
-                <td style="color: #22c55e; font-weight: 600;">RM ${seller.revenue.toFixed(2)}</td>
-                <td>⭐ 4.5</td>
-            </tr>
-        `).join('');
+        tableBody.innerHTML = leaderboard.map((seller, index) => {
+            const ratingDisplay = seller.avgRating
+                ? `⭐ ${seller.avgRating.toFixed(1)}`
+                : '<span style="color: #94a3b8;">No ratings</span>';
+            return `
+                <tr>
+                    <td style="font-size: 1.25rem;">${medals[index] || index + 1}</td>
+                    <td><strong>${seller.name}</strong></td>
+                    <td>${seller.sales}</td>
+                    <td style="color: #22c55e; font-weight: 600;">RM ${seller.revenue.toFixed(2)}</td>
+                    <td>${ratingDisplay}</td>
+                </tr>
+            `;
+        }).join('');
 
         console.log('[ADMIN] Seller leaderboard loaded');
     } catch (error) {
@@ -2593,17 +2659,5 @@ async function loadActivityLog() {
     } catch (error) {
         console.error('[ADMIN] Error loading activity log:', error);
         logContainer.innerHTML = '<div style="color: #ef4444; text-align: center;">Error loading activity</div>';
-    }
-}
-
-// Helper: Resolve feedback/dispute
-async function resolveFeedback(feedbackId) {
-    try {
-        await database.ref(`feedback/${feedbackId}`).update({ resolved: true, resolvedAt: Date.now() });
-        showNotification('Feedback marked as resolved', 'success');
-        await loadReviewsAndDisputes();
-    } catch (error) {
-        console.error('[ADMIN] Error resolving feedback:', error);
-        showNotification('Error resolving feedback', 'error');
     }
 }
