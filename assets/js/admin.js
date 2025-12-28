@@ -590,22 +590,22 @@ async function loadCharts() {
             console.log('[ADMIN] Revenue Chart created');
         }
 
-        // Top Books Chart
-        console.log('[ADMIN] Creating Top Books Chart...');
-        const topBooksCtx = document.getElementById('topBooksChart');
-        if (!topBooksCtx) {
-            console.error('[ADMIN] topBooksChart canvas not found!');
+        // Top Sellers by Revenue Chart
+        console.log('[ADMIN] Creating Top Sellers Chart...');
+        const topSellersCtx = document.getElementById('topSellersChart');
+        if (!topSellersCtx) {
+            console.error('[ADMIN] topSellersChart canvas not found!');
         } else {
-            const topBooksData = calculateTopBooks();
-            console.log('[ADMIN] Top books data:', topBooksData);
-            topBooksChartInstance = new Chart(topBooksCtx.getContext('2d'), {
+            const topSellersData = calculateTopSellers();
+            console.log('[ADMIN] Top sellers data:', topSellersData);
+            topBooksChartInstance = new Chart(topSellersCtx.getContext('2d'), {
                 type: 'bar',
                 data: {
-                    labels: topBooksData.labels,
+                    labels: topSellersData.labels,
                     datasets: [{
-                        label: 'Books Sold',
-                        data: topBooksData.data,
-                        backgroundColor: '#FFB81C'
+                        label: 'Revenue (RM)',
+                        data: topSellersData.data,
+                        backgroundColor: '#22c55e'
                     }]
                 },
                 options: {
@@ -616,19 +616,28 @@ async function loadCharts() {
                         legend: {
                             display: true,
                             position: 'top'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return 'RM ' + context.raw.toFixed(2);
+                                }
+                            }
                         }
                     },
                     scales: {
                         x: {
                             beginAtZero: true,
                             ticks: {
-                                precision: 0
+                                callback: function (value) {
+                                    return 'RM ' + value;
+                                }
                             }
                         }
                     }
                 }
             });
-            console.log('[ADMIN] Top Books Chart created');
+            console.log('[ADMIN] Top Sellers Chart created');
         }
 
         // Subject Distribution Chart
@@ -719,8 +728,8 @@ function calculateRevenueTrend() {
     return { labels: last7Days, data };
 }
 
-function calculateTopBooks() {
-    const bookSales = {};
+function calculateTopSellers() {
+    const sellerRevenue = {};
 
     // Add defensive check for empty transactions
     if (!allTransactions || allTransactions.length === 0) {
@@ -730,27 +739,28 @@ function calculateTopBooks() {
     allTransactions.forEach(txn => {
         if (txn.items && Array.isArray(txn.items)) {
             txn.items.forEach(item => {
-                // Add null checks for bookDetails and title
-                if (item && item.bookDetails && item.bookDetails.title) {
-                    const title = item.bookDetails.title;
-                    bookSales[title] = (bookSales[title] || 0) + 1;
+                // Add null checks for bookDetails and seller info
+                if (item && item.bookDetails && item.bookDetails.sellerName) {
+                    const sellerName = item.bookDetails.sellerName;
+                    const price = item.bookDetails.price || 0;
+                    sellerRevenue[sellerName] = (sellerRevenue[sellerName] || 0) + price;
                 }
             });
         }
     });
 
-    const sorted = Object.entries(bookSales)
+    const sorted = Object.entries(sellerRevenue)
         .sort((a, b) => b[1] - a[1])
         .slice(0, 5);
 
-    // Handle case when no books were found
+    // Handle case when no sellers were found
     if (sorted.length === 0) {
         return { labels: ['No Data'], data: [0] };
     }
 
     return {
-        labels: sorted.map(([title]) => title.length > 20 ? title.substring(0, 20) + '...' : title),
-        data: sorted.map(([, count]) => count)
+        labels: sorted.map(([name]) => name.length > 15 ? name.substring(0, 15) + '...' : name),
+        data: sorted.map(([, revenue]) => revenue)
     };
 }
 
@@ -1432,11 +1442,11 @@ function setupChartFilters() {
         });
     }
 
-    // Top Books Filter
-    const topBooksFilter = document.getElementById('topBooksFilter');
-    if (topBooksFilter) {
-        topBooksFilter.addEventListener('change', (e) => {
-            updateTopBooksChart(e.target.value);
+    // Top Sellers Filter
+    const topSellersFilter = document.getElementById('topSellersFilter');
+    if (topSellersFilter) {
+        topSellersFilter.addEventListener('change', (e) => {
+            updateTopSellersChart(e.target.value);
         });
     }
 
@@ -1719,15 +1729,15 @@ async function calculateAllTimeDisputeMetrics() {
 
 // ===== UPDATE FUNCTIONS FOR REMAINING CHARTS =====
 
-function updateTopBooksChart(range) {
-    showChartLoading('topBooksChart', true);
-    const data = calculateTopBooksWithFilter(range);
+function updateTopSellersChart(range) {
+    showChartLoading('topSellersChart', true);
+    const data = calculateTopSellersWithFilter(range);
     if (topBooksChartInstance) {
         topBooksChartInstance.data.labels = data.labels;
         topBooksChartInstance.data.datasets[0].data = data.data;
         topBooksChartInstance.update();
     }
-    showChartLoading('topBooksChart', false);
+    showChartLoading('topSellersChart', false);
 }
 
 function updateSubjectChart(range) {
@@ -1773,7 +1783,7 @@ async function updateOfferFunnelChart(range) {
 
 // ===== CALCULATION FUNCTIONS WITH FILTERS =====
 
-function calculateTopBooksWithFilter(range) {
+function calculateTopSellersWithFilter(range) {
     let filteredTransactions = allTransactions;
 
     if (range !== 'all') {
@@ -1783,23 +1793,24 @@ function calculateTopBooksWithFilter(range) {
         filteredTransactions = allTransactions.filter(txn => new Date(txn.createdAt) >= cutoffDate);
     }
 
-    const bookCounts = {};
+    const sellerRevenue = {};
     filteredTransactions.forEach(txn => {
         if (txn.items && Array.isArray(txn.items)) {
             txn.items.forEach(item => {
-                const bookTitle = item.bookDetails?.title || 'Unknown Book';
-                bookCounts[bookTitle] = (bookCounts[bookTitle] || 0) + 1;
+                const sellerName = item.bookDetails?.sellerName || 'Unknown Seller';
+                const price = item.bookDetails?.price || 0;
+                sellerRevenue[sellerName] = (sellerRevenue[sellerName] || 0) + price;
             });
         }
     });
 
-    const sortedBooks = Object.entries(bookCounts)
+    const sortedSellers = Object.entries(sellerRevenue)
         .sort((a, b) => b[1] - a[1])
         .slice(0, 5);
 
     return {
-        labels: sortedBooks.map(([title]) => title),
-        data: sortedBooks.map(([, count]) => count)
+        labels: sortedSellers.map(([name]) => name.length > 15 ? name.substring(0, 15) + '...' : name),
+        data: sortedSellers.map(([, revenue]) => revenue)
     };
 }
 
@@ -2021,6 +2032,13 @@ async function loadWarrantyIssues() {
                             <i class="fas fa-undo"></i> Process Refund
                         </button>
                     `;
+                    break;
+
+                default:
+                    // Catch any unexpected status - should not happen but prevents UI bugs
+                    console.warn('[ADMIN] Unexpected warranty status:', txn.status, 'for transaction:', orderId);
+                    statusBadge = `<span class="badge" style="background: #94a3b8; color: white; padding: 0.25rem 0.5rem; border-radius: 4px;">❓ ${txn.status || 'Unknown'}</span>`;
+                    actions = `<span style="color: #94a3b8; font-size: 0.75rem;">Status unclear</span>`;
                     break;
             }
 

@@ -4,14 +4,11 @@
 #editBookSection {
     display: flex;
     gap: 15px;
-    /* Gap between buttons for balance */
     justify-content: center;
-    /* Center the buttons */
     margin-top: 1.5rem;
     width: 100%;
 }
 
-/* Ensure JS doesn't override display: flex with display: block if it does (it shouldn't, but safety first) */
 #editBookSection[style*="display: block"] {
     display: flex !important;
     gap: 15px !important;
@@ -21,16 +18,13 @@
 /* 2. Profile Avatar Size */
 .profile-avatar-container img {
     width: 160px !important;
-    /* Enlarge size (was 120px) */
     height: 160px !important;
     border-width: 5px !important;
-    /* Slightly thicker border for larger size */
 }
 
 /* 3. Change Avatar Button Background Color */
 #changeAvatarBtn {
     background-color: var(--uitm-purple, #3A0B61) !important;
-    /* Suitable purple color */
     color: white !important;
     border: 2px solid white !important;
     width: 40px !important;
@@ -48,23 +42,112 @@
 /* 4. Lightbox Close Button Centering */
 .lightbox-close {
     padding-bottom: 0 !important;
-    /* Remove padding that was throwing it off */
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
 }
 
-/* Ensure Next/Prev Buttons are visible and styled correctly */
 .lightbox-nav-btn {
     display: flex;
-    /* Ensure flex is applied */
     z-index: 10001;
-    /* Ensure on top */
 }
 
-/* 5. Notification Icon Visibility */
+/* 5. Notification Icon Visibility - All Types */
+.notification-icon.offer {
+    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+}
+
+.notification-icon.offer_accepted {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
+}
+
+.notification-icon.offer_rejected {
+    background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%) !important;
+}
+
 .notification-icon.counter_offer {
     background: linear-gradient(135deg, #0891B2 0%, #0E7490 100%) !important;
+}
+
+.notification-icon.message {
+    background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%) !important;
+}
+
+.notification-icon.payment {
+    background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%) !important;
+}
+
+.notification-icon.delivery {
+    background: linear-gradient(135deg, #14B8A6 0%, #0D9488 100%) !important;
+}
+
+.notification-icon.order_confirmed {
+    background: linear-gradient(135deg, #EC4899 0%, #DB2777 100%) !important;
+}
+
+.notification-icon.payout_received {
+    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+}
+
+.notification-icon.system {
+    background: linear-gradient(135deg, #6B7280 0%, #4B5563 100%) !important;
+}
+
+/* Admin notification types */
+.notification-icon.admin_dispute {
+    background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%) !important;
+}
+
+.notification-icon.admin_payment_failure {
+    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+}
+
+.notification-icon.admin_suspicious {
+    background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%) !important;
+}
+
+.notification-icon.admin_new_user {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
+}
+
+.notification-icon.admin_new_book {
+    background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%) !important;
+}
+
+.notification-icon.admin_high_value {
+    background: linear-gradient(135deg, #A855F7 0%, #9333EA 100%) !important;
+}
+
+.notification-icon.admin_low_rating {
+    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+}
+
+.notification-icon.admin_report {
+    background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%) !important;
+}
+
+.notification-icon.admin_pattern {
+    background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%) !important;
+}
+
+.notification-icon.admin_txn_complete {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
+}
+
+.notification-icon.admin_stale_offer {
+    background: linear-gradient(135deg, #6B7280 0%, #4B5563 100%) !important;
+}
+
+.notification-icon.admin_txn_cancelled {
+    background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%) !important;
+}
+
+.notification-icon.admin_milestone {
+    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+}
+
+.notification-icon.admin_digest {
+    background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%) !important;
 }
 
 /* 6. Payment Page - Bank Selection Text Visibility */
@@ -80,7 +163,6 @@
 }
 
 /* 8. Admin Page - Notification Dropdown Visibility */
-/* Using higher specificity to ensure these styles are applied */
 .admin-theme .notification-dropdown,
 body.admin-theme .notification-dropdown,
 .admin-page .notification-dropdown {
@@ -93,14 +175,12 @@ body.admin-theme .notification-dropdown,
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25) !important;
 }
 
-/* Ensure dropdown header is visible */
 .admin-theme .notification-header,
 body.admin-theme .notification-header {
     background: rgba(58, 11, 97, 0.08) !important;
     border-bottom: 2px solid rgba(58, 11, 97, 0.2) !important;
 }
 
-/* Ensure empty state message is visible */
 .admin-theme .notification-empty,
 body.admin-theme .notification-empty {
     color: #64748B !important;
@@ -113,213 +193,33 @@ body.admin-theme .notification-empty i {
     opacity: 0.4 !important;
 }
 
-/* Ensure notification list background is visible */
 .admin-theme .notification-list,
 body.admin-theme .notification-list {
     background: transparent !important;
 }
 
-/* Make all notification dropdown text black for better visibility */
 .admin-theme .notification-dropdown,
 .admin-theme .notification-dropdown * {
     color: #000000 !important;
 }
 
-/* Notification header text */
 .admin-theme .notification-header h3 {
     color: #000000 !important;
 }
 
-/* Notification message text */
 .admin-theme .notification-message {
     color: #000000 !important;
 }
 
-/* Empty state text */
 .admin-theme .notification-empty,
 .admin-theme .notification-empty p {
     color: #000000 !important;
 }
 
-/* Mark as read button text */
 .admin-theme .mark-read-btn {
     color: #000000 !important;
 }
 
-/* Time text - slightly lighter but still visible */
-.admin-theme .notification-time {
-    color: #333333 !important;
-}
-
-/* 9. Profile Page - Avatar Container Overlaying Cover */
-.profile-header-card {
-    position: relative !important;
-}
-
-.profile-cover {
-    position: relative !important;
-}
-
-.profile-avatar-container {
-    position: absolute !important;
-    /* Cover is 250px high, Avatar is 160px. To center on the line: 250 - (160/2) = 170px */
-    top: 170px !important;
-    bottom: auto !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    z-index: 100 !important;
-}
-
-/* Adjust profile-main-info to accommodate the repositioned avatar */
-/* UI Fixes and Enhancements */
-
-/* 1. Seller Book-Detail Buttons Positioning */
-#editBookSection {
-    display: flex;
-    gap: 15px;
-    /* Gap between buttons for balance */
-    justify-content: center;
-    /* Center the buttons */
-    margin-top: 1.5rem;
-    width: 100%;
-}
-
-/* Ensure JS doesn't override display: flex with display: block if it does (it shouldn't, but safety first) */
-#editBookSection[style*="display: block"] {
-    display: flex !important;
-    gap: 15px !important;
-    justify-content: center !important;
-}
-
-/* 2. Profile Avatar Size */
-.profile-avatar-container img {
-    width: 160px !important;
-    /* Enlarge size (was 120px) */
-    height: 160px !important;
-    border-width: 5px !important;
-    /* Slightly thicker border for larger size */
-}
-
-/* 3. Change Avatar Button Background Color */
-#changeAvatarBtn {
-    background-color: var(--uitm-purple, #3A0B61) !important;
-    /* Suitable purple color */
-    color: white !important;
-    border: 2px solid white !important;
-    width: 40px !important;
-    height: 40px !important;
-    bottom: 5px !important;
-    right: 5px !important;
-}
-
-#changeAvatarBtn:hover {
-    background-color: var(--uitm-gold, #FFD700) !important;
-    color: #3A0B61 !important;
-    transform: scale(1.1);
-}
-
-/* 4. Lightbox Close Button Centering */
-.lightbox-close {
-    padding-bottom: 0 !important;
-    /* Remove padding that was throwing it off */
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-/* Ensure Next/Prev Buttons are visible and styled correctly */
-.lightbox-nav-btn {
-    display: flex;
-    /* Ensure flex is applied */
-    z-index: 10001;
-    /* Ensure on top */
-}
-
-/* 5. Notification Icon Visibility */
-.notification-icon.counter_offer {
-    background: linear-gradient(135deg, #0891B2 0%, #0E7490 100%) !important;
-}
-
-/* 6. Payment Page - Bank Selection Text Visibility */
-.bank-option.selected h3 {
-    color: white !important;
-}
-
-/* 7. Admin Page - Feedback Table Date Column Width */
-.admin-page .table-card:nth-child(3) table th:first-child,
-.admin-page .table-card:nth-child(3) table td:first-child {
-    min-width: 140px !important;
-    white-space: nowrap;
-}
-
-/* 8. Admin Page - Notification Dropdown Visibility */
-/* Using higher specificity to ensure these styles are applied */
-.admin-theme .notification-dropdown,
-body.admin-theme .notification-dropdown,
-.admin-page .notification-dropdown {
-    background: #FFFFFF !important;
-    background: rgba(255, 255, 255, 0.98) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
-    border: 2px solid #3A0B61 !important;
-    border: 2px solid rgba(58, 11, 97, 0.4) !important;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25) !important;
-}
-
-/* Ensure dropdown header is visible */
-.admin-theme .notification-header,
-body.admin-theme .notification-header {
-    background: rgba(58, 11, 97, 0.08) !important;
-    border-bottom: 2px solid rgba(58, 11, 97, 0.2) !important;
-}
-
-/* Ensure empty state message is visible */
-.admin-theme .notification-empty,
-body.admin-theme .notification-empty {
-    color: #64748B !important;
-    padding: 3rem 1.5rem !important;
-}
-
-.admin-theme .notification-empty i,
-body.admin-theme .notification-empty i {
-    color: #3A0B61 !important;
-    opacity: 0.4 !important;
-}
-
-/* Ensure notification list background is visible */
-.admin-theme .notification-list,
-body.admin-theme .notification-list {
-    background: transparent !important;
-}
-
-/* Make all notification dropdown text black for better visibility */
-.admin-theme .notification-dropdown,
-.admin-theme .notification-dropdown * {
-    color: #000000 !important;
-}
-
-/* Notification header text */
-.admin-theme .notification-header h3 {
-    color: #000000 !important;
-}
-
-/* Notification message text */
-.admin-theme .notification-message {
-    color: #000000 !important;
-}
-
-/* Empty state text */
-.admin-theme .notification-empty,
-.admin-theme .notification-empty p {
-    color: #000000 !important;
-}
-
-/* Mark as read button text */
-.admin-theme .mark-read-btn {
-    color: #000000 !important;
-}
-
-/* Time text - slightly lighter but still visible */
 .admin-theme .notification-time {
     color: #333333 !important;
 }
@@ -328,7 +228,6 @@ body.admin-theme .notification-list {
 .profile-header-card {
     position: relative !important;
     overflow: visible !important;
-    /* Ensure avatar isn't clipped */
 }
 
 .profile-cover {
@@ -337,53 +236,33 @@ body.admin-theme .notification-list {
 
 .profile-avatar-container {
     position: absolute !important;
-    /* 
-       STRATEGY:
-       Parent (.profile-main-info) starts BELOW the cover (at 250px).
-       We use a NEGATIVE top value to pull the avatar UP into the cover.
-       
-       Avatar Height: 160px. Half is 80px.
-       To center on the line: Move up by half height = -80px.
-    */
     top: -125px !important;
     bottom: auto !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
     z-index: 100 !important;
-    /* Reset margins that might interfere */
     margin: 0 !important;
     padding: 0 !important;
 }
 
-/* Ensure Avatar Image has clean border without weird double-shadows */
 .profile-avatar-container img {
     border: 5px solid #FFD700 !important;
-    /* Clean Gold Border */
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
-    /* Soft depth shadow only */
     background: white;
-    /* Prevent transparent gaps */
 }
 
-/* Adjust profile-main-info to accommodate the repositioned avatar */
-/* Pushing content down significantly to avoid overlap */
 .profile-main-info {
     padding-top: 100px !important;
-    /* Space for the bottom half of avatar (80px) + buffer */
     position: relative !important;
-    /* Restore relative positioning context so avatar is relative to THIS */
     z-index: 10 !important;
 }
 
 /* 10. Profile Page - Stat Boxes Redesign */
-
 .profile-stats-row {
     gap: 2rem !important;
 }
 
-/* Common Card Styling */
 .profile-stats-row>div {
-    /* Removed default white background to allow individual coloring */
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03) !important;
     border-radius: 20px !important;
     display: flex !important;
@@ -399,14 +278,12 @@ body.admin-theme .notification-list {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
 }
 
-/* Reset Stat Details Layout */
 .profile-stats-row>div .stat-details {
     align-items: center !important;
     text-align: center !important;
     margin-top: 1rem !important;
 }
 
-/* Common Icon Styling */
 .profile-stats-row>div .stat-icon {
     width: 60px !important;
     height: 60px !important;
@@ -418,10 +295,9 @@ body.admin-theme .notification-list {
     color: white !important;
     margin-bottom: 0.5rem !important;
     background: none !important;
-    /* Reset existing backgrounds */
 }
 
-/* 1. Listings Card - Purple Theme */
+/* Listings Card - Purple Theme */
 .profile-stats-row>div:nth-child(1) {
     background: linear-gradient(135deg, rgba(139, 92, 246, 0.25) 0%, rgba(139, 92, 246, 0.15) 100%) !important;
     border: 1px solid rgba(139, 92, 246, 0.4) !important;
@@ -437,7 +313,7 @@ body.admin-theme .notification-list {
     box-shadow: 0 8px 16px rgba(139, 92, 246, 0.3) !important;
 }
 
-/* 2. Sales Card - Pink/Rose Theme */
+/* Sales Card - Pink/Rose Theme */
 .profile-stats-row>div:nth-child(2) {
     background: linear-gradient(135deg, rgba(244, 114, 182, 0.25) 0%, rgba(244, 114, 182, 0.15) 100%) !important;
     border: 1px solid rgba(244, 114, 182, 0.4) !important;
@@ -453,7 +329,7 @@ body.admin-theme .notification-list {
     box-shadow: 0 8px 16px rgba(244, 114, 182, 0.3) !important;
 }
 
-/* 3. Bought Card - Cyan/Blue Theme */
+/* Bought Card - Cyan/Blue Theme */
 .profile-stats-row>div:nth-child(3) {
     background: linear-gradient(135deg, rgba(34, 211, 238, 0.25) 0%, rgba(34, 211, 238, 0.15) 100%) !important;
     border: 1px solid rgba(34, 211, 238, 0.4) !important;
@@ -472,11 +348,8 @@ body.admin-theme .notification-list {
 /* Typography Styling */
 .stat-value {
     color: #0f172a !important;
-    /* Almost black for better contrast */
     font-size: 2.5rem !important;
-    /* Increased from 2rem */
     font-weight: 900 !important;
-    /* Heaviest weight */
     background: none !important;
     -webkit-text-fill-color: #0f172a !important;
     margin-bottom: 0.25rem !important;
@@ -485,11 +358,8 @@ body.admin-theme .notification-list {
 
 .stat-label {
     color: #334155 !important;
-    /* Darker grey */
     font-size: 0.85rem !important;
-    /* Increased from 0.75rem */
     font-weight: 800 !important;
-    /* Increased from 700 */
     text-transform: uppercase !important;
     letter-spacing: 1.5px !important;
     background: none !important;
