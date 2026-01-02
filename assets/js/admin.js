@@ -19,6 +19,37 @@ let transactionSuccessChartInstance = null;
 let feedbackDistributionChartInstance = null;
 let offerFunnelChartInstance = null;
 
+// ===== ANALYTICS CACHE SYSTEM =====
+// Caches chart data for 5 minutes to speed up page revisits
+const analyticsCache = {
+    data: {},
+    ttl: 5 * 60 * 1000, // 5 minutes in milliseconds
+
+    set(key, value) {
+        this.data[key] = {
+            value: value,
+            timestamp: Date.now()
+        };
+    },
+
+    get(key) {
+        const cached = this.data[key];
+        if (!cached) return null;
+
+        // Check if cache is still valid
+        if (Date.now() - cached.timestamp > this.ttl) {
+            delete this.data[key];
+            return null;
+        }
+        return cached.value;
+    },
+
+    clear() {
+        this.data = {};
+        console.log('[ADMIN] Analytics cache cleared');
+    }
+};
+
 // Initialize admin dashboard
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('[ADMIN] DOMContentLoaded fired');
@@ -49,7 +80,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         setupExportButton();
         setupUserSearch();
         setupSettingsForm();
-        setupChartFilters(); // NEW: Setup filter event listeners
+        setupChartFilters(); // Setup filter event listeners
+        setupRealtimeListeners(); // Enable live dashboard updates
 
         console.log('[ADMIN] Admin initialization complete');
     } catch (error) {
@@ -605,7 +637,7 @@ async function loadCharts() {
                     datasets: [{
                         label: 'Revenue (RM)',
                         data: topSellersData.data,
-                        backgroundColor: '#22c55e'
+                        backgroundColor: topSellersData.colors // Role-based colors
                     }]
                 },
                 options: {
@@ -615,12 +647,22 @@ async function loadCharts() {
                     plugins: {
                         legend: {
                             display: true,
-                            position: 'top'
+                            position: 'top',
+                            labels: {
+                                generateLabels: function () {
+                                    return [
+                                        { text: 'Student', fillStyle: '#3b82f6', strokeStyle: '#3b82f6' },
+                                        { text: 'Staff', fillStyle: '#8b5cf6', strokeStyle: '#8b5cf6' }
+                                    ];
+                                }
+                            }
                         },
                         tooltip: {
                             callbacks: {
                                 label: function (context) {
-                                    return 'RM ' + context.raw.toFixed(2);
+                                    const role = topSellersData.roles ? topSellersData.roles[context.dataIndex] : 'unknown';
+                                    const roleLabel = role.charAt(0).toUpperCase() + role.slice(1);
+                                    return `RM ${context.raw.toFixed(2)} (${roleLabel})`;
                                 }
                             }
                         }
@@ -729,11 +771,11 @@ function calculateRevenueTrend() {
 }
 
 function calculateTopSellers() {
-    const sellerRevenue = {};
+    const sellerData = {};
 
     // Add defensive check for empty transactions
     if (!allTransactions || allTransactions.length === 0) {
-        return { labels: ['No Data'], data: [0] };
+        return { labels: ['No Data'], data: [0], colors: ['#94a3b8'] };
     }
 
     allTransactions.forEach(txn => {
@@ -742,25 +784,50 @@ function calculateTopSellers() {
                 // Add null checks for bookDetails and seller info
                 if (item && item.bookDetails && item.bookDetails.sellerName) {
                     const sellerName = item.bookDetails.sellerName;
+                    const sellerId = item.bookDetails.sellerId;
                     const price = item.bookDetails.price || 0;
-                    sellerRevenue[sellerName] = (sellerRevenue[sellerName] || 0) + price;
+
+                    if (!sellerData[sellerName]) {
+                        sellerData[sellerName] = { revenue: 0, sellerId: sellerId, role: null };
+                    }
+                    sellerData[sellerName].revenue += price;
                 }
             });
         }
     });
 
-    const sorted = Object.entries(sellerRevenue)
-        .sort((a, b) => b[1] - a[1])
+    // Look up seller roles from allUsers
+    Object.keys(sellerData).forEach(sellerName => {
+        const sellerId = sellerData[sellerName].sellerId;
+        const user = allUsers.find(u => u.id === sellerId || u.uid === sellerId);
+        if (user) {
+            sellerData[sellerName].role = user.role || 'student';
+        } else {
+            sellerData[sellerName].role = 'student'; // Default to student
+        }
+    });
+
+    const sorted = Object.entries(sellerData)
+        .sort((a, b) => b[1].revenue - a[1].revenue)
         .slice(0, 5);
 
     // Handle case when no sellers were found
     if (sorted.length === 0) {
-        return { labels: ['No Data'], data: [0] };
+        return { labels: ['No Data'], data: [0], colors: ['#94a3b8'] };
     }
+
+    // Role-based colors: Student = Blue (#3b82f6), Staff = Purple (#8b5cf6)
+    const roleColors = {
+        'student': '#3b82f6',  // Blue
+        'staff': '#8b5cf6',    // Purple
+        'admin': '#ef4444'     // Red (just in case)
+    };
 
     return {
         labels: sorted.map(([name]) => name.length > 15 ? name.substring(0, 15) + '...' : name),
-        data: sorted.map(([, revenue]) => revenue)
+        data: sorted.map(([, info]) => info.revenue),
+        colors: sorted.map(([, info]) => roleColors[info.role] || '#3b82f6'),
+        roles: sorted.map(([, info]) => info.role)
     };
 }
 
@@ -803,10 +870,35 @@ function setupExportButton() {
     }
 }
 
-// CSV Export Implementation
+// CSV Export Implementation with Date Range Filter
 function exportTransactionsToCSV() {
-    if (!allTransactions || allTransactions.length === 0) {
-        showNotification("No transactions to export", "info");
+    // Get date range from inputs
+    const dateFromInput = document.getElementById('exportDateFrom');
+    const dateToInput = document.getElementById('exportDateTo');
+
+    let filteredTransactions = allTransactions;
+    let dateRangeLabel = 'all_time';
+
+    // Apply date filters if provided
+    if (dateFromInput?.value || dateToInput?.value) {
+        const fromDate = dateFromInput?.value ? new Date(dateFromInput.value) : null;
+        const toDate = dateToInput?.value ? new Date(dateToInput.value + 'T23:59:59') : null;
+
+        filteredTransactions = allTransactions.filter(txn => {
+            const txnDate = new Date(txn.createdAt);
+            if (fromDate && txnDate < fromDate) return false;
+            if (toDate && txnDate > toDate) return false;
+            return true;
+        });
+
+        // Create date label for filename
+        const from = dateFromInput?.value || 'start';
+        const to = dateToInput?.value || 'today';
+        dateRangeLabel = `${from}_to_${to}`;
+    }
+
+    if (!filteredTransactions || filteredTransactions.length === 0) {
+        showNotification("No transactions found for selected date range", "info");
         return;
     }
 
@@ -825,7 +917,7 @@ function exportTransactionsToCSV() {
     ];
 
     // Build CSV rows
-    const rows = allTransactions.map(txn => {
+    const rows = filteredTransactions.map(txn => {
         const bookTitle = txn.items && txn.items[0] && txn.items[0].bookDetails
             ? txn.items[0].bookDetails.title
             : 'N/A';
@@ -860,7 +952,7 @@ function exportTransactionsToCSV() {
     const url = URL.createObjectURL(blob);
 
     link.setAttribute('href', url);
-    link.setAttribute('download', `transactions_export_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.setAttribute('download', `transactions_${dateRangeLabel}.csv`);
     link.style.visibility = 'hidden';
 
     document.body.appendChild(link);
@@ -868,7 +960,7 @@ function exportTransactionsToCSV() {
     document.body.removeChild(link);
 
     URL.revokeObjectURL(url);
-    showNotification(`Exported ${allTransactions.length} transactions to CSV`, "success");
+    showNotification(`Exported ${filteredTransactions.length} transactions to CSV`, "success");
 }
 
 function setupUserSearch() {
@@ -1735,6 +1827,7 @@ function updateTopSellersChart(range) {
     if (topBooksChartInstance) {
         topBooksChartInstance.data.labels = data.labels;
         topBooksChartInstance.data.datasets[0].data = data.data;
+        topBooksChartInstance.data.datasets[0].backgroundColor = data.colors; // Apply role colors
         topBooksChartInstance.update();
     }
     showChartLoading('topSellersChart', false);
@@ -1793,24 +1886,45 @@ function calculateTopSellersWithFilter(range) {
         filteredTransactions = allTransactions.filter(txn => new Date(txn.createdAt) >= cutoffDate);
     }
 
-    const sellerRevenue = {};
+    const sellerData = {};
     filteredTransactions.forEach(txn => {
         if (txn.items && Array.isArray(txn.items)) {
             txn.items.forEach(item => {
                 const sellerName = item.bookDetails?.sellerName || 'Unknown Seller';
+                const sellerId = item.bookDetails?.sellerId;
                 const price = item.bookDetails?.price || 0;
-                sellerRevenue[sellerName] = (sellerRevenue[sellerName] || 0) + price;
+
+                if (!sellerData[sellerName]) {
+                    sellerData[sellerName] = { revenue: 0, sellerId: sellerId, role: null };
+                }
+                sellerData[sellerName].revenue += price;
             });
         }
     });
 
-    const sortedSellers = Object.entries(sellerRevenue)
-        .sort((a, b) => b[1] - a[1])
+    // Look up seller roles from allUsers
+    Object.keys(sellerData).forEach(sellerName => {
+        const sellerId = sellerData[sellerName].sellerId;
+        const user = allUsers.find(u => u.id === sellerId || u.uid === sellerId);
+        sellerData[sellerName].role = user?.role || 'student';
+    });
+
+    const sortedSellers = Object.entries(sellerData)
+        .sort((a, b) => b[1].revenue - a[1].revenue)
         .slice(0, 5);
+
+    // Role-based colors
+    const roleColors = {
+        'student': '#3b82f6',
+        'staff': '#8b5cf6',
+        'admin': '#ef4444'
+    };
 
     return {
         labels: sortedSellers.map(([name]) => name.length > 15 ? name.substring(0, 15) + '...' : name),
-        data: sortedSellers.map(([, revenue]) => revenue)
+        data: sortedSellers.map(([, info]) => info.revenue),
+        colors: sortedSellers.map(([, info]) => roleColors[info.role] || '#3b82f6'),
+        roles: sortedSellers.map(([, info]) => info.role)
     };
 }
 
@@ -2678,4 +2792,231 @@ async function loadActivityLog() {
         console.error('[ADMIN] Error loading activity log:', error);
         logContainer.innerHTML = '<div style="color: #ef4444; text-align: center;">Error loading activity</div>';
     }
+}
+
+// ===== REAL-TIME FIREBASE LISTENERS =====
+// Enables live dashboard updates without page refresh
+
+let realtimeListenersActive = false;
+
+function setupRealtimeListeners() {
+    if (realtimeListenersActive) {
+        console.log('[ADMIN] Real-time listeners already active');
+        return;
+    }
+
+    console.log('[ADMIN] Setting up real-time Firebase listeners...');
+
+    // Listen for transaction changes
+    database.ref('transactions').on('child_added', (snapshot) => {
+        if (!realtimeListenersActive) return; // Ignore initial load
+        const newTxn = snapshot.val();
+        newTxn.id = snapshot.key;
+
+        // Check if transaction already exists
+        const exists = allTransactions.some(t => t.id === newTxn.id);
+        if (!exists) {
+            allTransactions.push(newTxn);
+            console.log('[ADMIN] Real-time: New transaction added', newTxn.id);
+            refreshDashboardStats();
+            showNotification('New transaction received!', 'info');
+        }
+    });
+
+    database.ref('transactions').on('child_changed', (snapshot) => {
+        const updatedTxn = snapshot.val();
+        updatedTxn.id = snapshot.key;
+
+        const index = allTransactions.findIndex(t => t.id === updatedTxn.id);
+        if (index !== -1) {
+            allTransactions[index] = updatedTxn;
+            console.log('[ADMIN] Real-time: Transaction updated', updatedTxn.id);
+            refreshDashboardStats();
+        }
+    });
+
+    // Listen for user changes
+    database.ref('users').on('child_added', (snapshot) => {
+        if (!realtimeListenersActive) return;
+        const newUser = snapshot.val();
+        newUser.id = snapshot.key;
+
+        const exists = allUsers.some(u => u.id === newUser.id);
+        if (!exists) {
+            allUsers.push(newUser);
+            console.log('[ADMIN] Real-time: New user registered', newUser.id);
+            refreshDashboardStats();
+        }
+    });
+
+    // Listen for feedback changes (disputes, reviews)
+    database.ref('feedback').on('child_added', (snapshot) => {
+        if (!realtimeListenersActive) return;
+        const feedback = snapshot.val();
+
+        if (feedback.type === 'dispute' && feedback.status === 'pending') {
+            console.log('[ADMIN] Real-time: New dispute submitted');
+            showNotification('New dispute requires attention!', 'warning');
+            loadReviewsAndDisputes();
+        }
+    });
+
+    // Mark listeners as active after initial data is loaded
+    setTimeout(() => {
+        realtimeListenersActive = true;
+        console.log('[ADMIN] Real-time listeners now active');
+    }, 3000);
+}
+
+// Refresh dashboard stats and charts efficiently
+function refreshDashboardStats() {
+    // Update stat cards
+    const totalTransactionsEl = document.getElementById('totalTransactions');
+    const totalUsersEl = document.getElementById('totalUsers');
+
+    if (totalTransactionsEl) totalTransactionsEl.textContent = allTransactions.length;
+    if (totalUsersEl) totalUsersEl.textContent = allUsers.length;
+
+    // Recalculate commission
+    let totalCommission = 0;
+    allTransactions.forEach(txn => {
+        totalCommission += txn.commissionFee || 0;
+    });
+    const totalCommissionEl = document.getElementById('totalCommission');
+    if (totalCommissionEl) totalCommissionEl.textContent = formatCurrency(totalCommission);
+
+    // Refresh quick stats
+    loadQuickStats();
+
+    // Refresh recent transactions table
+    loadRecentTransactions();
+
+    // Update charts with current filter values
+    const currentSalesFilter = document.getElementById('salesTrendFilter')?.value || 'all';
+    updateSalesChart(currentSalesFilter);
+
+    const currentRevenueFilter = document.getElementById('revenueFilter')?.value || 'all';
+    updateRevenueChart(currentRevenueFilter);
+}
+
+// Disable real-time listeners (cleanup)
+function disableRealtimeListeners() {
+    database.ref('transactions').off();
+    database.ref('users').off();
+    database.ref('feedback').off();
+    realtimeListenersActive = false;
+    console.log('[ADMIN] Real-time listeners disabled');
+}
+
+// ===== PRINT-FRIENDLY REPORT =====
+// Generates a clean, printable summary of the dashboard
+
+function printDashboardReport() {
+    // Collect current stats
+    const stats = {
+        transactions: allTransactions.length,
+        commission: document.getElementById('totalCommission')?.textContent || 'RM 0.00',
+        users: allUsers.length,
+        books: allBooks.length
+    };
+
+    // Get quick stats
+    const inEscrow = document.querySelector('#quickStats [style*="In Escrow"]')?.nextElementSibling?.textContent || 'N/A';
+    const pendingDelivery = document.querySelector('#quickStats')?.children?.[2]?.querySelector('div:last-child')?.textContent || 'N/A';
+
+    // Get recent transactions (last 10)
+    const recentTxns = allTransactions
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+        .slice(0, 10);
+
+    // Create print window
+    const printWindow = window.open('', '_blank');
+
+    const printContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Admin Dashboard Report - ${new Date().toLocaleDateString('en-MY')}</title>
+            <style>
+                body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
+                h1 { color: #46166c; border-bottom: 2px solid #46166c; padding-bottom: 10px; }
+                h2 { color: #333; margin-top: 30px; }
+                .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 20px 0; }
+                .stat-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; text-align: center; }
+                .stat-value { font-size: 24px; font-weight: bold; color: #1e293b; }
+                .stat-label { font-size: 12px; color: #64748b; margin-top: 5px; }
+                table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; }
+                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                th { background: #46166c; color: white; }
+                tr:nth-child(even) { background: #f9fafb; }
+                .footer { margin-top: 40px; text-align: center; color: #94a3b8; font-size: 11px; }
+                @media print { 
+                    body { padding: 0; }
+                    .stat-box { break-inside: avoid; }
+                }
+            </style>
+        </head>
+        <body>
+            <h1>📊 UiTM Book e-Marketplace - Admin Report</h1>
+            <p><strong>Generated:</strong> ${new Date().toLocaleString('en-MY')}</p>
+            
+            <h2>Key Metrics</h2>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-value">${stats.transactions}</div>
+                    <div class="stat-label">Total Transactions</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">${stats.commission}</div>
+                    <div class="stat-label">Commission Earned</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">${stats.users}</div>
+                    <div class="stat-label">Active Users</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">${stats.books}</div>
+                    <div class="stat-label">Books Listed</div>
+                </div>
+            </div>
+            
+            <h2>Recent Transactions (Last 10)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Transaction ID</th>
+                        <th>Date</th>
+                        <th>Buyer</th>
+                        <th>Amount (RM)</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${recentTxns.map(txn => `
+                        <tr>
+                            <td>${txn.id?.substring(0, 12) || 'N/A'}...</td>
+                            <td>${txn.createdAt ? new Date(txn.createdAt).toLocaleDateString('en-MY') : 'N/A'}</td>
+                            <td>${txn.buyerEmail?.split('@')[0] || 'N/A'}</td>
+                            <td>${(txn.amount || 0).toFixed(2)}</td>
+                            <td>${txn.status || 'N/A'}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+            
+            <div class="footer">
+                <p>UiTM Book e-Marketplace Admin Dashboard | Confidential Report</p>
+            </div>
+            
+            <script>
+                window.onload = function() { window.print(); }
+            </script>
+        </body>
+        </html>
+    `;
+
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+
+    showNotification('Print report generated', 'success');
 }

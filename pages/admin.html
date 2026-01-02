@@ -59,6 +59,9 @@
             <div class="admin-header">
                 <h1><i class="fas fa-chart-line"></i> Admin Dashboard</h1>
                 <p>Platform overview and management</p>
+                <button onclick="printDashboardReport()" class="btn btn-secondary btn-sm" style="margin-top: 0.5rem;">
+                    <i class="fas fa-print"></i> Print Report
+                </button>
             </div>
 
             <!-- Stats Cards -->
@@ -286,11 +289,19 @@
             <!-- Tables -->
             <div class="tables-grid">
                 <div id="section-transactions" class="table-card">
-                    <div class="table-header">
+                    <div class="table-header" style="flex-wrap: wrap; gap: 0.5rem;">
                         <h3>Recent Transactions</h3>
-                        <button id="exportTransactions" class="btn btn-secondary btn-sm">
-                            <i class="fas fa-download"></i> Export
-                        </button>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                            <label style="font-size: 0.8rem; color: #64748b;">From:</label>
+                            <input type="date" id="exportDateFrom"
+                                style="padding: 0.4rem; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85rem;">
+                            <label style="font-size: 0.8rem; color: #64748b;">To:</label>
+                            <input type="date" id="exportDateTo"
+                                style="padding: 0.4rem; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85rem;">
+                            <button id="exportTransactions" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
                     </div>
                     <div class="table-responsive">
                         <table>
@@ -543,7 +554,8 @@
                 <a href="#section-charts" onclick="return scrollToSection('section-charts', event)">
                     <i class="fas fa-chart-bar"></i> Charts
                 </a>
-                <a href="#section-critical-analytics" onclick="return scrollToSection('section-critical-analytics', event)">
+                <a href="#section-critical-analytics"
+                    onclick="return scrollToSection('section-critical-analytics', event)">
                     <i class="fas fa-chart-line"></i> Critical Analytics
                 </a>
                 <a href="#section-transactions" onclick="return scrollToSection('section-transactions', event)"

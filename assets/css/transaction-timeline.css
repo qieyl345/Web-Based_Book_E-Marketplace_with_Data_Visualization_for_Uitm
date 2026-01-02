@@ -102,9 +102,9 @@
 /* Progress line between steps */
 .timeline-progress {
     position: absolute;
-    top: 44px;
-    left: 15%;
-    right: 15%;
+    top: calc(1.75rem + 26px);
+    left: calc(3rem + 10%);
+    right: calc(3rem + 10%);
     height: 4px;
     background: linear-gradient(90deg, #e2e8f0 0%, #cbd5e1 100%);
     z-index: 1;
@@ -182,9 +182,9 @@
     }
 
     .timeline-progress {
-        top: 36px;
-        left: 10%;
-        right: 10%;
+        top: calc(1.25rem + 20px);
+        left: calc(1rem + 10%);
+        right: calc(1rem + 10%);
     }
 }
 

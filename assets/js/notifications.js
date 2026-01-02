@@ -146,12 +146,13 @@ function updateNotificationList(notifications) {
         const readClass = notif.read ? '' : 'unread';
         const priorityClass = getPriorityClass(notif.priority);
 
+        const iconData = getNotificationIconData(notif.type);
         return `
             <div class="notification-item ${readClass} ${priorityClass}" 
                  data-id="${notif.id}" 
                  onclick="handleNotificationClick('${notif.id}', '${notif.type}', '${notif.offerId || ''}', '${notif.bookId || ''}')">
-                <div class="notification-icon ${notif.type}">
-                    <i class="fas fa-${icon}"></i>
+                <div class="notification-icon" style="background: ${iconData.bg};">
+                    <i class="fas ${iconData.icon}"></i>
                 </div>
                 <div class="notification-content">
                     <p class="notification-message">${notif.message}</p>
@@ -367,6 +368,56 @@ function createBrowserNotification(notification) {
 // ============================================================================
 // HELPER FUNCTIONS
 // ============================================================================
+
+// Get notification icon data with background colors (matches notification-history.js)
+function getNotificationIconData(type) {
+    const icons = {
+        // Offers
+        'offer': { icon: 'fa-tag', bg: '#3b82f6' },
+        'counter_offer': { icon: 'fa-exchange-alt', bg: '#8b5cf6' },
+        'offer_accepted': { icon: 'fa-check-circle', bg: '#22c55e' },
+        'offer_rejected': { icon: 'fa-times-circle', bg: '#ef4444' },
+        // Transactions
+        'transaction': { icon: 'fa-shopping-cart', bg: '#10b981' },
+        'payment_received': { icon: 'fa-wallet', bg: '#22c55e' },
+        'payout_received': { icon: 'fa-money-bill-wave', bg: '#22c55e' },
+        'order_confirmed': { icon: 'fa-check-double', bg: '#10b981' },
+        'book_sold': { icon: 'fa-shopping-bag', bg: '#10b981' },
+        'sale_notification': { icon: 'fa-store', bg: '#10b981' },
+        'payment': { icon: 'fa-credit-card', bg: '#22c55e' },
+        'delivery': { icon: 'fa-truck', bg: '#3b82f6' },
+        // Warranty/Returns
+        'warranty_claimed': { icon: 'fa-exclamation-triangle', bg: '#f59e0b' },
+        'return_sent': { icon: 'fa-box', bg: '#3b82f6' },
+        'return_received': { icon: 'fa-box-open', bg: '#22c55e' },
+        'refund_processed': { icon: 'fa-undo', bg: '#8b5cf6' },
+        'claim_dismissed': { icon: 'fa-ban', bg: '#64748b' },
+        'claim_auto_dismissed': { icon: 'fa-clock', bg: '#f59e0b' },
+        // Admin
+        'admin_dispute': { icon: 'fa-gavel', bg: '#ef4444' },
+        'admin_notification': { icon: 'fa-shield-alt', bg: '#3b82f6' },
+        'admin_payment_failure': { icon: 'fa-exclamation-triangle', bg: '#ef4444' },
+        'admin_suspicious': { icon: 'fa-shield-alt', bg: '#f59e0b' },
+        'admin_new_user': { icon: 'fa-user-plus', bg: '#22c55e' },
+        'admin_new_book': { icon: 'fa-book', bg: '#3b82f6' },
+        'admin_high_value': { icon: 'fa-gem', bg: '#8b5cf6' },
+        'admin_low_rating': { icon: 'fa-star-half-alt', bg: '#f59e0b' },
+        'admin_report': { icon: 'fa-flag', bg: '#ef4444' },
+        'admin_pattern': { icon: 'fa-chart-line', bg: '#3b82f6' },
+        'admin_txn_complete': { icon: 'fa-check', bg: '#22c55e' },
+        'admin_stale_offer': { icon: 'fa-clock', bg: '#f59e0b' },
+        'admin_txn_cancelled': { icon: 'fa-ban', bg: '#ef4444' },
+        'admin_milestone': { icon: 'fa-trophy', bg: '#eab308' },
+        'admin_digest': { icon: 'fa-newspaper', bg: '#64748b' },
+        // Feedback
+        'feedback': { icon: 'fa-star', bg: '#eab308' },
+        'review_received': { icon: 'fa-star', bg: '#eab308' },
+        // System
+        'system': { icon: 'fa-cog', bg: '#64748b' },
+        'message': { icon: 'fa-comment', bg: '#3b82f6' }
+    };
+    return icons[type] || { icon: 'fa-bell', bg: '#64748b' };
+}
 
 function getNotificationIcon(type) {
     const icons = {
