@@ -381,6 +381,7 @@ async function loadFeedback() {
 
 // ESCROW: Resolve dispute - REFUND to buyer
 // WARRANTY FLOW: Requires both buyer and seller to confirm return first
+// NON-DELIVERY: If seller never delivered, admin can refund directly
 async function resolveDisputeForBuyer(transactionId, feedbackId) {
     if (!transactionId) {
         showNotification('Transaction ID is missing.', 'error');
@@ -396,8 +397,12 @@ async function resolveDisputeForBuyer(transactionId, feedbackId) {
             return;
         }
 
+        // Check if this is a non-delivery dispute (seller never delivered, no book to return)
+        const isNonDeliveryDispute = txn.status === 'dispute_open' && txn.autoDisputeType === 'no_confirmation';
+
         // WARRANTY FLOW: Check if both parties confirmed the return
-        if (txn.status !== 'return_received') {
+        // EXCEPTION: Non-delivery disputes don't require book return
+        if (txn.status !== 'return_received' && !isNonDeliveryDispute) {
             const statusMessages = {
                 'warranty_claimed': '⚠️ Buyer has claimed warranty but hasn\'t confirmed sending the book back yet.',
                 'return_sent': '⚠️ Buyer says they sent the book, but seller hasn\'t confirmed receiving it yet.',
@@ -411,7 +416,12 @@ async function resolveDisputeForBuyer(transactionId, feedbackId) {
             return;
         }
 
-        if (!confirm('Both parties have confirmed the book return. Refund the buyer now?')) return;
+        // Different confirmation message based on dispute type
+        const confirmMessage = isNonDeliveryDispute
+            ? `Non-Delivery Dispute: Buyer never confirmed delivery (seller likely didn't deliver). Refund RM${txn.amount.toFixed(2)} to buyer now?`
+            : 'Both parties have confirmed the book return. Refund the buyer now?';
+
+        if (!confirm(confirmMessage)) return;
 
         const basePrice = txn.items.reduce((sum, item) => sum + item.bookDetails.price, 0);
 
@@ -423,15 +433,24 @@ async function resolveDisputeForBuyer(transactionId, feedbackId) {
         });
         console.log(`[ESCROW] Refunded RM${txn.amount} to buyer`);
 
-        // Clear seller's frozen funds
+        // Clear seller's funds (pendingEscrow for non-delivery, frozenDispute for warranty claims)
         for (const item of txn.items) {
             const sellerWalletRef = database.ref(`users/${item.bookDetails.sellerId}/wallet`);
             const sellerWallet = (await sellerWalletRef.once('value')).val() || {};
-            await sellerWalletRef.update({
-                frozenDispute: Math.max(0, (sellerWallet.frozenDispute || 0) - item.bookDetails.price)
-            });
+
+            if (isNonDeliveryDispute) {
+                // Non-delivery: clear from pendingEscrow
+                await sellerWalletRef.update({
+                    pendingEscrow: Math.max(0, (sellerWallet.pendingEscrow || 0) - item.bookDetails.price)
+                });
+            } else {
+                // Warranty dispute: clear from frozenDispute
+                await sellerWalletRef.update({
+                    frozenDispute: Math.max(0, (sellerWallet.frozenDispute || 0) - item.bookDetails.price)
+                });
+            }
         }
-        console.log(`[ESCROW] Cleared seller's frozen funds`);
+        console.log(`[ESCROW] Cleared seller's funds (${isNonDeliveryDispute ? 'pendingEscrow' : 'frozenDispute'})`);
 
         // Update transaction
         await database.ref(`transactions/${transactionId}`).update({

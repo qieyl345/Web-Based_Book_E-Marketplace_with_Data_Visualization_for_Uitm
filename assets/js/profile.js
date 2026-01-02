@@ -711,6 +711,8 @@ async function processUnreceiveOrder(transactionId, reason, issueType) {
 }
 
 // Auto-dismiss expired warranty claims (7 days without return)
+// If buyer claims warranty but doesn't return the book, it means they accepted the book's condition
+// So we directly COMPLETE the transaction and PAY the seller immediately
 async function autoDismissExpiredWarrantyClaim(transactionId) {
     console.log('[AUTO-DISMISS] Checking warranty claim:', transactionId);
 
@@ -738,70 +740,73 @@ async function autoDismissExpiredWarrantyClaim(transactionId) {
             return;
         }
 
-        console.log('[AUTO-DISMISS] Return period expired, dismissing claim');
+        console.log('[AUTO-DISMISS] Return period expired - buyer kept book, paying seller now');
 
-        // Calculate new payout date (7 days from now, since order reverts to warranty period)
-        const newPayoutDate = Date.now() + (7 * 24 * 60 * 60 * 1000);
+        const sellerId = txn.items?.[0]?.bookDetails?.sellerId;
+        const basePrice = txn.items?.reduce((sum, item) => sum + (item.bookDetails?.price || 0), 0) || txn.basePrice || 0;
+        const commission = basePrice * COMMISSION_RATE;
+        const sellerPayout = basePrice - commission;
 
-        // Revert to delivered status (warranty period continues from now)
+        // Complete the transaction - buyer kept the book, seller gets paid
         await database.ref(`transactions/${transactionId}`).update({
-            status: 'delivered',
+            status: 'completed',
             warrantyClaimDismissed: true,
             autoDismissedAt: Date.now(),
-            autoDismissReason: 'Return deadline expired (7 days)',
+            autoDismissReason: 'Buyer did not return book within 7 days - accepted condition',
             previousStatus: 'warranty_claimed',
             disputeReason: null,
             warrantyIssueType: null,
-            payoutScheduledAt: newPayoutDate // New 7-day warranty from now
+            sellerPaidOut: true,
+            sellerPayoutAmount: sellerPayout,
+            commissionCollected: commission,
+            payoutProcessedAt: Date.now()
         });
 
-        // Move funds from frozenDispute back to pendingEscrow
-        const sellerId = txn.items?.[0]?.bookDetails?.sellerId;
-        const amount = txn.amount || txn.basePrice || 0;
-
-        if (sellerId && amount > 0) {
+        // Process seller payout - move from frozenDispute to balance
+        if (sellerId && basePrice > 0) {
             try {
                 const sellerSnapshot = await database.ref(`users/${sellerId}/wallet`).once('value');
                 const sellerWallet = sellerSnapshot.val() || {};
 
                 await database.ref(`users/${sellerId}/wallet`).update({
-                    pendingEscrow: (sellerWallet.pendingEscrow || 0) + amount,
-                    frozenDispute: Math.max(0, (sellerWallet.frozenDispute || 0) - amount)
+                    balance: (sellerWallet.balance || 0) + sellerPayout,
+                    frozenDispute: Math.max(0, (sellerWallet.frozenDispute || 0) - basePrice),
+                    totalEarned: (sellerWallet.totalEarned || 0) + sellerPayout
                 });
-                console.log('[AUTO-DISMISS] Moved funds back to pendingEscrow');
+                console.log(`[AUTO-DISMISS] Paid seller RM${sellerPayout.toFixed(2)}`);
             } catch (walletError) {
                 console.warn('[AUTO-DISMISS] Failed to update wallet:', walletError);
             }
         }
 
-        // Notify buyer
+        // Notify buyer - claim dismissed, transaction complete
         await database.ref('notifications').push({
             recipientId: txn.buyerId,
             senderId: 'system',
             senderName: 'System',
             type: 'claim_auto_dismissed',
-            message: `Your warranty claim for order #${transactionId.substring(0, 8)} was auto-dismissed. You did not send the return within 7 days.`,
+            message: `Your warranty claim for order #${transactionId.substring(0, 8)} was auto-dismissed. You did not return the book within 7 days. The transaction is now complete.`,
             transactionId: transactionId,
             read: false,
             createdAt: Date.now()
         });
 
-        // Notify seller
+        // Notify seller - payout received
         if (sellerId) {
             await database.ref('notifications').push({
                 recipientId: sellerId,
                 senderId: 'system',
                 senderName: 'System',
-                type: 'claim_auto_dismissed',
-                message: `The warranty claim on order #${transactionId.substring(0, 8)} was auto-dismissed. Buyer did not return within 7 days. Your payout will proceed normally.`,
+                type: 'payout_received',
+                message: `💰 Warranty claim on order #${transactionId.substring(0, 8)} was auto-dismissed. Buyer kept the book. You've been paid RM${sellerPayout.toFixed(2)}!`,
                 transactionId: transactionId,
                 read: false,
                 createdAt: Date.now()
             });
         }
 
-        console.log('[AUTO-DISMISS] Warranty claim auto-dismissed successfully');
-        showNotification('Your warranty claim was auto-dismissed due to no return within 7 days.', 'warning');
+        console.log('[AUTO-DISMISS] Transaction completed - seller paid');
+        showNotification('Warranty claim auto-dismissed. Buyer kept the book - transaction complete.', 'info');
 
         // Reload purchase history to update the UI
         await loadPurchaseHistory();
@@ -1298,68 +1303,100 @@ function setupModal() {
     });
 }
 
-// Check for auto-disputes on pending orders
+// Check for auto-disputes on pending orders (buyer did not confirm delivery within 7 days)
+// This likely means seller did not deliver the book - admin can refund buyer
 async function checkForAutoDisputes() {
     try {
         const snapshot = await database.ref('transactions').once('value');
         const now = Date.now();
-        const updates = {};
         let disputeCount = 0;
-        const disputedTransactions = []; // Track transactions that need admin notification
+        const disputedTransactions = []; // Track transactions that need processing
 
         snapshot.forEach(childSnapshot => {
             const transaction = childSnapshot.val();
             const transactionId = childSnapshot.key;
 
-            // Check if order is pending and past expected delivery date
-            if (transaction.deliveryStatus === 'pending' && transaction.expectedDeliveryDate) {
-                if (now > transaction.expectedDeliveryDate) {
-                    // Mark as disputed
-                    updates[`transactions/${transactionId}/deliveryStatus`] = 'disputed';
-                    updates[`transactions/${transactionId}/disputeCreatedAt`] = now;
-                    updates[`transactions/${transactionId}/disputeReason`] = 'Buyer did not confirm receipt within 7 days';
-                    disputeCount++;
+            // Check if order is pending payment_held and past expected delivery date
+            // AND has not already been disputed
+            if (transaction.status === 'payment_held' &&
+                transaction.expectedDeliveryDate &&
+                now > transaction.expectedDeliveryDate &&
+                !transaction.autoDisputeCreated) {
 
-                    // Store transaction info for admin notification
-                    disputedTransactions.push({
-                        transactionId: transactionId,
-                        buyerId: transaction.buyerId,
-                        buyerName: transaction.buyerName,
-                        amount: transaction.amount
-                    });
-                }
+                disputedTransactions.push({
+                    transactionId: transactionId,
+                    transaction: transaction
+                });
+                disputeCount++;
             }
         });
 
-        // Apply all updates at once
-        if (Object.keys(updates).length > 0) {
-            // Send admin notifications FIRST (before database update)
-            if (disputedTransactions.length > 0 && typeof sendAdminNotification === 'function') {
-                for (const dispute of disputedTransactions) {
-                    await sendAdminNotification(
-                        'admin_dispute',
-                        `🚨 Auto-Dispute: Order #${dispute.transactionId.substring(0, 8)} expired - buyer didn't confirm delivery`,
-                        {
-                            transactionId: dispute.transactionId,
-                            buyerId: dispute.buyerId,
-                            buyerName: dispute.buyerName,
-                            amount: dispute.amount,
-                            reason: 'Buyer did not confirm receipt within 7 days'
-                        },
-                        'high'
-                    );
-                }
-                console.log(`[AUTO-DISPUTE] Notified admin about ${disputedTransactions.length} expired order(s)`);
+        // Process each disputed transaction
+        for (const dispute of disputedTransactions) {
+            const { transactionId, transaction } = dispute;
+            const sellerId = transaction.items?.[0]?.bookDetails?.sellerId;
+
+            // Update transaction to dispute_open status (allows admin to refund)
+            await database.ref(`transactions/${transactionId}`).update({
+                status: 'dispute_open',
+                deliveryStatus: 'disputed',
+                disputeCreatedAt: Date.now(),
+                disputeReason: 'Buyer did not confirm receipt within 7 days - possible non-delivery',
+                autoDisputeCreated: true,
+                autoDisputeType: 'no_confirmation'
+            });
+
+            // Notify admin with clear refund option
+            if (typeof sendAdminNotification === 'function') {
+                await sendAdminNotification(
+                    'admin_dispute',
+                    `🚨 Non-Delivery Alert: Order #${transactionId.substring(0, 8)} - Buyer didn't confirm delivery in 7 days. Consider refunding buyer.`,
+                    {
+                        transactionId: transactionId,
+                        buyerId: transaction.buyerId,
+                        buyerName: transaction.buyerName,
+                        amount: transaction.amount,
+                        reason: 'Buyer did not confirm receipt within 7 days - likely non-delivery',
+                        action: 'refund_recommended'
+                    },
+                    'high'
+                );
             }
 
-            // Now update the database
-            await database.ref().update(updates);
-            if (disputeCount > 0) {
-                console.log(`Marked ${disputeCount} order(s) as disputed and notified admins`);
+            // Notify buyer
+            await database.ref('notifications').push({
+                recipientId: transaction.buyerId,
+                senderId: 'system',
+                senderName: 'System',
+                type: 'order_disputed',
+                message: `⚠️ Order #${transactionId.substring(0, 8)} has been flagged - you didn't confirm delivery within 7 days. Admin will review and may issue a refund if the book was not delivered.`,
+                transactionId: transactionId,
+                read: false,
+                createdAt: Date.now()
+            });
+
+            // Notify seller
+            if (sellerId) {
+                await database.ref('notifications').push({
+                    recipientId: sellerId,
+                    senderId: 'system',
+                    senderName: 'System',
+                    type: 'order_disputed',
+                    message: `⚠️ Order #${transactionId.substring(0, 8)} has been flagged - buyer didn't confirm receipt in 7 days. Admin is reviewing. If you delivered the book, please contact support.`,
+                    transactionId: transactionId,
+                    read: false,
+                    createdAt: Date.now()
+                });
             }
+
+            console.log(`[AUTO-DISPUTE] Created dispute for ${transactionId} - buyer can be refunded by admin`);
+        }
+
+        if (disputeCount > 0) {
+            console.log(`[AUTO-DISPUTE] Processed ${disputeCount} non-delivery dispute(s)`);
         }
     } catch (error) {
-        console.error("Error checking for auto-disputes:", error);
+        console.error("[AUTO-DISPUTE] Error checking for auto-disputes:", error);
     }
 }
 
