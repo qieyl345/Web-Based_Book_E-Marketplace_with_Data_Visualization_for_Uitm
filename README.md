@@ -770,6 +770,136 @@ Deploy the security rules from `config/firebase-rules.json`:
 
 ## Database Structure
 
+### Entity Relationship Diagram (ERD)
+
+```mermaid
+erDiagram
+    USERS ||--o{ BOOKS : "lists (as seller)"
+    USERS ||--o{ TRANSACTIONS : "purchases (as buyer)"
+    USERS ||--o{ OFFERS : "makes (as buyer)"
+    USERS ||--o{ OFFERS : "receives (as seller)"
+    USERS ||--o{ NOTIFICATIONS : "receives"
+    USERS ||--o{ FEEDBACK : "submits"
+    USERS ||--|| WALLET : "has"
+    USERS ||--o{ CARTS : "owns"
+    
+    BOOKS ||--o{ OFFERS : "has"
+    BOOKS ||--o{ CART_ITEMS : "added to"
+    
+    OFFERS ||--|| CHATS : "has"
+    CHATS ||--o{ MESSAGES : "contains"
+    
+    TRANSACTIONS ||--o{ FEEDBACK : "generates"
+    TRANSACTIONS }o--|| BOOKS : "contains"
+
+    USERS {
+        string uid PK
+        string email
+        string fullName
+        string phoneNumber
+        string role
+        string avatarUrl
+        number totalSales
+        number totalPurchases
+        timestamp createdAt
+    }
+
+    WALLET {
+        number balance
+        number pendingEscrow
+        number frozenDispute
+        number totalEarned
+    }
+
+    BOOKS {
+        string bookId PK
+        string title
+        string author
+        string isbn
+        string subjectCode
+        string condition
+        number price
+        string sellerId FK
+        string status
+        timestamp createdAt
+    }
+
+    OFFERS {
+        string offerId PK
+        string bookId FK
+        string buyerId FK
+        string sellerId FK
+        number currentPrice
+        string status
+        string lastActionBy
+        timestamp createdAt
+    }
+
+    TRANSACTIONS {
+        string transactionId PK
+        string buyerId FK
+        number amount
+        number commissionFee
+        string status
+        timestamp warrantyExpiresAt
+        boolean sellerPaidOut
+    }
+
+    CHATS {
+        string offerId PK
+        object participants
+        string lastMessage
+        timestamp lastMessageTimestamp
+    }
+
+    MESSAGES {
+        string messageId PK
+        string senderId
+        string text
+        string type
+        timestamp timestamp
+    }
+
+    NOTIFICATIONS {
+        string notificationId PK
+        string recipientId FK
+        string type
+        string message
+        boolean read
+        timestamp createdAt
+    }
+
+    FEEDBACK {
+        string feedbackId PK
+        string transactionId FK
+        string buyerId FK
+        string type
+        number rating
+        string comment
+        string status
+    }
+
+    CARTS {
+        string uid PK
+        object items
+        timestamp updatedAt
+    }
+```
+
+### Entity Relationships
+
+| Relationship | Type | Description |
+|--------------|------|-------------|
+| User → Books | One-to-Many | One seller can list many books |
+| User → Transactions | One-to-Many | One buyer can have many transactions |
+| User → Offers | One-to-Many | Users participate in many offers (as buyer or seller) |
+| User → Wallet | One-to-One | Each user has exactly one wallet |
+| User → Cart | One-to-One | Each user has one shopping cart |
+| Book → Offers | One-to-Many | One book can have multiple offers |
+| Offer → Chat | One-to-One | Each offer has one chat room |
+| Chat → Messages | One-to-Many | One chat contains many messages |
+| Transaction → Feedback | One-to-Many | One transaction can have feedback entries |
+
 ### Firebase Realtime Database Schema
 
 ```
@@ -895,7 +1025,263 @@ Deploy the security rules from `config/firebase-rules.json`:
         └── updatedAt: timestamp
 ```
 
+### Example JSON Data
+
+#### Users Collection
+
+```json
+{
+  "users": {
+    "abc123xyz": {
+      "email": "2024745815@student.uitm.edu.my",
+      "fullName": "Ahmad Razif bin Abdullah",
+      "phoneNumber": "0123456789",
+      "role": "student",
+      "avatarUrl": "https://i.ibb.co/avatar.jpg",
+      "campusLocation": "UiTM Tapah",
+      "totalSales": 5,
+      "totalPurchases": 3,
+      "createdAt": 1704067200000,
+      "wallet": {
+        "balance": 150.50,
+        "pendingEscrow": 45.00,
+        "frozenDispute": 0,
+        "totalEarned": 250.00
+      }
+    }
+  }
+}
+```
+
+#### Books Collection
+
+```json
+{
+  "books": {
+    "-NxYz123abc": {
+      "title": "Data Structures and Algorithms",
+      "author": "Thomas H. Cormen",
+      "isbn": "978-0262033848",
+      "subjectCode": "CSC203",
+      "condition": "Good",
+      "price": 45.00,
+      "description": "Minor highlighting on pages 50-80, otherwise excellent condition",
+      "campusLocation": "UiTM Tapah",
+      "images": [
+        "https://i.ibb.co/book1.jpg",
+        "https://i.ibb.co/book2.jpg"
+      ],
+      "sellerId": "abc123xyz",
+      "sellerName": "Ahmad Razif",
+      "status": "available",
+      "viewCount": 42,
+      "createdAt": 1704153600000
+    }
+  }
+}
+```
+
+#### Transactions Collection
+
+```json
+{
+  "transactions": {
+    "TXN1704240000000": {
+      "transactionId": "TXN1704240000000",
+      "buyerId": "def456uvw",
+      "buyerName": "Siti Aminah",
+      "buyerEmail": "2024123456@student.uitm.edu.my",
+      "items": [
+        {
+          "bookDetails": {
+            "id": "-NxYz123abc",
+            "title": "Data Structures and Algorithms",
+            "price": 45.00,
+            "sellerId": "abc123xyz"
+          }
+        }
+      ],
+      "amount": 49.50,
+      "basePrice": 45.00,
+      "commissionFee": 4.50,
+      "status": "delivered",
+      "selectedBank": "Maybank",
+      "meetingDate": "2026-01-10",
+      "createdAt": 1704240000000,
+      "deliveryStatus": "completed",
+      "actualDeliveryDate": 1704326400000,
+      "warrantyExpiresAt": 1704931200000,
+      "escrowHeldAt": 1704240000000,
+      "autoReleaseAt": 1704931200000,
+      "sellerPaidOut": false,
+      "sellerPayoutAmount": 40.50
+    }
+  }
+}
+```
+
+#### Offers Collection
+
+```json
+{
+  "offers": {
+    "-NxOffer789": {
+      "bookId": "-NxYz123abc",
+      "bookTitle": "Data Structures and Algorithms",
+      "bookPrice": 45.00,
+      "buyerId": "def456uvw",
+      "buyerName": "Siti Aminah",
+      "sellerId": "abc123xyz",
+      "sellerName": "Ahmad Razif",
+      "currentPrice": 40.00,
+      "status": "accepted",
+      "lastActionBy": "abc123xyz",
+      "createdAt": 1704200000000,
+      "updatedAt": 1704210000000
+    }
+  }
+}
+```
+
+#### Chats Collection
+
+```json
+{
+  "chats": {
+    "-NxOffer789": {
+      "participants": {
+        "abc123xyz": true,
+        "def456uvw": true
+      },
+      "lastMessage": "Deal! I accept RM 40",
+      "lastMessageTimestamp": 1704210000000,
+      "messages": {
+        "-NxMsg001": {
+          "senderId": "def456uvw",
+          "senderName": "Siti Aminah",
+          "text": "Hi, can I get this for RM 35?",
+          "type": "text",
+          "timestamp": 1704200000000
+        },
+        "-NxMsg002": {
+          "senderId": "system",
+          "senderName": "System",
+          "text": "Offer made: RM 35.00",
+          "type": "system",
+          "timestamp": 1704200001000
+        },
+        "-NxMsg003": {
+          "senderId": "abc123xyz",
+          "senderName": "Ahmad Razif",
+          "text": "How about RM 40? It's in great condition",
+          "type": "text",
+          "timestamp": 1704205000000
+        }
+      }
+    }
+  }
+}
+```
+
+#### Notifications Collection
+
+```json
+{
+  "notifications": {
+    "-NxNotif001": {
+      "recipientId": "abc123xyz",
+      "senderId": "def456uvw",
+      "senderName": "Siti Aminah",
+      "type": "offer",
+      "message": "Siti Aminah offered RM 35.00 for \"Data Structures and Algorithms\"",
+      "offerId": "-NxOffer789",
+      "bookId": "-NxYz123abc",
+      "read": false,
+      "createdAt": 1704200000000
+    }
+  }
+}
+```
+
+#### Feedback Collection
+
+```json
+{
+  "feedback": {
+    "-NxFeedback001": {
+      "transactionId": "TXN1704240000000",
+      "buyerId": "def456uvw",
+      "buyerName": "Siti Aminah",
+      "sellerId": "abc123xyz",
+      "sellerName": "Ahmad Razif",
+      "type": "review",
+      "rating": 5,
+      "comment": "Great seller! Book was in excellent condition as described. Fast response too!",
+      "status": "pending",
+      "createdAt": 1704326400000
+    }
+  }
+}
+```
+
+### Field Descriptions
+
+#### User Fields
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `email` | string | ✅ | UiTM email address |
+| `fullName` | string | ✅ | User's full name |
+| `phoneNumber` | string | ❌ | Contact number |
+| `role` | enum | ✅ | `student`, `staff`, or `admin` |
+| `avatarUrl` | string | ❌ | Profile picture URL |
+| `campusLocation` | string | ❌ | Campus for meetups |
+| `totalSales` | number | ✅ | Count of completed sales |
+| `totalPurchases` | number | ✅ | Count of completed purchases |
+| `createdAt` | timestamp | ✅ | Account creation time |
+
+#### Wallet Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `balance` | number | Available withdrawable balance |
+| `pendingEscrow` | number | Funds held awaiting buyer confirmation |
+| `frozenDispute` | number | Funds frozen during warranty claims |
+| `totalEarned` | number | Lifetime earnings (after commission) |
+
+#### Book Fields
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `title` | string | ✅ | Book title |
+| `author` | string | ✅ | Book author |
+| `isbn` | string | ❌ | ISBN number |
+| `subjectCode` | string | ✅ | Course code (e.g., CSC203) |
+| `condition` | enum | ✅ | `New`, `Like New`, `Good`, `Fair` |
+| `price` | number | ✅ | Listing price in RM |
+| `description` | string | ❌ | Additional details |
+| `campusLocation` | string | ✅ | Meetup location |
+| `images` | array | ✅ | ImageBB URLs (max 5) |
+| `sellerId` | string | ✅ | Seller's UID |
+| `status` | enum | ✅ | `available` or `sold` |
+
+#### Transaction Status Values
+
+| Status | Description |
+|--------|-------------|
+| `pending_payment` | Awaiting buyer payment |
+| `payment_held` | Escrow active, awaiting meetup |
+| `delivered` | Buyer confirmed receipt |
+| `completed` | Seller paid, transaction finished |
+| `warranty_claimed` | Buyer filed warranty issue |
+| `return_sent` | Buyer sent item back |
+| `return_received` | Seller confirmed return |
+| `refunded` | Buyer refunded |
+| `dispute_open` | Under admin review |
+| `failed` | Payment failed |
+
 ---
+
 
 ## Security Features
 
