@@ -47,7 +47,7 @@ A **Consumer-to-Consumer (C2C)** web platform designed specifically for UiTM stu
 │                    CLIENT LAYER                         │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────────┐  │
 │  │   HTML5     │  │   CSS3      │  │  JavaScript     │  │
-│  │  (12 pages) │  │ (19 files)  │  │   (21 modules)  │  │
+│  │  (14 pages) │  │ (21 files)  │  │   (23 modules)  │  │
 │  └─────────────┘  └─────────────┘  └─────────────────┘  │
 └─────────────────────────────────────────────────────────┘
                           │

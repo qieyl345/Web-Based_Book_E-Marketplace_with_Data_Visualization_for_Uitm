@@ -290,7 +290,7 @@ UITM-EMPLC_ver1/
 ├── index.html                    # Homepage - Book browsing & listing
 ├── launch.html                   # Launch/landing page
 │
-├── pages/                        # 12 HTML pages
+├── pages/                        # 12 HTML pages (14 total including root)
 │   ├── admin.html               # Admin dashboard (38KB)
 │   ├── login.html               # Login page
 │   ├── signup.html              # Registration page

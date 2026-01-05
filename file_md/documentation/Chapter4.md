@@ -89,14 +89,15 @@ UITM-EMPLC_ver1/
 │   ├── profile.html           # User dashboard
 │   ├── admin.html             # Admin analytics dashboard
 │   ├── notifications.html     # Notification history
-│   └── feedback.html          # Post-purchase feedback
+│   ├── feedback.html          # Post-purchase feedback
+│   └── verify-email.html      # Email verification
 ├── assets/
-│   ├── css/                   # 19 stylesheet files
+│   ├── css/                   # 21 stylesheet files
 │   │   ├── styles.css         # Main styles (83KB)
 │   │   ├── admin-notifications.css
 │   │   ├── animations.css
 │   │   └── ...
-│   ├── js/                    # 21 JavaScript modules
+│   ├── js/                    # 23 JavaScript modules
 │   │   ├── firebase-config.js # Firebase setup & utilities
 │   │   ├── auth.js            # Authentication logic
 │   │   ├── admin.js           # Admin dashboard (94KB)
@@ -931,7 +932,7 @@ This chapter has demonstrated the complete implementation of the **UiTM Book e-M
 |--------|---------|
 | **Architecture** | Client-server model with Firebase BaaS |
 | **Technology** | Vanilla JS, Firebase, Chart.js, ImageBB |
-| **Features** | 12 HTML pages, 21 JS modules, 19 CSS files |
+| **Features** | 14 HTML pages, 23 JS modules, 21 CSS files |
 | **Security** | Role-based access, escrow system, data validation |
 | **Innovation** | Real-time negotiation, 8 analytics charts, warranty system |
 

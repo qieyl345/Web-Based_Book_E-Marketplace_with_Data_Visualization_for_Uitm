@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - UiTM Book e-Marketplace</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/animations.css">
+    <link rel="stylesheet" href="assets/css/notifications.css">
+    <!-- UiTM Design System -->
+    <link rel="stylesheet" href="assets/css/uitm-glassmorphism.css">
+    <link rel="stylesheet" href="assets/css/uitm-animations.css">
+    <link rel="stylesheet" href="assets/css/role-based-styles.css">
+    <link rel="stylesheet" href="assets/css/icon-enhancements.css">
+    <link rel="stylesheet" href="assets/css/welcome-message.css">
+    <link rel="stylesheet" href="assets/css/header-balance.css">
+    <link rel="stylesheet" href="assets/css/ui-fixes.css">
+    <link rel="stylesheet" href="assets/css/info-tooltips.css">
+    <link rel="stylesheet" href="assets/css/skeleton-loaders.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="animated-gradient-subtle">
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1><i class="fas fa-book"></i> UiTM Book e-Marketplace</h1>
+                </div>
+
+                <nav class="main-nav">
+                    <a href="index.html" class="nav-link active nav-icon-gold">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <a href="pages/cart.html" class="nav-link">
+                        <i class="fas fa-shopping-cart"></i> Cart
+                        <span id="cartCount" class="badge" style="display: none;">0</span>
+                    </a>
+                    <a href="pages/profile.html" class="nav-link nav-icon-purple">
+                        <i class="fas fa-user-circle"></i> Profile
+                    </a>
+                    <a href="pages/admin.html" class="nav-link admin-only" style="display: none;">
+                        <i class="fas fa-user-shield"></i> Admin
+                    </a>
+
+                    <!-- Notification Bell -->
+                    <div class="notification-wrapper">
+                        <div class="notification-bell" id="notificationBell">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge" id="notificationBadge">0</span>
+                        </div>
+                        <div class="notification-dropdown" id="notificationDropdown">
+                            <div class="notification-header">
+                                <h3>Notifications</h3>
+                                <button class="mark-read-btn" onclick="markAllAsRead()">Mark all as read</button>
+                            </div>
+                            <div class="notification-list" id="notificationList">
+                                <!-- Notifications will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="welcomeMsg" class="welcome-message" style="display: none;">
+                        <span class="welcome-greeting">Welcome back,</span>
+                        <span class="welcome-name"></span>
+                        <i class="fas fa-crown welcome-icon"></i>
+                    </div>
+                    <button id="logoutBtn" class="btn btn-secondary">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h2>Find Your Perfect Textbook</h2>
+                    <p>Buy and sell books within UiTM Tapah Campus community</p>
+
+                    <div class="search-bar">
+                        <input type="text" id="searchInput" placeholder="Search by title, author, or subject code">
+                        <button id="searchBtn" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content -->
+        <section class="main-content">
+            <div class="container">
+                <div class="content-wrapper">
+                    <!-- Sidebar Filters -->
+                    <aside class="sidebar">
+                        <h3>Filters</h3>
+
+                        <div class="filter-group">
+                            <h4>Condition</h4>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="condition" value="new" checked>
+                                <span>New</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="condition" value="used" checked>
+                                <span>Used</span>
+                            </label>
+                        </div>
+
+                        <div class="filter-group">
+                            <h4>Price Range</h4>
+                            <div class="price-range">
+                                <input type="number" id="minPrice" placeholder="Min" min="0">
+                                <span>-</span>
+                                <input type="number" id="maxPrice" placeholder="Max" min="0">
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <h4>Campus Location <span class="info-tooltip"
+                                    data-tooltip="The campus area where you can meet up face-to-face with the seller to collect the book."><i
+                                        class="fas fa-info-circle"></i></span></h4>
+                            <select id="campusFilter">
+                                <option value="">All Locations</option>
+                                <option value="Block A">Block A</option>
+                                <option value="Block B">Block B</option>
+                                <option value="Block C">Block C</option>
+                                <option value="Library">Library</option>
+                            </select>
+                        </div>
+
+                        <button id="applyFilters" class="btn btn-primary btn-block">
+                            <i class="fas fa-filter"></i> Apply Filters
+                        </button>
+
+                        <button id="resetFilters" class="btn btn-secondary btn-block">
+                            <i class="fas fa-undo"></i> Reset
+                        </button>
+                    </aside>
+
+                    <!-- Books Grid -->
+                    <div class="books-section">
+                        <div class="section-header">
+                            <h3>Available Books</h3>
+                            <div class="view-controls">
+                                <select id="sortBy">
+                                    <option value="date">Latest</option>
+                                    <option value="price-low">Price: Low to High</option>
+                                    <option value="price-high">Price: High to Low</option>
+                                    <option value="popular">Most Popular</option>
+                                </select>
+                                <button id="listBookBtn" class="btn btn-success">
+                                    <i class="fas fa-plus"></i> Sell a Book
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="booksGrid" class="books-grid">
+                            <!-- Books will be loaded here dynamically -->
+                            <div class="loading-placeholder">Loading books...</div>
+                        </div>
+
+                        <div id="pagination" class="pagination" style="display: none;">
+                            <button id="prevPage" class="btn btn-secondary">Previous</button>
+                            <span id="pageInfo"></span>
+                            <button id="nextPage" class="btn btn-secondary">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Add Book Modal -->
+    <div id="addBookModal" class="modal" style="display: none;">
+        <div class="modal-content modal-lg">
+            <span class="modal-close">&times;</span>
+            <h2>List a New Book</h2>
+
+            <form id="addBookForm">
+                <div class="form-group">
+                    <label for="bookTitle">Book Title *</label>
+                    <input type="text" id="bookTitle" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="bookAuthor">Author *</label>
+                    <input type="text" id="bookAuthor" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bookISBN">ISBN</label>
+                        <input type="text" id="bookISBN">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subjectCode">Subject Code *</label>
+                        <input type="text" id="subjectCode" required placeholder="e.g., CSC123">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bookCondition">Condition *</label>
+                        <select id="bookCondition" required>
+                            <option value="">Select condition</option>
+                            <option value="new">New</option>
+                            <option value="used">Used</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bookPrice">Price (RM) *</label>
+                        <input type="number" id="bookPrice" required min="0" step="0.01">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="campusLocation">Campus Location * <span class="info-tooltip"
+                            data-tooltip="This is where you will meet the buyer face-to-face to hand over the book. Choose a convenient campus location."><i
+                                class="fas fa-info-circle" style="color: #6366f1; cursor: help;"></i></span></label>
+                    <select id="campusLocation" required>
+                        <option value="">Select location</option>
+                        <option value="Block A">Block A</option>
+                        <option value="Block B">Block B</option>
+                        <option value="Block C">Block C</option>
+                        <option value="Library">Library</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="bookDescription">Description</label>
+                    <textarea id="bookDescription" rows="4"
+                        placeholder="Describe the book condition, highlights, etc."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="bookImages">Book Images (Max 5)</label>
+                    <input type="file" id="bookImages" multiple accept="image/*">
+                    <small class="form-hint">Upload up to 5 images. First image will be the cover.</small>
+                    <div id="imagePreview" class="image-preview"></div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="cancelAddBook">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-check"></i> List Book
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    <script src="assets/js/firebase-config.js"></script>
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/app.js"></script>
+    <script src="assets/js/notifications.js"></script>
+    <script src="assets/js/homepage.js"></script>
+    <script src="assets/js/modal-scroll-fix.js"></script>
+</body>
+
+</html>

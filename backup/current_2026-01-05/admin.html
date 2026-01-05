@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - UiTM Book e-Marketplace</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
+    <link rel="stylesheet" href="../assets/css/animations.css">
+    <link rel="stylesheet" href="../assets/css/notifications.css">
+    <!-- UiTM Design System -->
+    <link rel="stylesheet" href="../assets/css/uitm-glassmorphism.css">
+    <link rel="stylesheet" href="../assets/css/uitm-animations.css">
+    <link rel="stylesheet" href="../assets/css/role-based-styles.css">
+    <link rel="stylesheet" href="../assets/css/icon-enhancements.css">
+    <link rel="stylesheet" href="../assets/css/admin-notifications.css">
+    <link rel="stylesheet" href="../assets/css/ui-fixes.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="admin-theme">
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1><i class="fas fa-book"></i> UiTM Book e-Marketplace</h1>
+                </div>
+
+                <nav class="main-nav">
+                    <a href="../index.html" class="nav-link">Home</a>
+                    <a href="admin.html" class="nav-link active">Admin</a>
+
+                    <!-- Notification Bell -->
+                    <div class="notification-wrapper">
+                        <div class="notification-bell" id="notificationBell">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge" id="notificationBadge">0</span>
+                        </div>
+                        <div class="notification-dropdown" id="notificationDropdown">
+                            <div class="notification-header">
+                                <h3>Notifications</h3>
+                                <button class="mark-read-btn" onclick="markAllAsRead()">Mark all as read</button>
+                            </div>
+                            <div class="notification-list" id="notificationList">
+                                <!-- Notifications will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="logoutBtn" class="btn btn-secondary">Logout</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="admin-page">
+        <div class="container">
+            <div class="admin-header">
+                <h1><i class="fas fa-chart-line"></i> Admin Dashboard</h1>
+                <p>Platform overview and management</p>
+                <button onclick="printDashboardReport()" class="btn btn-secondary btn-sm" style="margin-top: 0.5rem;">
+                    <i class="fas fa-print"></i> Print Report
+                </button>
+            </div>
+
+            <!-- Stats Cards -->
+            <div id="section-stats" class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: var(--primary-uitm);">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="totalTransactions">0</h3>
+                        <p>Total Transactions</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: var(--success);">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="totalCommission">RM 0.00</h3>
+                        <p>Commission Earned</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: var(--secondary);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="totalUsers">0</h3>
+                        <p>Active Users</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: var(--accent);">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="totalBooks">0</h3>
+                        <p>Books Listed</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Action Stats (NEW) -->
+            <div id="section-quick-stats" class="quick-stats-row"
+                style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem;">
+                <div class="quick-stat"
+                    style="background: linear-gradient(135deg, #fef2f2, #fee2e2); border: 1px solid #fca5a5; border-radius: 12px; padding: 1rem 1.25rem; display: flex; align-items: center; gap: 1rem;">
+                    <div
+                        style="width: 45px; height: 45px; background: #ef4444; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-exclamation-triangle" style="color: white; font-size: 1.25rem;"></i>
+                    </div>
+                    <div>
+                        <div id="activeIssuesCount" style="font-size: 1.5rem; font-weight: 700; color: #dc2626;">0</div>
+                        <div style="font-size: 0.75rem; color: #991b1b;">Active Issues</div>
+                    </div>
+                </div>
+                <div class="quick-stat"
+                    style="background: linear-gradient(135deg, #fffbeb, #fef3c7); border: 1px solid #fcd34d; border-radius: 12px; padding: 1rem 1.25rem; display: flex; align-items: center; gap: 1rem;">
+                    <div
+                        style="width: 45px; height: 45px; background: #f59e0b; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-lock" style="color: white; font-size: 1.25rem;"></i>
+                    </div>
+                    <div>
+                        <div id="totalEscrowHeld" style="font-size: 1.5rem; font-weight: 700; color: #d97706;">RM 0
+                        </div>
+                        <div style="font-size: 0.75rem; color: #92400e;">In Escrow</div>
+                    </div>
+                </div>
+                <div class="quick-stat"
+                    style="background: linear-gradient(135deg, #eff6ff, #dbeafe); border: 1px solid #93c5fd; border-radius: 12px; padding: 1rem 1.25rem; display: flex; align-items: center; gap: 1rem;">
+                    <div
+                        style="width: 45px; height: 45px; background: #3b82f6; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-truck" style="color: white; font-size: 1.25rem;"></i>
+                    </div>
+                    <div>
+                        <div id="pendingDeliveries" style="font-size: 1.5rem; font-weight: 700; color: #2563eb;">0</div>
+                        <div style="font-size: 0.75rem; color: #1e40af;">Pending Delivery</div>
+                    </div>
+                </div>
+                <div class="quick-stat"
+                    style="background: linear-gradient(135deg, #f0fdf4, #dcfce7); border: 1px solid #86efac; border-radius: 12px; padding: 1rem 1.25rem; display: flex; align-items: center; gap: 1rem;">
+                    <div
+                        style="width: 45px; height: 45px; background: #22c55e; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-clock" style="color: white; font-size: 1.25rem;"></i>
+                    </div>
+                    <div>
+                        <div id="payoutsDueToday" style="font-size: 1.5rem; font-weight: 700; color: #16a34a;">0</div>
+                        <div style="font-size: 0.75rem; color: #166534;">Payouts Due Today</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div id="section-charts" class="charts-grid">
+                <div class="chart-card">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3>Sales Trend</h3>
+                        <select id="salesTrendFilter" class="chart-filter"
+                            style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
+                            <option value="all">All Time</option>
+                            <option value="7">Last 7 Days</option>
+                            <option value="30">Last 30 Days</option>
+                            <option value="90">Last 3 Months</option>
+                        </select>
+                    </div>
+                    <canvas id="salesChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3>Revenue Overview</h3>
+                        <select id="revenueFilter" class="chart-filter"
+                            style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
+                            <option value="all">All Time</option>
+                            <option value="7">Last 7 Days</option>
+                            <option value="30">Last 30 Days</option>
+                            <option value="90">Last 3 Months</option>
+                        </select>
+                    </div>
+                    <canvas id="revenueChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3>Top Sellers by Revenue</h3>
+                        <select id="topSellersFilter" class="chart-filter"
+                            style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
+                            <option value="all">All Time</option>
+                            <option value="7">Last 7 Days</option>
+                            <option value="30">Last 30 Days</option>
+                            <option value="90">Last 3 Months</option>
+                        </select>
+                    </div>
+                    <canvas id="topSellersChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3>Subject Distribution</h3>
+                        <select id="subjectFilter" class="chart-filter"
+                            style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
+                            <option value="all">All Time</option>
+                            <option value="7">Last 7 Days</option>
+                            <option value="30">Last 30 Days</option>
+                            <option value="90">Last 3 Months</option>
+                        </select>
+                    </div>
+                    <canvas id="subjectChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Phase 1: Critical Analytics -->
+            <div id="section-critical-analytics" class="analytics-section" style="margin-top: 2rem;">
+                <h2 style="margin-bottom: 1.5rem;"><i class="fas fa-chart-bar"></i> Critical Analytics</h2>
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h3>Transaction Success Rate</h3>
+                            <select id="transactionSuccessFilter" class="chart-filter"
+                                style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
+                                <option value="all">All Time</option>
+                                <option value="7">Last 7 Days</option>
+                                <option value="30">Last 30 Days</option>
+                                <option value="90">Last 3 Months</option>
+                            </select>
+                        </div>
+                        <canvas id="transactionSuccessChart"></canvas>
+                    </div>
+
+                    <div class="chart-card">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h3>Feedback Rating Distribution</h3>
+                            <select id="feedbackDistributionFilter" class="chart-filter"
+                                style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
+                                <option value="all">All Time</option>
+                                <option value="7">Last 7 Days</option>
+                                <option value="30">Last 30 Days</option>
+                                <option value="90">Last 3 Months</option>
+                            </select>
+                        </div>
+                        <canvas id="feedbackDistributionChart"></canvas>
+                    </div>
+
+                    <div class="chart-card">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h3>Dispute Metrics</h3>
+                            <select id="disputeMetricsFilter" class="chart-filter"
+                                style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
+                                <option value="all">All Time</option>
+                                <option value="4">Last 4 Weeks</option>
+                                <option value="12">Last 3 Months</option>
+                                <option value="24">Last 6 Months</option>
+                            </select>
+                        </div>
+                        <canvas id="disputeMetricsChart"></canvas>
+                    </div>
+
+                    <div class="chart-card">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h3>Offer Success Funnel</h3>
+                            <select id="offerFunnelFilter" class="chart-filter"
+                                style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
+                                <option value="all">All Time</option>
+                                <option value="7">Last 7 Days</option>
+                                <option value="30">Last 30 Days</option>
+                                <option value="90">Last 3 Months</option>
+                            </select>
+                        </div>
+                        <canvas id="offerFunnelChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tables -->
+            <div class="tables-grid">
+                <div id="section-transactions" class="table-card">
+                    <div class="table-header" style="flex-wrap: wrap; gap: 0.5rem;">
+                        <h3>Recent Transactions</h3>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                            <label style="font-size: 0.8rem; color: #64748b;">From:</label>
+                            <input type="date" id="exportDateFrom"
+                                style="padding: 0.4rem; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85rem;">
+                            <label style="font-size: 0.8rem; color: #64748b;">To:</label>
+                            <input type="date" id="exportDateTo"
+                                style="padding: 0.4rem; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85rem;">
+                            <button id="exportTransactions" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Transaction ID</th>
+                                    <th>Buyer</th>
+                                    <th>Book</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentTransactions">
+                                <tr>
+                                    <td colspan="6" class="loading-placeholder">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="section-users" class="table-card">
+                    <div class="table-header">
+                        <h3>Users</h3>
+                        <div class="table-actions">
+                            <input type="text" id="userSearch" placeholder="Search users...">
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Listings</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTable">
+                                <tr>
+                                    <td colspan="6" class="loading-placeholder">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Warranty Issues Table (NEW) -->
+                <div id="section-warranty" class="table-card" style="border-left: 4px solid #ef4444;">
+                    <div class="table-header">
+                        <h3><i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i> Warranty Issues</h3>
+                        <span id="warrantyIssuesCount" class="badge"
+                            style="background: #ef4444; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.875rem;">0
+                            Active</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Buyer</th>
+                                    <th>Seller</th>
+                                    <th>Issue Type</th>
+                                    <th>Return Status</th>
+                                    <th>Amount</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="warrantyIssuesTable">
+                                <tr>
+                                    <td colspan="7" class="loading-placeholder">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Payout Queue (NEW) -->
+                <div id="section-payouts" class="table-card" style="border-left: 4px solid #22c55e;">
+                    <div class="table-header">
+                        <h3><i class="fas fa-wallet" style="color: #22c55e;"></i> Payout Queue</h3>
+                        <span id="payoutQueueCount" class="badge"
+                            style="background: #22c55e; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.875rem;">0
+                            Pending</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Seller</th>
+                                    <th>Order ID</th>
+                                    <th>Amount</th>
+                                    <th>Warranty Expires</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="payoutQueueTable">
+                                <tr>
+                                    <td colspan="5" class="loading-placeholder">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Reviews Table (Positive Feedback) -->
+                <div id="section-reviews" class="table-card" style="border-left: 4px solid #10b981;">
+                    <div class="table-header">
+                        <h3><i class="fas fa-star" style="color: #eab308;"></i> Reviews</h3>
+                        <span id="reviewsCount" class="badge"
+                            style="background: #10b981; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.875rem;">0</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Buyer</th>
+                                    <th>Rating</th>
+                                    <th>Comment</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reviewsTable">
+                                <tr>
+                                    <td colspan="4" class="loading-placeholder">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Disputes Table (Negative Feedback) -->
+                <div id="section-disputes" class="table-card" style="border-left: 4px solid #f59e0b;">
+                    <div class="table-header">
+                        <h3><i class="fas fa-exclamation-circle" style="color: #f59e0b;"></i> Disputes</h3>
+                        <span id="disputesCount" class="badge"
+                            style="background: #f59e0b; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.875rem;">0</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Buyer</th>
+                                    <th>Rating</th>
+                                    <th>Comment</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="disputesTable">
+                                <tr>
+                                    <td colspan="6" class="loading-placeholder">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Analytics Section -->
+            <div id="section-analytics" class="analytics-row"
+                style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem;">
+
+                <!-- Seller Leaderboard -->
+                <div id="section-leaderboard" class="table-card" style="border-top: 4px solid #8b5cf6;">
+                    <div class="table-header">
+                        <h3><i class="fas fa-trophy" style="color: #eab308;"></i> Top Sellers</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Seller</th>
+                                    <th>Sales</th>
+                                    <th>Revenue</th>
+                                    <th>Rating</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sellerLeaderboard">
+                                <tr>
+                                    <td colspan="5" class="loading-placeholder">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Recent Activity Log -->
+                <div id="section-activity" class="table-card" style="border-top: 4px solid #06b6d4;">
+                    <div class="table-header">
+                        <h3><i class="fas fa-stream" style="color: #06b6d4;"></i> Recent Activity</h3>
+                    </div>
+                    <div id="activityLog" style="max-height: 400px; overflow-y: auto; padding: 0.5rem;">
+                        <div class="loading-placeholder" style="text-align: center; padding: 2rem;">Loading...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings -->
+            <div id="section-settings" class="settings-card">
+                <h3>Platform Settings</h3>
+                <form id="settingsForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="commissionRate">Commission Rate (%)</label>
+                            <input type="number" id="commissionRate" value="10" min="0" max="15" step="0.5">
+                            <small class="form-hint">Current: 10%</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="maxImages">Max Images per Book</label>
+                            <input type="number" id="maxImages" value="5" min="1" max="10">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Settings
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Floating Quick Nav -->
+    <div id="quickNavContainer" class="quick-nav-container">
+        <button id="quickNavToggle" class="quick-nav-toggle" onclick="toggleQuickNav()">
+            <i class="fas fa-compass"></i>
+        </button>
+        <div id="quickNavMenu" class="quick-nav-menu">
+            <div class="quick-nav-header">
+                <span>Quick Jump</span>
+                <button onclick="toggleQuickNav()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="quick-nav-items">
+                <a href="#section-stats" onclick="return scrollToSection('section-stats', event)">
+                    <i class="fas fa-chart-pie"></i> Dashboard Stats
+                </a>
+                <a href="#section-quick-stats" onclick="return scrollToSection('section-quick-stats', event)">
+                    <i class="fas fa-bolt"></i> Quick Stats
+                </a>
+                <a href="#section-charts" onclick="return scrollToSection('section-charts', event)">
+                    <i class="fas fa-chart-bar"></i> Charts
+                </a>
+                <a href="#section-critical-analytics"
+                    onclick="return scrollToSection('section-critical-analytics', event)">
+                    <i class="fas fa-chart-line"></i> Critical Analytics
+                </a>
+                <a href="#section-transactions" onclick="return scrollToSection('section-transactions', event)"
+                    class="nav-item-highlight">
+                    <i class="fas fa-shopping-cart"></i> Transactions
+                </a>
+                <a href="#section-users" onclick="return scrollToSection('section-users', event)">
+                    <i class="fas fa-users"></i> Users
+                </a>
+                <a href="#section-warranty" onclick="return scrollToSection('section-warranty', event)"
+                    class="nav-item-danger">
+                    <i class="fas fa-exclamation-triangle"></i> Warranty Issues
+                </a>
+                <a href="#section-payouts" onclick="return scrollToSection('section-payouts', event)">
+                    <i class="fas fa-wallet"></i> Payout Queue
+                </a>
+                <a href="#section-reviews" onclick="return scrollToSection('section-reviews', event)">
+                    <i class="fas fa-star"></i> Reviews
+                </a>
+                <a href="#section-disputes" onclick="return scrollToSection('section-disputes', event)"
+                    class="nav-item-warning">
+                    <i class="fas fa-gavel"></i> Disputes
+                </a>
+                <a href="#section-leaderboard" onclick="return scrollToSection('section-leaderboard', event)">
+                    <i class="fas fa-trophy"></i> Top Sellers
+                </a>
+                <a href="#section-activity" onclick="return scrollToSection('section-activity', event)">
+                    <i class="fas fa-stream"></i> Activity Log
+                </a>
+                <a href="#section-settings" onclick="return scrollToSection('section-settings', event)">
+                    <i class="fas fa-cog"></i> Settings
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Floating Quick Nav Styles */
+        .quick-nav-container {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            z-index: 1000;
+        }
+
+        .quick-nav-toggle {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quick-nav-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 30px rgba(124, 58, 237, 0.5);
+        }
+
+        .quick-nav-container.open .quick-nav-toggle {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .quick-nav-container.open .quick-nav-toggle i::before {
+            content: "\f00d";
+        }
+
+        .quick-nav-menu {
+            position: absolute;
+            bottom: 70px;
+            left: 0;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            width: 260px;
+            max-height: 70vh;
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px) scale(0.95);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .quick-nav-container.open .quick-nav-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        .quick-nav-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.25rem;
+            background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+            color: white;
+            font-weight: 600;
+        }
+
+        .quick-nav-header button {
+            background: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0.25rem;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .quick-nav-header button:hover {
+            opacity: 1;
+        }
+
+        .quick-nav-items {
+            max-height: calc(70vh - 60px);
+            overflow-y: auto;
+            padding: 0.5rem;
+        }
+
+        .quick-nav-items a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            color: #1e293b;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .quick-nav-items a:hover {
+            background: #f1f5f9;
+        }
+
+        .quick-nav-items a i {
+            width: 20px;
+            text-align: center;
+            color: #64748b;
+        }
+
+        .quick-nav-items a:hover i {
+            color: #7c3aed;
+        }
+
+        .quick-nav-items a.nav-item-highlight {
+            background: #eff6ff;
+        }
+
+        .quick-nav-items a.nav-item-highlight i {
+            color: #3b82f6;
+        }
+
+        .quick-nav-items a.nav-item-danger {
+            background: #fef2f2;
+        }
+
+        .quick-nav-items a.nav-item-danger i {
+            color: #ef4444;
+        }
+
+        .quick-nav-items a.nav-item-warning {
+            background: #fffbeb;
+        }
+
+        .quick-nav-items a.nav-item-warning i {
+            color: #f59e0b;
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            background: #ef4444;
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        /* Scroll margin for anchors */
+        [id^="section-"] {
+            scroll-margin-top: 100px;
+        }
+    </style>
+
+    <script>
+        // Quick Nav Functions
+        function toggleQuickNav() {
+            const container = document.getElementById('quickNavContainer');
+            container.classList.toggle('open');
+        }
+
+        function scrollToSection(sectionId, event) {
+            if (event) {
+                event.preventDefault();
+            }
+            const section = document.getElementById(sectionId);
+            if (section) {
+                // Small delay to ensure nav closes first
+                setTimeout(() => {
+                    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+                toggleQuickNav();
+            }
+            return false;
+        }
+
+        // Close nav when clicking outside
+        document.addEventListener('click', (e) => {
+            const container = document.getElementById('quickNavContainer');
+            if (container && !container.contains(e.target)) {
+                container.classList.remove('open');
+            }
+        });
+    </script>
+
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+    <script src="../assets/js/firebase-config.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/app.js"></script>
+    <script src="../assets/js/notifications.js"></script>
+    <script src="../assets/js/admin-notifications.js"></script>
+    <script src="../assets/js/admin.js"></script>
+    <script src="../assets/js/role-filter.js"></script>
+</body>
+
+</html>

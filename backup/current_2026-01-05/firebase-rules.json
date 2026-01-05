@@ -1,0 +1,74 @@
+{
+    "rules": {
+        "users": {
+            ".read": "auth != null",
+            ".indexOn": [
+                "role"
+            ],
+            "$uid": {
+                ".write": "auth != null && (auth.uid == $uid || root.child('users/' + auth.uid + '/role').val() == 'admin')",
+                "wallet": {
+                    ".write": "auth != null",
+                    ".validate": "newData.child('balance').isNumber() || newData.child('pendingEscrow').isNumber() || newData.child('frozenDispute').isNumber() || newData.child('totalEarned').isNumber()"
+                }
+            }
+        },
+        "books": {
+            ".read": "auth != null",
+            "$bookId": {
+                ".write": "auth != null && (!data.exists() || data.child('sellerId').val() == auth.uid || root.child('users/' + auth.uid + '/role').val() == 'admin' || (newData.child('status').val() == 'sold' && data.child('status').val() == 'available'))",
+                "viewCount": {
+                    ".write": "auth != null"
+                }
+            }
+        },
+        "transactions": {
+            ".read": "auth != null",
+            ".indexOn": [
+                "buyerId",
+                "status",
+                "createdAt"
+            ],
+            "$transactionId": {
+                ".read": "auth != null",
+                ".write": "auth != null && (root.child('users/' + auth.uid + '/role').val() == 'admin' || newData.child('buyerId').val() == auth.uid || data.child('buyerId').val() == auth.uid || data.child('items/0/bookDetails/sellerId').val() == auth.uid)"
+            }
+        },
+        "carts": {
+            "$uid": {
+                ".read": "auth != null && auth.uid == $uid",
+                ".write": "auth != null && auth.uid == $uid"
+            }
+        },
+        "offers": {
+            ".read": "auth != null",
+            "$offerId": {
+                ".read": "auth != null && (data.child('buyerId').val() == auth.uid || data.child('sellerId').val() == auth.uid || root.child('users/' + auth.uid + '/role').val() == 'admin')",
+                ".write": "auth != null && (newData.child('buyerId').val() == auth.uid || newData.child('sellerId').val() == auth.uid || data.child('buyerId').val() == auth.uid || data.child('sellerId').val() == auth.uid)"
+            }
+        },
+        "chats": {
+            "$offerId": {
+                ".read": "auth != null && (root.child('offers/' + $offerId + '/buyerId').val() == auth.uid || root.child('offers/' + $offerId + '/sellerId').val() == auth.uid || root.child('users/' + auth.uid + '/role').val() == 'admin')",
+                ".write": "auth != null && (root.child('offers/' + $offerId + '/buyerId').val() == auth.uid || root.child('offers/' + $offerId + '/sellerId').val() == auth.uid)"
+            }
+        },
+        "notifications": {
+            ".read": "auth != null",
+            ".indexOn": [
+                "recipientId"
+            ],
+            "$notificationId": {
+                ".read": "auth != null && data.child('recipientId').val() == auth.uid",
+                ".write": "auth != null"
+            }
+        },
+        "feedback": {
+            ".read": "auth != null && root.child('users/' + auth.uid + '/role').val() == 'admin'",
+            "$feedbackId": {
+                ".read": "auth != null",
+                ".write": "auth != null && (!data.exists() || data.child('buyerId').val() == auth.uid || root.child('users/' + auth.uid + '/role').val() == 'admin')"
+            }
+        }
+    }
+}
