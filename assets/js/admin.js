@@ -2511,9 +2511,9 @@ async function loadPayoutQueue() {
     }
 }
 
-// Load Reviews and Disputes (split from old loadFeedback)
+// Load User Feedback (unified view - all reviews and ratings)
 async function loadReviewsAndDisputes() {
-    console.log('[ADMIN] loadReviewsAndDisputes called');
+    console.log('[ADMIN] loadReviewsAndDisputes called (unified feedback view)');
 
     try {
         const snapshot = await database.ref('feedback').orderByChild('createdAt').once('value');
@@ -2525,9 +2525,8 @@ async function loadReviewsAndDisputes() {
             allFeedback.push(feedback);
         });
 
-        // Split into reviews (rating >= 4) and disputes (rating < 4 or dispute type)
-        const reviews = allFeedback.filter(f => f.rating >= 4 && f.feedbackType !== 'dispute');
-        const disputes = allFeedback.filter(f => f.rating < 4 || f.feedbackType === 'dispute');
+        // Sort by date descending (most recent first)
+        allFeedback.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
         // Helper to truncate and make expandable comment
         const formatComment = (comment, maxLength = 50) => {
@@ -2540,61 +2539,45 @@ async function loadReviewsAndDisputes() {
             return `<span class="comment-preview" title="${escaped}" style="cursor: pointer;" onclick="showFullComment('${escaped}')">${truncated} <i class="fas fa-expand-alt" style="color: #3b82f6; font-size: 0.7rem;"></i></span>`;
         };
 
-        // Render reviews
-        const reviewsTable = document.getElementById('reviewsTable');
-        const reviewsCount = document.getElementById('reviewsCount');
-
-        if (reviewsCount) reviewsCount.textContent = reviews.length;
-
-        if (reviewsTable) {
-            if (reviews.length === 0) {
-                reviewsTable.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #64748b;">No reviews yet</td></tr>';
+        // Helper to get sentiment badge based on rating
+        const getSentimentBadge = (rating, feedbackType) => {
+            if (feedbackType === 'dispute') {
+                return '<span style="background: #fef2f2; color: #dc2626; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 500;"><i class="fas fa-flag"></i> Dispute</span>';
+            }
+            if (rating >= 4) {
+                return '<span style="background: #dcfce7; color: #16a34a; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 500;"><i class="fas fa-smile"></i> Positive</span>';
+            } else if (rating === 3) {
+                return '<span style="background: #fef3c7; color: #d97706; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 500;"><i class="fas fa-meh"></i> Neutral</span>';
             } else {
-                reviewsTable.innerHTML = reviews.slice(0, 10).map(f => `
+                return '<span style="background: #fef2f2; color: #dc2626; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 500;"><i class="fas fa-frown"></i> Negative</span>';
+            }
+        };
+
+        // Render unified feedback table
+        const feedbackTable = document.getElementById('feedbackTable');
+        const feedbackCount = document.getElementById('feedbackCount');
+
+        if (feedbackCount) feedbackCount.textContent = allFeedback.length;
+
+        if (feedbackTable) {
+            if (allFeedback.length === 0) {
+                feedbackTable.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #64748b;">No feedback yet</td></tr>';
+            } else {
+                feedbackTable.innerHTML = allFeedback.slice(0, 15).map(f => `
                     <tr>
                         <td>${formatDate(f.createdAt)}</td>
                         <td>${f.buyerName || 'Unknown'}</td>
                         <td>${'⭐'.repeat(f.rating || 0)}</td>
                         <td style="max-width: 250px;">${formatComment(f.comment, 60)}</td>
+                        <td>${getSentimentBadge(f.rating, f.feedbackType)}</td>
                     </tr>
                 `).join('');
             }
         }
 
-        // Render disputes
-        const disputesTable = document.getElementById('disputesTable');
-        const disputesCount = document.getElementById('disputesCount');
-
-        if (disputesCount) disputesCount.textContent = disputes.length;
-
-        if (disputesTable) {
-            if (disputes.length === 0) {
-                disputesTable.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #10b981;">No disputes! 🎉</td></tr>';
-            } else {
-                disputesTable.innerHTML = disputes.slice(0, 10).map(f => {
-                    const statusBadge = f.resolved
-                        ? '<span class="badge" style="background: #10b981; color: white; padding: 0.2rem 0.5rem; border-radius: 4px;">Resolved</span>'
-                        : '<span class="badge" style="background: #f59e0b; color: white; padding: 0.2rem 0.5rem; border-radius: 4px;">Pending</span>';
-
-                    return `
-                        <tr>
-                            <td>${formatDate(f.createdAt)}</td>
-                            <td>${f.buyerName || 'Unknown'}</td>
-                            <td>${'⭐'.repeat(f.rating || 0)}</td>
-                            <td style="max-width: 250px;">${formatComment(f.comment, 60)}</td>
-                            <td>${statusBadge}</td>
-                            <td>
-                                ${!f.resolved ? `<button class="btn btn-sm btn-success" onclick="resolveFeedback('${f.id}')">Resolve</button>` : '-'}
-                            </td>
-                        </tr>
-                    `;
-                }).join('');
-            }
-        }
-
-        console.log('[ADMIN] Loaded reviews:', reviews.length, 'disputes:', disputes.length);
+        console.log('[ADMIN] Loaded unified feedback:', allFeedback.length, 'entries');
     } catch (error) {
-        console.error('[ADMIN] Error loading reviews/disputes:', error);
+        console.error('[ADMIN] Error loading feedback:', error);
     }
 }
 
