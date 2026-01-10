@@ -7,7 +7,7 @@ This section outlines the architectural design of the UITM-EMPLC system, detaili
 The Use Case Diagram illustrates the primary actors (Student/Staff as Buyer/Seller, and Admin) and their interactions with the system.
 
 ```mermaid
-usecaseDiagram
+useCaseDiagram
     actor "User (Student/Staff)" as User
     actor "Admin" as Admin
 
@@ -80,7 +80,7 @@ flowchart TD
     
     CheckAvailability -- Available --> Checkout[Proceed to Checkout]
     Checkout --> SelectBank[Select Payment Bank]
-    SelectBank --> ProcessPayment[Process Payment (FPX Simulation)]
+    SelectBank --> ProcessPayment["Process Payment (FPX Simulation)"]
     
     ProcessPayment --> Success{Payment Success?}
     Success -- No --> FailMsg[Show Failure Message]
