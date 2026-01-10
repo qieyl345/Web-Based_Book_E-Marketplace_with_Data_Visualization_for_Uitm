@@ -91,10 +91,24 @@ flowchart TD
     
     Success -- Yes --> CreateTxn[Create Transaction Record]
     CreateTxn --> UpdateBook[Update Book Status to 'Sold']
-    UpdateBook --> UpdateStats[Update User/Seller Stats]
-    UpdateStats --> ClearCart[Clear Shopping Cart]
-    ClearCart --> GenReceipt[Generate Receipt]
-    GenReceipt --> End([End])
+    UpdateBook --> Escrow[Escrow: Hold Funds]
+    Escrow --> GenReceipt[Generate Receipt]
+    
+    GenReceipt --> Delivery{Item Delivered?}
+    Delivery -- Yes --> ConfirmRx[Buyer Confirms Receipt]
+    ConfirmRx --> WarrantyStart[7-Day Warranty Starts]
+    
+    WarrantyStart --> Issues{Any Issues?}
+    Issues -- No (7 Days) --> AutoPayout[Auto-Payout to Seller]
+    Issues -- Yes --> Dispute[Open Dispute/Claim]
+    
+    Dispute --> AdminAction[Admin Resolution]
+    AdminAction -- Refund --> RefundBuyer[Refund Buyer]
+    AdminAction -- Pay --> PaySeller[Pay Seller]
+    
+    AutoPayout --> End([End])
+    RefundBuyer --> End
+    PaySeller --> End
 ```
 
 ---
@@ -124,6 +138,7 @@ erDiagram
         boolean isSeller
         number totalSales
         number totalPurchases
+        object wallet "{ balance, pendingEscrow, frozenDispute }"
     }
 
     BOOKS {
@@ -142,11 +157,13 @@ erDiagram
     TRANSACTIONS {
         string transactionId PK
         string buyerId FK
-        string fpxTransactionId
+        string sellerId FK
         number amount
-        string status "completed/failed"
-        string deliveryStatus
+        number commissionFee
+        string status "payment_held/delivered/completed/refunded"
         timestamp createdAt
+        timestamp escrowHeldAt
+        timestamp warrantyExpiresAt
         object[] items "Array of Book References"
     }
 
