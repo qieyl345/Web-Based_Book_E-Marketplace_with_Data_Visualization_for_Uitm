@@ -7,29 +7,30 @@ This section outlines the architectural design of the UITM-EMPLC system, detaili
 The Use Case Diagram illustrates the primary actors (Student/Staff as Buyer/Seller, and Admin) and their interactions with the system.
 
 ```mermaid
-useCaseDiagram
-    actor "User (Student/Staff)" as User
-    actor "Admin" as Admin
+flowchart LR
+    User["User (Student/Staff)"]
+    Admin["Admin"]
 
-    package "UITM-EMPLC System" {
-        usecase "Login / Sign Up" as UC1
-        usecase "Manage Profile" as UC2
+    subgraph System["UITM-EMPLC System"]
+        direction TB
+        UC1(["Login / Sign Up"])
+        UC2(["Manage Profile"])
         
-        usecase "Browse/Search Books" as UC3
-        usecase "View Book Details" as UC4
-        usecase "Add to Cart" as UC5
-        usecase "Purchase Books (Checkout)" as UC6
-        usecase "View Receipt" as UC7
+        UC3(["Browse/Search Books"])
+        UC4(["View Book Details"])
+        UC5(["Add to Cart"])
+        UC6(["Purchase Books"])
+        UC7(["View Receipt"])
         
-        usecase "List Book for Sale" as UC8
-        usecase "Manage Listings" as UC9
-        usecase "Chat/Negotiate" as UC10
+        UC8(["List Book for Sale"])
+        UC9(["Manage Listings"])
+        UC10(["Chat/Negotiate"])
         
-        usecase "Manage Users" as UC11
-        usecase "Manage Books (Admin)" as UC12
-        usecase "View Analytics & Health" as UC13
-        usecase "Manage Feedback" as UC14
-    }
+        UC11(["Manage Users"])
+        UC12(["Manage Books"])
+        UC13(["View Analytics & Health"])
+        UC14(["Manage Feedback"])
+    end
 
     User --> UC1
     User --> UC2
