@@ -366,3 +366,163 @@ body.admin-theme .notification-list {
     -webkit-text-fill-color: #334155 !important;
     opacity: 1 !important;
 }
+
+/* =====================================================
+   11. Admin Dashboard Grid Layout Fixes
+   ===================================================== */
+
+/* Fix charts grid - prevent overflow with responsive minmax */
+.admin-page .charts-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1.5rem !important;
+    margin-bottom: 2rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* Fix tables grid - single column layout for better readability */
+.admin-page .tables-grid {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+    margin-bottom: 2rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* Fix analytics row - responsive two-column layout */
+.admin-page .analytics-row {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1.5rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* Quick stats row - responsive 4-column grid */
+.admin-page .quick-stats-row {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 1rem !important;
+    margin-bottom: 2rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* System Health Card - full width */
+.admin-page .system-health-card {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* System Health internal grid - responsive */
+.admin-page .system-health-card>div:last-child {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 1rem !important;
+}
+
+/* Chart cards - ensure proper sizing */
+.admin-page .chart-card {
+    min-width: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
+
+/* CRITICAL: Make major sections span full grid width */
+/* These sections are nested inside quick-stats-row which has 4-column grid */
+.admin-page .charts-grid,
+.admin-page .tables-grid,
+.admin-page .analytics-section,
+.admin-page .analytics-row,
+.admin-page .settings-card,
+.admin-page #section-charts,
+.admin-page #section-transactions,
+.admin-page #section-users,
+.admin-page #section-warranty,
+.admin-page #section-payouts,
+.admin-page #section-feedback,
+.admin-page #section-analytics,
+.admin-page #section-leaderboard,
+.admin-page #section-activity,
+.admin-page #section-settings,
+.admin-page #section-critical-analytics {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+}
+
+/* Table responsive - prevent overflow */
+.admin-page .table-responsive {
+    overflow-x: auto !important;
+    max-width: 100% !important;
+}
+
+.admin-page .table-responsive table {
+    min-width: 600px !important;
+}
+
+/* Stats grid - 4 columns */
+.admin-page .stats-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 1.5rem !important;
+    margin-bottom: 2rem !important;
+    width: 100% !important;
+}
+
+/* Critical Analytics section charts */
+.admin-page .analytics-section .charts-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+}
+
+/* Container - prevent overflow */
+.admin-page .container {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    padding: 0 1.5rem !important;
+    box-sizing: border-box !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1400px) {
+    .admin-page .quick-stats-row {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    .admin-page .stats-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    .admin-page .system-health-card>div:last-child {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+@media (max-width: 1200px) {
+
+    .admin-page .charts-grid,
+    .admin-page .analytics-section .charts-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .admin-page .analytics-row {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-page .quick-stats-row {
+        grid-template-columns: 1fr !important;
+    }
+
+    .admin-page .stats-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .admin-page .system-health-card>div:last-child {
+        grid-template-columns: 1fr 1fr !important;
+    }
+}
