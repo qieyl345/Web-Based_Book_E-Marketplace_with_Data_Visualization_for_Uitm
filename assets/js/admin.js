@@ -12,7 +12,7 @@ let allBooks = [];
 // Store chart instances globally for dynamic updates
 let salesChartInstance = null;
 let revenueChartInstance = null;
-let disputeMetricsChartInstance = null;
+let warrantyResolutionChartInstance = null;
 let topBooksChartInstance = null;
 let subjectChartInstance = null;
 let transactionSuccessChartInstance = null;
@@ -109,6 +109,7 @@ async function loadDashboardData() {
             loadSellerLeaderboard(), // NEW
             loadActivityLog(),       // NEW
             loadQuickStats(),        // NEW
+            loadSystemHealth(),      // NEW: System health summary
             loadCriticalAnalytics()
         ]);
         console.log('[ADMIN] All data loaded successfully');
@@ -1160,7 +1161,7 @@ async function loadCriticalAnalytics() {
         // Create all critical analytics charts
         createTransactionSuccessChart();
         createFeedbackDistributionChart();
-        createDisputeMetricsChart();
+        createWarrantyResolutionChart();
         createOfferFunnelChart();
 
         console.log('[ADMIN] Critical analytics charts created');
@@ -1314,35 +1315,35 @@ async function calculateFeedbackDistribution() {
     };
 }
 
-async function createDisputeMetricsChart() {
-    const ctx = document.getElementById('disputeMetricsChart');
+async function createWarrantyResolutionChart() {
+    const ctx = document.getElementById('warrantyResolutionChart');
     if (!ctx) return;
 
-    const metrics = await calculateDisputeMetricsWithFilter('all'); // Default to All Time
+    const metrics = calculateWarrantyResolutionMetrics('all'); // Default to All Time
 
-    disputeMetricsChartInstance = new Chart(ctx.getContext('2d'), {
+    warrantyResolutionChartInstance = new Chart(ctx.getContext('2d'), {
         type: 'bar',
         data: {
             labels: metrics.labels,
             datasets: [
                 {
-                    label: 'Disputes Opened',
+                    label: 'Claims Opened',
                     data: metrics.opened,
-                    backgroundColor: '#EF4444',
+                    backgroundColor: '#f59e0b',
                     order: 2
                 },
                 {
-                    label: 'Disputes Resolved',
+                    label: 'Claims Resolved',
                     data: metrics.resolved,
-                    backgroundColor: '#00A86B',
+                    backgroundColor: '#22c55e',
                     order: 2
                 },
                 {
                     type: 'line',
                     label: 'Resolution Rate (%)',
                     data: metrics.resolutionRate,
-                    borderColor: '#005C99',
-                    backgroundColor: 'rgba(0, 92, 153, 0.1)',
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
                     yAxisID: 'y1',
                     order: 1
                 }
@@ -1394,48 +1395,88 @@ async function createDisputeMetricsChart() {
     });
 }
 
-async function calculateDisputeMetrics() {
-    const opened = [0, 0, 0, 0];
-    const resolved = [0, 0, 0, 0];
-    const resolutionRate = [0, 0, 0, 0];
+// Calculate warranty resolution metrics from transactions (not feedback)
+function calculateWarrantyResolutionMetrics(range) {
+    // Warranty claim statuses
+    const warrantyStatuses = ['warranty_claimed', 'return_sent', 'return_received', 'dispute_open'];
+    const resolvedStatuses = ['refunded', 'completed'];
 
-    try {
-        const feedbackSnapshot = await database.ref('feedback').once('value');
-        const disputes = [];
+    // Get transactions with warranty claims
+    const warrantyClaims = allTransactions.filter(txn =>
+        warrantyStatuses.includes(txn.status) ||
+        (resolvedStatuses.includes(txn.status) && txn.warrantyClaimedAt)
+    );
 
-        feedbackSnapshot.forEach(child => {
-            const feedback = child.val();
-            if (feedback.type === 'dispute') {
-                disputes.push({ id: child.key, ...feedback });
+    let weeks = 4;
+    let labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+    let daysPerPeriod = 7;
+
+    if (range === '12') {
+        weeks = 3;
+        labels = ['Month 1', 'Month 2', 'Month 3'];
+        daysPerPeriod = 30;
+    } else if (range === '24') {
+        weeks = 6;
+        labels = ['Month 1', 'Month 2', 'Month 3', 'Month 4', 'Month 5', 'Month 6'];
+        daysPerPeriod = 30;
+    } else if (range === 'all') {
+        // Group by month for all time
+        const monthlyData = {};
+
+        warrantyClaims.forEach(txn => {
+            const claimDate = new Date(txn.warrantyClaimedAt || txn.createdAt);
+            const monthYear = claimDate.toLocaleDateString('en-MY', { month: 'short', year: 'numeric' });
+
+            if (!monthlyData[monthYear]) {
+                monthlyData[monthYear] = { opened: 0, resolved: 0 };
+            }
+
+            monthlyData[monthYear].opened++;
+            if (resolvedStatuses.includes(txn.status)) {
+                monthlyData[monthYear].resolved++;
             }
         });
 
-        // Group by last 4 weeks
-        for (let weekIndex = 0; weekIndex < 4; weekIndex++) {
-            const weekStart = new Date();
-            weekStart.setDate(weekStart.getDate() - (7 * (4 - weekIndex)));
-            const weekEnd = new Date();
-            weekEnd.setDate(weekEnd.getDate() - (7 * (3 - weekIndex)));
+        const sortedMonths = Object.keys(monthlyData).sort((a, b) => new Date(a) - new Date(b));
 
-            disputes.forEach(dispute => {
-                const createdDate = new Date(dispute.createdAt);
-                if (createdDate >= weekStart && createdDate < weekEnd) {
-                    opened[weekIndex]++;
-                    if (dispute.status === 'resolved') {
-                        resolved[weekIndex]++;
-                    }
-                }
-            });
-
-            resolutionRate[weekIndex] = opened[weekIndex] > 0
-                ? ((resolved[weekIndex] / opened[weekIndex]) * 100).toFixed(1)
-                : 0;
-        }
-    } catch (error) {
-        console.error('[ADMIN] Error calculating dispute metrics:', error);
+        return {
+            labels: sortedMonths.length > 0 ? sortedMonths : ['No Data'],
+            opened: sortedMonths.map(m => monthlyData[m].opened),
+            resolved: sortedMonths.map(m => monthlyData[m].resolved),
+            resolutionRate: sortedMonths.map(m =>
+                monthlyData[m].opened > 0
+                    ? ((monthlyData[m].resolved / monthlyData[m].opened) * 100).toFixed(1)
+                    : 0
+            )
+        };
     }
 
-    return { opened, resolved, resolutionRate };
+    const opened = new Array(weeks).fill(0);
+    const resolved = new Array(weeks).fill(0);
+    const resolutionRate = new Array(weeks).fill(0);
+
+    for (let periodIndex = 0; periodIndex < weeks; periodIndex++) {
+        const periodStart = new Date();
+        periodStart.setDate(periodStart.getDate() - (daysPerPeriod * (weeks - periodIndex)));
+        const periodEnd = new Date();
+        periodEnd.setDate(periodEnd.getDate() - (daysPerPeriod * (weeks - periodIndex - 1)));
+
+        warrantyClaims.forEach(txn => {
+            const claimDate = new Date(txn.warrantyClaimedAt || txn.createdAt);
+            if (claimDate >= periodStart && claimDate < periodEnd) {
+                opened[periodIndex]++;
+                if (resolvedStatuses.includes(txn.status)) {
+                    resolved[periodIndex]++;
+                }
+            }
+        });
+
+        resolutionRate[periodIndex] = opened[periodIndex] > 0
+            ? ((resolved[periodIndex] / opened[periodIndex]) * 100).toFixed(1)
+            : 0;
+    }
+
+    return { labels, opened, resolved, resolutionRate };
 }
 
 function createOfferFunnelChart() {
@@ -1545,11 +1586,11 @@ function setupChartFilters() {
         });
     }
 
-    // Dispute Metrics Filter
-    const disputeFilter = document.getElementById('disputeMetricsFilter');
-    if (disputeFilter) {
-        disputeFilter.addEventListener('change', (e) => {
-            updateDisputeMetricsChart(e.target.value);
+    // Warranty Resolution Filter
+    const warrantyResolutionFilter = document.getElementById('warrantyResolutionFilter');
+    if (warrantyResolutionFilter) {
+        warrantyResolutionFilter.addEventListener('change', (e) => {
+            updateWarrantyResolutionChart(e.target.value);
         });
     }
 
@@ -1628,20 +1669,6 @@ function updateRevenueChart(range) {
         revenueChartInstance.update();
     }
     showChartLoading('revenueChart', false);
-}
-
-function updateDisputeMetricsChart(range) {
-    showChartLoading('disputeMetricsChart', true);
-    const metricsData = calculateDisputeMetricsWithFilter(range);
-
-    if (disputeMetricsChartInstance) {
-        disputeMetricsChartInstance.data.labels = metricsData.labels;
-        disputeMetricsChartInstance.data.datasets[0].data = metricsData.opened;
-        disputeMetricsChartInstance.data.datasets[1].data = metricsData.resolved;
-        disputeMetricsChartInstance.data.datasets[2].data = metricsData.resolutionRate;
-        disputeMetricsChartInstance.update();
-    }
-    showChartLoading('disputeMetricsChart', false);
 }
 
 function calculateSalesTrendWithFilter(range) {
@@ -1738,107 +1765,8 @@ function calculateAllTimeRevenueTrend() {
     };
 }
 
-async function calculateDisputeMetricsWithFilter(range) {
-    let weeks = 4;
-    let labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
-
-    if (range === '12') {
-        weeks = 12;
-        labels = ['Month 1', 'Month 2', 'Month 3'];
-    } else if (range === '24') {
-        weeks = 24;
-        labels = ['Month 1', 'Month 2', 'Month 3', 'Month 4', 'Month 5', 'Month 6'];
-    } else if (range === 'all') {
-        // Show all disputes grouped by month
-        return calculateAllTimeDisputeMetrics();
-    }
-
-    const opened = new Array(range === '4' ? 4 : range === '12' ? 3 : 6).fill(0);
-    const resolved = new Array(opened.length).fill(0);
-    const resolutionRate = new Array(opened.length).fill(0);
-
-    try {
-        const feedbackSnapshot = await database.ref('feedback').once('value');
-        const disputes = [];
-
-        feedbackSnapshot.forEach(child => {
-            const feedback = child.val();
-            if (feedback.type === 'dispute') {
-                disputes.push({ id: child.key, ...feedback });
-            }
-        });
-
-        const daysPerPeriod = range === '4' ? 7 : 30;
-
-        for (let periodIndex = 0; periodIndex < opened.length; periodIndex++) {
-            const periodStart = new Date();
-            periodStart.setDate(periodStart.getDate() - (daysPerPeriod * (opened.length - periodIndex)));
-            const periodEnd = new Date();
-            periodEnd.setDate(periodEnd.getDate() - (daysPerPeriod * (opened.length - periodIndex - 1)));
-
-            disputes.forEach(dispute => {
-                const createdDate = new Date(dispute.createdAt);
-                if (createdDate >= periodStart && createdDate < periodEnd) {
-                    opened[periodIndex]++;
-                    if (dispute.status === 'resolved') {
-                        resolved[periodIndex]++;
-                    }
-                }
-            });
-
-            resolutionRate[periodIndex] = opened[periodIndex] > 0
-                ? ((resolved[periodIndex] / opened[periodIndex]) * 100).toFixed(1)
-                : 0;
-        }
-    } catch (error) {
-        console.error('[ADMIN] Error calculating dispute metrics:', error);
-    }
-
-    return { labels, opened, resolved, resolutionRate };
-}
-
-async function calculateAllTimeDisputeMetrics() {
-    const monthlyData = {};
-
-    try {
-        const feedbackSnapshot = await database.ref('feedback').once('value');
-
-        feedbackSnapshot.forEach(child => {
-            const feedback = child.val();
-            if (feedback.type === 'dispute') {
-                const date = new Date(feedback.createdAt);
-                const monthYear = date.toLocaleDateString('en-MY', { month: 'short', year: 'numeric' });
-
-                if (!monthlyData[monthYear]) {
-                    monthlyData[monthYear] = { opened: 0, resolved: 0 };
-                }
-
-                monthlyData[monthYear].opened++;
-                if (feedback.status === 'resolved') {
-                    monthlyData[monthYear].resolved++;
-                }
-            }
-        });
-
-        const sortedMonths = Object.keys(monthlyData).sort((a, b) => new Date(a) - new Date(b));
-
-        return {
-            labels: sortedMonths,
-            opened: sortedMonths.map(m => monthlyData[m].opened),
-            resolved: sortedMonths.map(m => monthlyData[m].resolved),
-            resolutionRate: sortedMonths.map(m =>
-                monthlyData[m].opened > 0
-                    ? ((monthlyData[m].resolved / monthlyData[m].opened) * 100).toFixed(1)
-                    : 0
-            )
-        };
-    } catch (error) {
-        console.error('[ADMIN] Error calculating all time dispute metrics:', error);
-        return { labels: [], opened: [], resolved: [], resolutionRate: [] };
-    }
-}
-
 // ===== UPDATE FUNCTIONS FOR REMAINING CHARTS =====
+
 
 function updateTopSellersChart(range) {
     showChartLoading('topSellersChart', true);
@@ -1881,6 +1809,19 @@ async function updateFeedbackDistributionChart(range) {
         feedbackDistributionChartInstance.update();
     }
     showChartLoading('feedbackDistributionChart', false);
+}
+
+function updateWarrantyResolutionChart(range) {
+    showChartLoading('warrantyResolutionChart', true);
+    const data = calculateWarrantyResolutionMetrics(range);
+    if (warrantyResolutionChartInstance) {
+        warrantyResolutionChartInstance.data.labels = data.labels;
+        warrantyResolutionChartInstance.data.datasets[0].data = data.opened;
+        warrantyResolutionChartInstance.data.datasets[1].data = data.resolved;
+        warrantyResolutionChartInstance.data.datasets[2].data = data.resolutionRate;
+        warrantyResolutionChartInstance.update();
+    }
+    showChartLoading('warrantyResolutionChart', false);
 }
 
 async function updateOfferFunnelChart(range) {
@@ -2450,13 +2391,84 @@ async function loadQuickStats() {
     }
 }
 
-// Load Payout Queue
+// Load System Health Summary
+async function loadSystemHealth() {
+    console.log('[ADMIN] loadSystemHealth called');
+    try {
+        // 1. Success Rate (completed + refunded vs total non-cancelled)
+        const validTxns = allTransactions.filter(txn => txn.status !== 'cancelled');
+        const completedTxns = allTransactions.filter(txn =>
+            ['completed', 'refunded'].includes(txn.status)
+        );
+        const successRate = validTxns.length > 0
+            ? ((completedTxns.length / validTxns.length) * 100).toFixed(0)
+            : 0;
+        document.getElementById('healthSuccessRate').textContent = `${successRate}%`;
+
+        // 2. Average Rating (from feedback)
+        const feedbackSnapshot = await database.ref('feedback').once('value');
+        let totalRating = 0;
+        let ratingCount = 0;
+        feedbackSnapshot.forEach(child => {
+            const feedback = child.val();
+            if (feedback.rating) {
+                totalRating += feedback.rating;
+                ratingCount++;
+            }
+        });
+        const avgRating = ratingCount > 0 ? (totalRating / ratingCount).toFixed(1) : '--';
+        document.getElementById('healthAvgRating').textContent = ratingCount > 0 ? `${avgRating} ⭐` : '--';
+
+        // 3. Issue-Free Rate (transactions without warranty claims)
+        const claimedTxns = allTransactions.filter(txn =>
+            txn.warrantyClaimedAt ||
+            ['warranty_claimed', 'return_sent', 'return_received', 'dispute_open', 'refunded'].includes(txn.status)
+        );
+        const issueFreeTxns = validTxns.length - claimedTxns.length;
+        const issueFreeRate = validTxns.length > 0
+            ? ((issueFreeTxns / validTxns.length) * 100).toFixed(0)
+            : 0;
+        document.getElementById('healthClaimRate').textContent = `${issueFreeRate}%`;
+
+        // 4. Average Resolution Time (for resolved warranty claims)
+        const resolvedClaims = allTransactions.filter(txn =>
+            txn.disputeResolvedAt && txn.warrantyClaimedAt
+        );
+        let totalResolutionDays = 0;
+        resolvedClaims.forEach(txn => {
+            const resolutionTime = txn.disputeResolvedAt - txn.warrantyClaimedAt;
+            totalResolutionDays += resolutionTime / (24 * 60 * 60 * 1000); // Convert to days
+        });
+        const avgResolution = resolvedClaims.length > 0
+            ? (totalResolutionDays / resolvedClaims.length).toFixed(1)
+            : '--';
+        document.getElementById('healthAvgResolution').textContent = resolvedClaims.length > 0 ? `${avgResolution}d` : '--';
+
+        // Update timestamp
+        const now = new Date();
+        document.getElementById('healthLastUpdated').textContent =
+            `Updated ${now.toLocaleTimeString('en-MY', { hour: '2-digit', minute: '2-digit' })}`;
+
+        console.log('[ADMIN] System health loaded:', { successRate, avgRating, issueFreeRate, avgResolution });
+    } catch (error) {
+        console.error('[ADMIN] Error loading system health:', error);
+    }
+}
+
+// Load Payout Queue with Live Countdown Timers
+let payoutCountdownInterval = null;
+
 async function loadPayoutQueue() {
     console.log('[ADMIN] loadPayoutQueue called');
     const tableBody = document.getElementById('payoutQueueTable');
     const countBadge = document.getElementById('payoutQueueCount');
 
     if (!tableBody) return;
+
+    // Clear any existing countdown interval
+    if (payoutCountdownInterval) {
+        clearInterval(payoutCountdownInterval);
+    }
 
     try {
         // Get transactions in warranty period (delivered status)
@@ -2471,6 +2483,7 @@ async function loadPayoutQueue() {
             tableBody.innerHTML = `
                 <tr>
                     <td colspan="5" style="text-align: center; padding: 1.5rem; color: #64748b;">
+                        <i class="fas fa-check-circle" style="color: #22c55e; margin-right: 0.5rem;"></i>
                         No pending payouts in queue
                     </td>
                 </tr>
@@ -2478,37 +2491,117 @@ async function loadPayoutQueue() {
             return;
         }
 
-        tableBody.innerHTML = payoutQueue.map(txn => {
+        // Sort by expiry time (soonest first)
+        payoutQueue.sort((a, b) => {
+            const expiresA = a.warrantyExpiresAt || a.payoutScheduledAt || Infinity;
+            const expiresB = b.warrantyExpiresAt || b.payoutScheduledAt || Infinity;
+            return expiresA - expiresB;
+        });
+
+        tableBody.innerHTML = payoutQueue.map((txn, index) => {
             const sellerName = txn.items?.[0]?.bookDetails?.sellerName || 'Unknown';
             const orderId = txn.transactionId || txn.id;
             const amount = (txn.basePrice || txn.amount || 0) * 0.9; // After 10% commission
             const expiresAt = txn.warrantyExpiresAt || txn.payoutScheduledAt;
-            const daysLeft = expiresAt ? Math.ceil((expiresAt - now) / (24 * 60 * 60 * 1000)) : '?';
 
-            let statusBadge = '';
-            if (daysLeft <= 0) {
-                statusBadge = '<span class="badge" style="background: #22c55e; color: white; padding: 0.2rem 0.5rem; border-radius: 4px;">Ready</span>';
-            } else if (daysLeft <= 2) {
-                statusBadge = '<span class="badge" style="background: #f59e0b; color: white; padding: 0.2rem 0.5rem; border-radius: 4px;">Soon</span>';
-            } else {
-                statusBadge = '<span class="badge" style="background: #64748b; color: white; padding: 0.2rem 0.5rem; border-radius: 4px;">Waiting</span>';
-            }
+            // Generate unique ID for countdown element
+            const countdownId = `countdown-${orderId.substring(0, 8)}`;
 
             return `
                 <tr>
                     <td>${sellerName}</td>
                     <td><code style="background: #f1f5f9; padding: 0.2rem 0.4rem; border-radius: 4px;">#${orderId.substring(0, 8)}</code></td>
                     <td style="font-weight: 600; color: #22c55e;">RM ${amount.toFixed(2)}</td>
-                    <td>${daysLeft > 0 ? `${daysLeft} day(s)` : 'Expired'}</td>
-                    <td>${statusBadge}</td>
+                    <td>
+                        <div id="${countdownId}" 
+                             class="payout-countdown" 
+                             data-expires="${expiresAt || 0}"
+                             style="font-family: 'Courier New', monospace; font-size: 0.85rem;">
+                            --:--:--
+                        </div>
+                    </td>
+                    <td>
+                        <span class="payout-status-badge" data-countdown-id="${countdownId}">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </span>
+                    </td>
                 </tr>
             `;
         }).join('');
+
+        // Start live countdown updates
+        updatePayoutCountdowns();
+        payoutCountdownInterval = setInterval(updatePayoutCountdowns, 1000);
 
     } catch (error) {
         console.error('[ADMIN] Error loading payout queue:', error);
         tableBody.innerHTML = '<tr><td colspan="5" style="color: #ef4444;">Error loading</td></tr>';
     }
+}
+
+// Update all payout countdowns
+function updatePayoutCountdowns() {
+    const countdowns = document.querySelectorAll('.payout-countdown');
+    const now = Date.now();
+
+    countdowns.forEach(el => {
+        const expiresAt = parseInt(el.dataset.expires) || 0;
+        const timeLeft = expiresAt - now;
+        const countdownId = el.id;
+        const statusBadge = document.querySelector(`[data-countdown-id="${countdownId}"]`);
+
+        if (expiresAt === 0) {
+            el.innerHTML = '<span style="color: #94a3b8;">No date set</span>';
+            if (statusBadge) {
+                statusBadge.innerHTML = '<span class="badge" style="background: #64748b; color: white; padding: 0.2rem 0.5rem; border-radius: 4px;">Unknown</span>';
+            }
+            return;
+        }
+
+        if (timeLeft <= 0) {
+            // Expired - ready for payout
+            el.innerHTML = `
+                <span style="color: #22c55e; font-weight: 600;">
+                    <i class="fas fa-check-circle"></i> READY
+                </span>
+            `;
+            if (statusBadge) {
+                statusBadge.innerHTML = '<span class="badge" style="background: #22c55e; color: white; padding: 0.2rem 0.5rem; border-radius: 4px; animation: pulse 2s infinite;">Ready</span>';
+            }
+        } else {
+            // Calculate time components
+            const days = Math.floor(timeLeft / (24 * 60 * 60 * 1000));
+            const hours = Math.floor((timeLeft % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+            const minutes = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
+            const seconds = Math.floor((timeLeft % (60 * 1000)) / 1000);
+
+            // Format countdown display
+            if (days > 0) {
+                el.innerHTML = `
+                    <span style="color: ${days <= 2 ? '#f59e0b' : '#3b82f6'};">
+                        ${days}d ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}
+                    </span>
+                `;
+            } else {
+                el.innerHTML = `
+                    <span style="color: ${hours < 12 ? '#ef4444' : '#f59e0b'}; font-weight: ${hours < 6 ? '700' : '400'};">
+                        ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}
+                    </span>
+                `;
+            }
+
+            // Update status badge
+            if (statusBadge) {
+                if (days <= 0 && hours < 24) {
+                    statusBadge.innerHTML = '<span class="badge" style="background: #ef4444; color: white; padding: 0.2rem 0.5rem; border-radius: 4px;">Today</span>';
+                } else if (days <= 2) {
+                    statusBadge.innerHTML = '<span class="badge" style="background: #f59e0b; color: white; padding: 0.2rem 0.5rem; border-radius: 4px;">Soon</span>';
+                } else {
+                    statusBadge.innerHTML = '<span class="badge" style="background: #64748b; color: white; padding: 0.2rem 0.5rem; border-radius: 4px;">Waiting</span>';
+                }
+            }
+        }
+    });
 }
 
 // Load User Feedback (unified view - all reviews and ratings)

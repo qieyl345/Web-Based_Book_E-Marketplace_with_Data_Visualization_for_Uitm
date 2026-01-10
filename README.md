@@ -219,18 +219,20 @@ The platform features a secure escrow-based payment system, real-time negotiatio
 | Feature | Description |
 |---------|-------------|
 | **Dashboard Overview** | Total users, transactions, revenue at a glance |
+| **System Health** | Real-time monitoring of transaction success rates & issues |
 | **Sales Trend Chart** | Line chart of transaction volume over time |
 | **Revenue Chart** | Bar chart of commission earnings |
 | **Top Books Chart** | Most sold books visualization |
-| **Top Sellers by Revenue** | Horizontal bar chart with student/staff color differentiation |
+| **Seller Leaderboard** | Top performing sellers (Student vs Staff) |
 | **Subject Distribution** | Pie chart of book categories |
-| **Transaction Success Rate** | Doughnut chart of success/failure |
+| **Transaction Success** | Critical analytics on completion vs failure rates |
 | **Feedback Distribution** | Bar chart of rating distribution |
 | **Dispute Metrics** | Opened vs resolved with resolution rate |
 | **Offer Funnel** | Conversion tracking from offers to purchases |
+| **Payout Queue** | Live countdowns for upcoming seller payouts |
 | **Chart Filters** | Filter by time period (7 days, 30 days, all time) |
 | **Recent Transactions** | Quick view of latest transactions |
-| **User Management** | Search and view user details |
+| **User Management** | Search and view detailed user profiles |
 | **Feedback Review** | View all user feedback and disputes |
 | **Dispute Resolution** | Refund buyer OR pay seller actions |
 | **CSV Export** | Download transactions as spreadsheet |
@@ -361,20 +363,12 @@ UITM-EMPLC_ver1/
 │   ├── .firebaserc              # Firebase project config
 │   └── presentation-dummy-data.json # Demo data (41KB)
 │
-├── file_md/                     # Documentation (14 files)
-│   ├── systemWalkthrough.md     # Complete system walkthrough (65KB)
-│   ├── projectDesign.md         # UCD, flowcharts, ERD (5KB)
-│   ├── Chapter4.md              # Report chapter 4 (30KB)
-│   ├── Chapter5.md              # Report chapter 5 (19KB)
-│   ├── Chapter6.md              # Report chapter 6 (14KB)
-│   ├── AUTH_FIX.md              # Authentication fix notes (7KB)
-│   ├── NEGOTIATION_SYSTEM_DESIGN.md # Negotiation design (3KB)
-│   ├── SETUP.md                 # Setup instructions (5KB)
-│   ├── README.md                # Additional readme (31KB)
-│   ├── Report.md                # Report notes (7KB)
-│   ├── feature.md               # Feature list (4KB)
-│   ├── walkthrough.md           # Quick walkthrough (1KB)
-│   └── screenshots/             # Screenshot directory
+├── file_md/                     # Documentation Archive
+│   ├── documentation/           # General documentation
+│   ├── guides/                  # User and admin guides
+│   ├── screenshots/             # System screenshots
+│   └── technical/               # Technical designs & diagrams
+│
 │
 ├── backup/                      # Backup files (16 files)
 ├── dev/                         # Development files (5 files)
@@ -384,6 +378,7 @@ UITM-EMPLC_ver1/
 ├── package.json                 # NPM scripts & dependencies
 ├── package-lock.json            # NPM lock file
 ├── update-html-css.ps1          # PowerShell update script
+├── UAT.md                       # User Acceptance Testing Questions
 └── README.md                    # This file
 ```
 
@@ -437,6 +432,14 @@ UITM-EMPLC_ver1/
 | `verify-email.js` | 2KB | Email verification logic |
 | `modal-scroll-fix.js` | 1KB | Fix for modal scroll issues |
 | `seed_placeholder.js` | 1KB | Placeholder data seeding |
+
+### Documentation Files
+
+| File | Size | Description |
+|------|------|-------------|
+| `README.md` | 54KB | Main system documentation (this file) |
+| `UAT.md` | 4KB | User Acceptance Testing questionnaire |
+| `file_md/` | - | Comprehensive documentation archive |
 
 ### CSS Files (21 files)
 

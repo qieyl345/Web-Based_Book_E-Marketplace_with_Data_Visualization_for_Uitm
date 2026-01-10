@@ -29,7 +29,7 @@ A **Consumer-to-Consumer (C2C)** web platform designed specifically for UiTM stu
 
 ### 1.2 Core Features Summary
 
-| Feature | Description |
+|Feature | Description |
 |---------|-------------|
 | **UiTM-Only Access** | Restricted to `@student.uitm.edu.my` and `@staff.uitm.edu.my` emails |
 | **Book Listing** | Sellers create listings with images, price, condition, and subject code |
@@ -38,7 +38,8 @@ A **Consumer-to-Consumer (C2C)** web platform designed specifically for UiTM stu
 | **Simulated Payment** | FPX simulation with 90% success rate |
 | **Escrow Protection** | Funds held until buyer confirms receipt |
 | **7-Day Warranty** | Post-delivery protection for buyers |
-| **Admin Analytics** | 8 interactive charts with time filters |
+| **Admin Analytics** | 8 interactive charts, System Health, Seller Leaderboard & Payout Queue |
+
 
 ### 1.3 Technology Stack
 
@@ -846,14 +847,17 @@ Alternative paths:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### 9.2 All 8 Charts
+### 9.2 All Dashboard Charts & Modules
 
-| Chart | Type | Data Source | Filters |
+| Chart/Module | Type | Data Source | Filters |
 |-------|------|-------------|---------|
+| **System Health** | Summary Card | Completed vs Failed transactions | None |
+| **Payout Queue** | Live Timer | Transactions in warranty period | None |
 | **Sales Trend** | Line | `transactions` count by date | 7/30/90/All days |
 | **Revenue** | Bar | `commissionFee` sum by date | 7/30/90/All days |
 | **Dispute Metrics** | Bar | Disputes by type/resolution | 7/30/90/All days |
 | **Top Books** | Horizontal Bar | Book titles by sales count | None |
+| **Seller Leaderboard** | Horizontal Bar | Top sellers by revenue (Staff/Student) | None |
 | **Subject Distribution** | Pie | Books by `subjectCode` | None |
 | **Transaction Success** | Doughnut | Success vs Failed count | None |
 | **Feedback Distribution** | Bar | Ratings 1-5 count | None |
@@ -1159,6 +1163,14 @@ Alternative paths:
 
 ---
 
-*Document Version: 1.0*  
-*Last Updated: December 2024*  
+## 13. Testing & Verification
+
+For User Acceptance Testing (UAT) questions and verification steps, please refer to the dedicated UAT document.
+
+- **[View UAT Questionnaire](../../UAT.md)**
+
+---
+
+*Document Version: 1.1*  
+*Last Updated: January 2026*  
 *Status: Complete System Walkthrough*

@@ -92,7 +92,8 @@ The main objectives of this project are:
 - FPX payment simulation (90% success rate for testing)
 - Escrow holding of funds for 7 days post-purchase
 - 7-day warranty claim and dispute resolution process
-- Admin dashboard with 8 interactive analytics charts
+- 7-day warranty claim and dispute resolution process
+- Admin dashboard with System Health, Payout Queue, and interactive analytics
 - Notification system for transaction updates
 - PDF receipt generation
 
@@ -426,14 +427,16 @@ async function processAutoPayout(transactionId, txn) {
 - Feedback and dispute review
 - CSV export functionality
 
-**Dashboard Charts:**
+**Dashboard Charts & Modules:**
 
-| Chart | Type | Data Displayed |
+| Chart/Module | Type | Data Displayed |
 |-------|------|----------------|
+| System Health | Summary | Transaction success rates & active issues |
+| Payout Queue | Live List | Timer for upcoming seller payouts |
 | Sales Trend | Line | Transaction count over time |
 | Revenue | Bar | Commission earnings by period |
 | Top Books | Horizontal Bar | Best-selling books |
-| Top Sellers | Horizontal Bar | Sellers by revenue (color-coded by role) |
+| Seller Leaderboard | Horizontal Bar | Sellers by revenue (Student vs Staff) |
 | Subject Distribution | Pie | Books by subject code |
 | Transaction Success | Doughnut | Success vs Failure rate |
 | Feedback Distribution | Bar | Ratings 1-5 count |
@@ -632,8 +635,8 @@ async function resolveDisputeForSeller(transactionId) {
 | Develop C2C marketplace | ✅ Completed | 14 HTML pages, 23 JS modules |
 | Implement escrow payment | ✅ Completed | 7-day hold with auto-payout |
 | Design negotiation system | ✅ Completed | Real-time chat with counter-offers |
-| Integrate warranty protection | ✅ Completed | 7-day claim period, return flow |
-| Create admin dashboard | ✅ Completed | 8 interactive charts |
+| Integrated warranty protection | ✅ Completed | 7-day claim period, return flow |
+| Create admin dashboard | ✅ Completed | System Health, Payout Queue & Analytics |
 
 ### 6.2 System Statistics
 

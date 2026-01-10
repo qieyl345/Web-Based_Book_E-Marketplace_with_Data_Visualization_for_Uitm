@@ -123,6 +123,11 @@ php -S localhost:8000
 7. Add to cart
 8. Test payment flow
 
+### 7.1 Verification
+Once you have tested the basic flows, you can perform a full User Acceptance Test (UAT) using the provided questionnaire:
+- **[View UAT Questions](../../UAT.md)**
+
+
 ## 8. Default Admin Setup
 
 To make yourself an admin:

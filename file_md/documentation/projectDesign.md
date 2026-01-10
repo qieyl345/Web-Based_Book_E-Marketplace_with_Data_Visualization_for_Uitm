@@ -27,7 +27,7 @@ usecaseDiagram
         
         usecase "Manage Users" as UC11
         usecase "Manage Books (Admin)" as UC12
-        usecase "View Sales Reports" as UC13
+        usecase "View Analytics & Health" as UC13
         usecase "Manage Feedback" as UC14
     }
 
