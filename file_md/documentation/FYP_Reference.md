@@ -92,7 +92,6 @@ The main objectives of this project are:
 - FPX payment simulation (90% success rate for testing)
 - Escrow holding of funds for 7 days post-purchase
 - 7-day warranty claim and dispute resolution process
-- 7-day warranty claim and dispute resolution process
 - Admin dashboard with System Health, Payout Queue, and interactive analytics
 - Notification system for transaction updates
 - PDF receipt generation
