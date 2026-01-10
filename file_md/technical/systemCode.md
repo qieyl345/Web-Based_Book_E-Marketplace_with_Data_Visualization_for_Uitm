@@ -1662,7 +1662,209 @@ function setupChartFilters() {
 
 ---
 
-## 19. PDF Receipt Generation (jsPDF)
+## 19. Admin Dashboard: System Health
+
+**File:** `assets/js/admin.js`
+
+Displays a summary of key platform health metrics.
+
+```javascript
+async function loadSystemHealth() {
+    try {
+        // 1. Success Rate (completed + refunded vs total non-cancelled)
+        const validTxns = allTransactions.filter(txn => txn.status !== 'cancelled');
+        const completedTxns = allTransactions.filter(txn =>
+            ['completed', 'refunded'].includes(txn.status)
+        );
+        const successRate = validTxns.length > 0
+            ? ((completedTxns.length / validTxns.length) * 100).toFixed(0)
+            : 0;
+        document.getElementById('healthSuccessRate').textContent = `${successRate}%`;
+
+        // 2. Average Rating (from feedback)
+        const feedbackSnapshot = await database.ref('feedback').once('value');
+        let totalRating = 0, ratingCount = 0;
+        feedbackSnapshot.forEach(child => {
+            const feedback = child.val();
+            if (feedback.rating) { totalRating += feedback.rating; ratingCount++; }
+        });
+        const avgRating = ratingCount > 0 ? (totalRating / ratingCount).toFixed(1) : '--';
+        document.getElementById('healthAvgRating').textContent = ratingCount > 0 ? `${avgRating} ⭐` : '--';
+
+        // 3. Issue-Free Rate (transactions without warranty claims)
+        const claimedTxns = allTransactions.filter(txn =>
+            txn.warrantyClaimedAt || ['warranty_claimed', 'return_sent', 'return_received'].includes(txn.status)
+        );
+        const issueFreeRate = validTxns.length > 0
+            ? (((validTxns.length - claimedTxns.length) / validTxns.length) * 100).toFixed(0)
+            : 0;
+        document.getElementById('healthClaimRate').textContent = `${issueFreeRate}%`;
+    } catch (error) {
+        console.error('[ADMIN] Error loading system health:', error);
+    }
+}
+```
+
+---
+
+## 20. Admin Dashboard: Payout Queue
+
+**File:** `assets/js/admin.js`
+
+Displays transactions pending auto-payout with a live countdown timer.
+
+```javascript
+let payoutCountdownInterval = null;
+
+async function loadPayoutQueue() {
+    const tableBody = document.getElementById('payoutQueueTable');
+    if (!tableBody) return;
+
+    if (payoutCountdownInterval) clearInterval(payoutCountdownInterval);
+
+    // Get transactions in warranty period (delivered status)
+    const payoutQueue = allTransactions.filter(txn => txn.status === 'delivered');
+
+    if (payoutQueue.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="5">No pending payouts</td></tr>';
+        return;
+    }
+
+    // Sort by expiry time (soonest first)
+    payoutQueue.sort((a, b) => (a.payoutScheduledAt || Infinity) - (b.payoutScheduledAt || Infinity));
+
+    tableBody.innerHTML = payoutQueue.map(txn => {
+        const sellerName = txn.items?.[0]?.bookDetails?.sellerName || 'Unknown';
+        const orderId = txn.transactionId || txn.id;
+        const amount = (txn.basePrice || txn.amount || 0) * 0.9; // After 10% commission
+        const expiresAt = txn.warrantyExpiresAt || txn.payoutScheduledAt;
+        const countdownId = `countdown-${orderId.substring(0, 8)}`;
+        return `
+            <tr>
+                <td>${sellerName}</td>
+                <td><code>#${orderId.substring(0, 8)}</code></td>
+                <td>RM ${amount.toFixed(2)}</td>
+                <td><div id="${countdownId}" class="payout-countdown" data-expires="${expiresAt || 0}">--:--:--</div></td>
+            </tr>
+        `;
+    }).join('');
+
+    // Start live countdown updates
+    updatePayoutCountdowns();
+    payoutCountdownInterval = setInterval(updatePayoutCountdowns, 1000);
+}
+
+function updatePayoutCountdowns() {
+    const countdowns = document.querySelectorAll('.payout-countdown');
+    const now = Date.now();
+    countdowns.forEach(el => {
+        const expiresAt = parseInt(el.dataset.expires) || 0;
+        const timeLeft = expiresAt - now;
+        if (timeLeft <= 0) {
+            el.innerHTML = '<span style="color: #22c55e;">✅ READY</span>';
+        } else {
+            const days = Math.floor(timeLeft / (24 * 60 * 60 * 1000));
+            const hours = Math.floor((timeLeft % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+            const minutes = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
+            const seconds = Math.floor((timeLeft % (60 * 1000)) / 1000);
+            el.textContent = `${days}d ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+    });
+}
+```
+
+---
+
+## 21. Admin Dashboard: Seller Leaderboard
+
+**File:** `assets/js/admin.js`
+
+Ranks top 5 sellers by total revenue.
+
+```javascript
+async function loadSellerLeaderboard() {
+    const tableBody = document.getElementById('sellerLeaderboard');
+    if (!tableBody) return;
+
+    const sellerStats = {};
+    allTransactions.forEach(txn => {
+        if (!txn.items || txn.status === 'cancelled') return;
+        txn.items.forEach(item => {
+            const sellerId = item.bookDetails?.sellerId;
+            const sellerName = item.bookDetails?.sellerName || 'Unknown';
+            const price = item.bookDetails?.price || 0;
+            if (!sellerId) return;
+
+            if (!sellerStats[sellerId]) {
+                sellerStats[sellerId] = { name: sellerName, sales: 0, revenue: 0 };
+            }
+            sellerStats[sellerId].sales++;
+            sellerStats[sellerId].revenue += price;
+        });
+    });
+
+    const leaderboard = Object.entries(sellerStats)
+        .map(([id, stats]) => ({ id, ...stats }))
+        .sort((a, b) => b.revenue - a.revenue)
+        .slice(0, 5);
+
+    const medals = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
+    tableBody.innerHTML = leaderboard.map((seller, index) => `
+        <tr>
+            <td>${medals[index]}</td>
+            <td><strong>${seller.name}</strong></td>
+            <td>${seller.sales}</td>
+            <td style="color: #22c55e;">RM ${seller.revenue.toFixed(2)}</td>
+        </tr>
+    `).join('');
+}
+```
+
+---
+
+## 22. Admin Dashboard: Activity Log
+
+**File:** `assets/js/admin.js`
+
+Displays a chronological feed of recent platform events.
+
+```javascript
+async function loadActivityLog() {
+    const logContainer = document.getElementById('activityLog');
+    if (!logContainer) return;
+
+    const activities = [];
+    allTransactions.forEach(txn => {
+        const orderId = (txn.transactionId || txn.id || '').substring(0, 8);
+        const buyerName = txn.buyerName || 'Someone';
+
+        if (txn.createdAt) {
+            activities.push({ time: txn.createdAt, icon: 'fa-shopping-cart', color: '#3b82f6', text: `${buyerName} purchased order #${orderId}` });
+        }
+        if (txn.actualDeliveryDate) {
+            activities.push({ time: txn.actualDeliveryDate, icon: 'fa-check-circle', color: '#22c55e', text: `Order #${orderId} confirmed received` });
+        }
+        if (txn.warrantyClaimedAt) {
+            activities.push({ time: txn.warrantyClaimedAt, icon: 'fa-exclamation-triangle', color: '#ef4444', text: `Warranty claimed on order #${orderId}` });
+        }
+        if (txn.payoutProcessedAt) {
+            activities.push({ time: txn.payoutProcessedAt, icon: 'fa-wallet', color: '#22c55e', text: `Payout processed for order #${orderId}` });
+        }
+    });
+
+    activities.sort((a, b) => b.time - a.time);
+    logContainer.innerHTML = activities.slice(0, 15).map(activity => `
+        <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem;">
+            <i class="fas ${activity.icon}" style="color: ${activity.color};"></i>
+            <div>${activity.text}<br><small>${formatDate(activity.time)}</small></div>
+        </div>
+    `).join('');
+}
+```
+
+---
+
+## 23. PDF Receipt Generation (jsPDF)
 
 **File:** `assets/js/receipt.js`
 
@@ -1748,7 +1950,7 @@ function generatePDF() {
 
 ---
 
-## 20. Admin Dispute Resolution
+## 24. Admin Dispute Resolution
 
 **File:** `assets/js/admin.js`
 
@@ -1888,8 +2090,12 @@ pending_payment → payment_held → delivered → completed
 | Negotiation | `chat.js` |
 | Payment/Escrow | `payment.js` |
 | Warranty/Returns | `profile.js` |
-| Admin Functions | `admin.js` |
+| System Health | `admin.js` |
+| Payout Queue | `admin.js` |
+| Seller Leaderboard | `admin.js` |
+| Activity Log | `admin.js` |
+| Admin Dispute | `admin.js` |
 
 ---
 
-*Document Version: 1.0 | Last Updated: December 2024*
+*Document Version: 1.1 | Last Updated: January 2026*
