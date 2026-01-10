@@ -112,98 +112,48 @@ A **Consumer-to-Consumer (C2C)** web platform designed specifically for UiTM stu
 
 ### 3.1 Login Flow
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                         LOGIN FLOW                              │
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
-                    ┌─────────────────┐
-                    │  User enters ID │
-                    │   & Password    │
-                    └────────┬────────┘
-                             │
-                             ▼
-                    ┌─────────────────┐
-                    │ Check ID format │
-                    └────────┬────────┘
-                             │
-          ┌──────────────────┼──────────────────┐
-          ▼                  ▼                  ▼
-   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
-   │  10 digits   │  │   6 digits   │  │   "admin"    │
-   │   STUDENT    │  │    STAFF     │  │    ADMIN     │
-   └──────┬───────┘  └──────┬───────┘  └──────┬───────┘
-          │                 │                 │
-          ▼                 ▼                 ▼
-   ┌──────────────────────────────────────────────────┐
-   │              Append email domain                 │
-   │  @student.uitm.edu.my / @staff.uitm.edu.my      │
-   └────────────────────────┬─────────────────────────┘
-                            │
-                            ▼
-                   ┌─────────────────┐
-                   │ Firebase Auth   │
-                   │ signInWithEmail │
-                   └────────┬────────┘
-                            │
-              ┌─────────────┴─────────────┐
-              ▼                           ▼
-       ┌─────────────┐             ┌─────────────┐
-       │   SUCCESS   │             │   FAILURE   │
-       └──────┬──────┘             └──────┬──────┘
-              │                           │
-              ▼                           ▼
-    ┌──────────────────┐         ┌──────────────────┐
-    │ Redirect based   │         │ Show error       │
-    │ on role          │         │ message          │
-    └──────────────────┘         └──────────────────┘
-              │
-    ┌─────────┴─────────┐
-    ▼                   ▼
-┌─────────┐       ┌─────────────┐
-│ Admin → │       │ User →      │
-│ admin.  │       │ index.html  │
-│ html    │       │ (Homepage)  │
-└─────────┘       └─────────────┘
+```mermaid
+flowchart TD
+    Start([User inputs ID & Password]) --> CheckID{Check ID Format}
+    
+    CheckID -- 10 Digits --> Student[Role: Student]
+    CheckID -- 6 Digits --> Staff[Role: Staff]
+    CheckID -- "admin" --> Admin[Role: Admin]
+    
+    Student & Staff --> AppendDomain[Append @uitm.edu.my]
+    Admin --> AppendDomain
+    
+    AppendDomain --> Auth[Firebase Auth: signInWithEmail]
+    
+    Auth --> Result{Success?}
+    Result -- Yes --> Redirect{Redirect based on Role}
+    Result -- No --> Error[Show Error Message]
+    
+    Redirect -- Admin --> AdminPage[admin.html]
+    Redirect -- User --> HomePage[index.html]
 ```
 
 ### 3.2 Registration Flow
 
-```
-User fills signup form
-        │
-        ▼
-┌─────────────────────────────────┐
-│ Validate:                       │
-│ • UiTM domain email only        │
-│ • Password min 6 chars          │
-│ • Full name required            │
-│ • Phone number (optional)       │
-│ • Accept terms                  │
-└────────────────┬────────────────┘
-                 │
-                 ▼
-┌─────────────────────────────────┐
-│ Firebase createUserWithEmail... │
-└────────────────┬────────────────┘
-                 │
-                 ▼
-┌─────────────────────────────────┐
-│ Create user profile in DB:     │
-│ {                               │
-│   email, fullName, phoneNumber, │
-│   role: "student" or "staff",   │
-│   wallet: { balance: 0 },       │
-│   createdAt: timestamp          │
-│ }                               │
-└────────────────┬────────────────┘
-                 │
-                 ▼
-         Send verification email
-                 │
-                 ▼
-        Redirect to login page
+```mermaid
+flowchart TD
+    User[User fills Signup Form] --> Validate{Validate Inputs}
+    
+    Validate -- Valid --> CreateAuth[Firebase: createUserWithEmail]
+    Validate -- Invalid --> Error[Show Validation Error]
+    
+    CreateAuth --> CreateDB[Create User Profile in DB]
+    
+    subgraph ProfileData
+        direction TB
+        D1[email, fullName, phone]
+        D2[role: student/staff]
+        D3[wallet: balance=0]
+    end
+    
+    CreateDB --> ProfileData
+    ProfileData --> Verify[Send Verification Email]
+    Verify --> Redirect[Redirect to Login]
 ```
 
 ### 3.3 Auto-Admin Creation
@@ -223,92 +173,35 @@ When logging in with `admin` + `admin123` for the first time:
 
 ### 4.1 Complete Buyer Flow
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                       BUYER JOURNEY                             │
-└─────────────────────────────────────────────────────────────────┘
-
-    ┌──────────┐     ┌──────────┐     ┌──────────┐     ┌──────────┐
-    │  LOGIN   │ ──▶ │  BROWSE  │ ──▶ │  SELECT  │ ──▶ │  DECIDE  │
-    │          │     │  BOOKS   │     │   BOOK   │     │          │
-    └──────────┘     └──────────┘     └──────────┘     └────┬─────┘
-                                                            │
-                          ┌─────────────────────────────────┴─────┐
-                          ▼                                       ▼
-                   ┌──────────────┐                       ┌──────────────┐
-                   │  BUY NOW     │                       │  MAKE OFFER  │
-                   │  (Full Price)│                       │ (Negotiate)  │
-                   └──────┬───────┘                       └──────┬───────┘
-                          │                                      │
-                          │                               ┌──────┴──────┐
-                          │                               ▼             ▼
-                          │                        ┌──────────┐  ┌───────────┐
-                          │                        │ ACCEPTED │  │ REJECTED  │
-                          │                        └────┬─────┘  └───────────┘
-                          │                             │
-                          └──────────────┬──────────────┘
-                                         ▼
-                                  ┌──────────────┐
-                                  │   ADD TO     │
-                                  │    CART      │
-                                  └──────┬───────┘
-                                         │
-                                         ▼
-                                  ┌──────────────┐
-                                  │   PAYMENT    │
-                                  │  (FPX Sim)   │
-                                  └──────┬───────┘
-                                         │
-                              ┌──────────┴──────────┐
-                              ▼                     ▼
-                       ┌──────────┐          ┌──────────┐
-                       │ SUCCESS  │          │  FAILED  │
-                       │  (90%)   │          │  (10%)   │
-                       └────┬─────┘          └────┬─────┘
-                            │                     │
-                            ▼                     ▼
-                     ┌──────────────┐      ┌──────────────┐
-                     │   RECEIPT    │      │   RETRY      │
-                     │    PAGE      │      │   PAYMENT    │
-                     └──────┬───────┘      └──────────────┘
-                            │
-                            ▼
-                     ┌──────────────┐
-                     │  MEET SELLER │
-                     │  (Face-to-   │
-                     │   face)      │
-                     └──────┬───────┘
-                            │
-                            ▼
-                     ┌──────────────┐
-                     │   CONFIRM    │
-                     │   RECEIPT    │
-                     └──────┬───────┘
-                            │
-                            ▼
-                     ┌──────────────┐
-                     │  7-DAY       │
-                     │  WARRANTY    │
-                     └──────┬───────┘
-                            │
-              ┌─────────────┴─────────────┐
-              ▼                           ▼
-       ┌──────────────┐           ┌──────────────┐
-       │  NO ISSUES   │           │ CLAIM        │
-       │              │           │ WARRANTY     │
-       └──────┬───────┘           └──────┬───────┘
-              │                          │
-              ▼                          ▼
-       ┌──────────────┐           ┌──────────────┐
-       │ AUTO-PAYOUT  │           │   DISPUTE    │
-       │ TO SELLER    │           │ RESOLUTION   │
-       └──────┬───────┘           └──────────────┘
-              │
-              ▼
-       ┌──────────────┐
-       │   SUBMIT     │
-       │   FEEDBACK   │
-       └──────────────┘
+```mermaid
+flowchart LR
+    Login([Login]) --> Browse[Browse Books]
+    Browse --> Select[Select Book]
+    
+    Select --> Decision{Decision?}
+    Decision -- Buy Now --> Cart[Add to Cart]
+    Decision -- Negotiate --> MakeOffer[Make Offer]
+    
+    MakeOffer --> Negotiation{Seller Response}
+    Negotiation -- Accepted --> Cart
+    Negotiation -- Rejected --> End([End])
+    
+    Cart --> Checkout[Checkout & Payment]
+    Checkout --> Payment{Payment Success?}
+    
+    Payment -- No --> Retry[Retry Payment]
+    Payment -- Yes (Escrow) --> Receipt[View Receipt]
+    
+    Receipt --> Meet[Meet Seller]
+    Meet --> Confirm[Confirm Receipt]
+    
+    Confirm --> Warranty[7-Day Warranty Starts]
+    Warranty --> Issues{Any Issues?}
+    
+    Issues -- No --> AutoPayout[Auto-Payout to Seller]
+    Issues -- Yes --> Dispute[Open Dispute]
+    
+    AutoPayout --> Feedback[Submit Feedback]
 ```
 
 ### 4.2 Browse & Search Features
@@ -338,50 +231,19 @@ When logging in with `admin` + `admin123` for the first time:
 
 ### 5.1 Listing a Book
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    SELLER: LIST A BOOK                          │
-└─────────────────────────────────────────────────────────────────┘
-
-    ┌──────────────┐
-    │ Click "List  │
-    │ a Book" btn  │
-    └──────┬───────┘
-           │
-           ▼
-    ┌──────────────────────────────────────────────────────┐
-    │              FILL BOOK DETAILS                       │
-    │  ┌─────────────────────────────────────────────────┐ │
-    │  │ • Title (required)                              │ │
-    │  │ • Author (required)                             │ │
-    │  │ • ISBN (optional)                               │ │
-    │  │ • Subject Code (required, e.g., CSC123)         │ │
-    │  │ • Condition: New/Like New/Good/Fair             │ │
-    │  │ • Price in RM (required)                        │ │
-    │  │ • Description (optional)                        │ │
-    │  │ • Campus Location (dropdown)                    │ │
-    │  │ • Images (up to 5, uploaded to ImageBB)         │ │
-    │  └─────────────────────────────────────────────────┘ │
-    └──────────────────────────┬───────────────────────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │  Upload images to    │
-                    │  ImageBB API         │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │  Save book to        │
-                    │  Firebase /books     │
-                    │  status: "available" │
-                    └──────────┬───────────┘
-                               │
-                               ▼
-                    ┌──────────────────────┐
-                    │  Book appears in     │
-                    │  homepage listing    │
-                    └──────────────────────┘
+```mermaid
+flowchart TD
+    Start[Click 'List a Book'] --> FillForm[Fill Book Details]
+    
+    subgraph Details
+        D1[Title, Author, ISBN]
+        D2[Subject Code, Condition]
+        D3[Price, Location, Images]
+    end
+    
+    FillForm --> Upload[Upload Images to ImageBB API]
+    Upload --> Save[Save to Firebase /books]
+    Save --> Live[Book is Live & Available]
 ```
 
 ### 5.2 Book Data Structure
@@ -425,56 +287,31 @@ When logging in with `admin` + `admin123` for the first time:
 
 ### 6.1 Offer & Counter-Offer Flow
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    NEGOTIATION FLOW                             │
-└─────────────────────────────────────────────────────────────────┘
+```mermaid
+sequenceDiagram
+    participant Buyer
+    participant System
+    participant Seller
 
-       BUYER                                           SELLER
-         │                                               │
-         ▼                                               │
-  ┌──────────────┐                                       │
-  │ Make Offer   │                                       │
-  │ (e.g., RM 35)│                                       │
-  └──────┬───────┘                                       │
-         │                                               │
-         │────────── Notification sent ─────────────────▶│
-         │                                               │
-         │                                        ┌──────┴──────┐
-         │                                        │ Review Offer│
-         │                                        └──────┬──────┘
-         │                                               │
-         │                          ┌────────────────────┼────────────────────┐
-         │                          ▼                    ▼                    ▼
-         │                   ┌──────────┐         ┌──────────┐         ┌──────────┐
-         │                   │  ACCEPT  │         │  REJECT  │         │  COUNTER │
-         │                   └────┬─────┘         └────┬─────┘         └────┬─────┘
-         │                        │                    │                    │
-         │◀───────────────────────┘                    │                    │
-         │                                             │                    │
-         ▼                                             ▼                    │
-  ┌──────────────┐                              ┌──────────────┐            │
-  │ Proceed to   │                              │ Negotiation  │            │
-  │ Payment      │                              │ Closed       │            │
-  └──────────────┘                              └──────────────┘            │
-                                                                            │
-         │◀─────────────────────────────────────────────────────────────────┘
-         │
-         ▼
-  ┌──────────────────────────────────────────────────────────────────────────┐
-  │                        BUYER'S TURN                                      │
-  │  ┌──────────┐         ┌──────────┐         ┌──────────┐                  │
-  │  │  ACCEPT  │         │  REJECT  │         │  COUNTER │                  │
-  │  │(RM 40)   │         │          │         │ (RM 38)  │                  │
-  │  └────┬─────┘         └────┬─────┘         └────┬─────┘                  │
-  └───────┼───────────────────────────────────────────────────────────────────┘
-          │
-          ▼
-   ┌──────────────┐
-   │ Continue     │
-   │ until        │
-   │ Accept/Reject│
-   └──────────────┘
+    Buyer->>System: Make Offer (e.g. RM 35)
+    System->>Seller: Notify: New Offer
+    
+    alt Seller Accepts
+        Seller->>System: Accept Offer
+        System->>Buyer: Notify: Offer Accepted
+        Buyer->>System: Proceed to Payment
+    else Seller Rejects
+        Seller->>System: Reject Offer
+        System->>Buyer: Notify: Offer Rejected
+        Note over Buyer, Seller: Negotiation Closed
+    else Seller Counters
+        Seller->>System: Counter Offer (e.g. RM 38)
+        System->>Buyer: Notify: Counter Offer
+        
+        opt Buyer Action
+            Buyer->>System: Accept / Reject / Counter
+        end
+    end
 ```
 
 ### 6.2 Counter-Offer Validation Rules
@@ -497,31 +334,20 @@ When logging in with `admin` + `admin123` for the first time:
 
 ### 6.4 Offer Status Flow
 
-```
-                    ┌─────────────┐
-                    │   PENDING   │ ◀─── Initial state
-                    └──────┬──────┘
-                           │
-           ┌───────────────┼───────────────┐
-           ▼               ▼               ▼
-    ┌─────────────┐ ┌─────────────┐ ┌─────────────┐
-    │  ACCEPTED   │ │  REJECTED   │ │  COUNTER_   │
-    │             │ │             │ │  OFFERED    │
-    └──────┬──────┘ └─────────────┘ └──────┬──────┘
-           │                               │
-           │                               │
-           ▼                               │
-    ┌─────────────┐                        │
-    │  PROCEED    │                        │
-    │  TO PAYMENT │                        │
-    └─────────────┘                        │
-                                           │
-                           ┌───────────────┼───────────────┐
-                           ▼               ▼               ▼
-                    ┌─────────────┐ ┌─────────────┐ ┌─────────────┐
-                    │  ACCEPTED   │ │  REJECTED   │ │  COUNTER_   │
-                    │             │ │             │ │  OFFERED    │
-                    └─────────────┘ └─────────────┘ └─────────────┘
+```mermaid
+stateDiagram-v2
+    [*] --> PENDING
+    PENDING --> ACCEPTED : Seller Accepts
+    PENDING --> REJECTED : Seller Rejects
+    PENDING --> COUNTER_OFFERED : Seller Counters
+    
+    COUNTER_OFFERED --> PENDING_BUYER : Buyer Evaluates
+    PENDING_BUYER --> ACCEPTED : Buyer Accepts
+    PENDING_BUYER --> REJECTED : Buyer Rejects
+    PENDING_BUYER --> COUNTER_OFFERED : Buyer Counters
+    
+    ACCEPTED --> [*] : Proceed to Payment
+    REJECTED --> [*] : End
 ```
 
 ---
@@ -530,88 +356,26 @@ When logging in with `admin` + `admin123` for the first time:
 
 ### 7.1 Payment Flow
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                      PAYMENT FLOW                               │
-└─────────────────────────────────────────────────────────────────┘
-
-    ┌──────────────┐
-    │  Cart Page   │
-    │ (Review)     │
-    └──────┬───────┘
-           │
-           ▼
-    ┌──────────────┐
-    │ Click        │
-    │ "Checkout"   │
-    └──────┬───────┘
-           │
-           ▼
-    ┌──────────────────────────────────────────────────────────────┐
-    │                    PAYMENT PAGE                              │
-    │  ┌────────────────────────────────────────────────────────┐  │
-    │  │ ORDER SUMMARY                                          │  │
-    │  │ ├── Book: Data Structures          RM 45.00            │  │
-    │  │ ├── Subtotal                       RM 45.00            │  │
-    │  │ ├── Commission (10%)               RM  4.50            │  │
-    │  │ └── TOTAL                          RM 49.50            │  │
-    │  └────────────────────────────────────────────────────────┘  │
-    │                                                              │
-    │  ┌────────────────────────────────────────────────────────┐  │
-    │  │ SELECT BANK                                            │  │
-    │  │ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌─────────┐        │  │
-    │  │ │ Maybank │ │  CIMB   │ │  RHB    │ │ Public  │        │  │
-    │  │ └─────────┘ └─────────┘ └─────────┘ └─────────┘        │  │
-    │  └────────────────────────────────────────────────────────┘  │
-    │                                                              │
-    │              [ PAY NOW - RM 49.50 ]                          │
-    └──────────────────────────────┬───────────────────────────────┘
-                                   │
-                                   ▼
-                        ┌──────────────────────┐
-                        │  VALIDATE BOOK       │
-                        │  AVAILABILITY        │
-                        └──────────┬───────────┘
-                                   │
-                    ┌──────────────┴──────────────┐
-                    ▼                             ▼
-             ┌──────────────┐              ┌──────────────┐
-             │ AVAILABLE    │              │  SOLD        │
-             └──────┬───────┘              └──────┬───────┘
-                    │                             │
-                    ▼                             ▼
-             ┌──────────────┐              ┌──────────────┐
-             │ PROCESS      │              │ Remove from  │
-             │ PAYMENT      │              │ cart, notify │
-             └──────┬───────┘              └──────────────┘
-                    │
-                    │ (3-second simulation)
-                    │
-         ┌──────────┴──────────┐
-         ▼                     ▼
-  ┌──────────────┐      ┌──────────────┐
-  │ SUCCESS      │      │  FAILED      │
-  │ (90% chance) │      │ (10% chance) │
-  └──────┬───────┘      └──────┬───────┘
-         │                     │
-         ▼                     ▼
-  ┌──────────────┐      ┌──────────────┐
-  │ Create       │      │ Record       │
-  │ Transaction  │      │ Failed TXN   │
-  │              │      │ (Analytics)  │
-  └──────┬───────┘      └──────┬───────┘
-         │                     │
-         ▼                     ▼
-  ┌──────────────┐      ┌──────────────┐
-  │ ESCROW:      │      │ Show retry   │
-  │ Hold funds   │      │ option       │
-  └──────┬───────┘      └──────────────┘
-         │
-         ▼
-  ┌──────────────┐
-  │ Show Receipt │
-  │ Page         │
-  └──────────────┘
+```mermaid
+flowchart TD
+    Cart[Cart Page] --> Checkout[Click Checkout]
+    Checkout --> PaymentPage[Payment Page]
+    
+    subgraph PaymentDetails
+       Summary[Order Summary: Price + Commision]
+       Bank[Select Bank: Maybank/CIMB/etc]
+    end
+    
+    PaymentPage --> Validate{Validate Book Availability}
+    Validate -- Sold --> Remove[Remove & Notify]
+    Validate -- Available --> Process[Process Payment simulation]
+    
+    Process --> Success{Success 90%?}
+    Success -- No --> Failed[Record Failure & Retry]
+    Success -- Yes --> CreateTxn[Create Transaction]
+    
+    CreateTxn --> Escrow[Escrow: Hold Funds]
+    Escrow --> Receipt[Show Receipt Page]
 ```
 
 ### 7.2 Commission Calculation
@@ -629,73 +393,47 @@ Example:
 
 ### 7.3 Escrow Model
 
-```
-          BUYER PAYS                        SELLER RECEIVES
-              │                                   │
-              ▼                                   │
-       ┌──────────────┐                           │
-       │ RM 49.50     │                           │
-       │ (Price+Fee)  │                           │
-       └──────┬───────┘                           │
-              │                                   │
-              ▼                                   │
-       ┌──────────────────────────────────────────┐
-       │            ESCROW HELD                   │
-       │     seller.wallet.pendingEscrow          │
-       │            += RM 45.00                   │
-       └──────────────────────┬───────────────────┘
-                              │
-                              ▼
-                     ┌─────────────────┐
-                     │ Buyer confirms  │
-                     │ receipt         │
-                     └────────┬────────┘
-                              │
-                              ▼
-                     ┌─────────────────┐
-                     │ 7-Day Warranty  │
-                     │ Period Starts   │
-                     └────────┬────────┘
-                              │
-               ┌──────────────┴──────────────┐
-               ▼                             ▼
-        ┌─────────────┐               ┌─────────────┐
-        │ NO ISSUES   │               │ WARRANTY    │
-        │ (7 days ok) │               │ CLAIMED     │
-        └──────┬──────┘               └──────┬──────┘
-               │                             │
-               ▼                             ▼
-        ┌─────────────┐               ┌─────────────┐
-        │ AUTO-PAYOUT │               │ DISPUTE     │
-        │             │               │ PROCESS     │
-        └──────┬──────┘               └─────────────┘
-               │
-               ▼
-       ┌──────────────────────────────────────────┐
-       │           SELLER WALLET                  │
-       │  pendingEscrow -= RM 45.00               │
-       │  balance += RM 40.50 (after commission)  │
-       │  totalEarned += RM 40.50                 │
-       └──────────────────────────────────────────┘
+```mermaid
+sequenceDiagram
+    participant Buyer
+    participant Escrow
+    participant Seller
+
+    Buyer->>Escrow: Pays RM 49.50 (Price + Fee)
+    Escrow->>Escrow: Hold Funds (pendingEscrow)
+    
+    Note right of Escrow: Item Delivery Phase
+    
+    Buyer->>Escrow: Confirms Receipt
+    Escrow->>Escrow: Start 7-Day Warranty Timer
+    
+    alt No Issues (after 7 days)
+        Escrow->>Seller: Auto-Payout (RM 40.50)
+        Escrow-->>System: Deduct Commission
+    else Warranty Claim
+        Buyer->>Escrow: Open Dispute
+        Escrow->>Escrow: Freeze Funds (frozenDispute)
+        Note over Buyer, Seller: Admin Resolution
+    end
 ```
 
 ### 7.4 Transaction Status Flow
 
-```
-PENDING_PAYMENT ──▶ PAYMENT_HELD ──▶ DELIVERED ──▶ COMPLETED
-        │                │               │              │
-        │                │               │              └── Seller paid
-        │                │               │
-        │                │               └── Warranty expired, no issues
-        │                │
-        │                └── Buyer confirms receipt (warranty starts)
-        │
-        └── Payment successful, escrow active
-
-Alternative paths:
-  PAYMENT_HELD ──▶ WARRANTY_CLAIMED ──▶ RETURN_SENT ──▶ RETURN_RECEIVED ──▶ REFUNDED
-  PAYMENT_HELD ──▶ DISPUTE_OPEN ──▶ REFUNDED or COMPLETED (admin decision)
-  PENDING_PAYMENT ──▶ FAILED (payment rejected)
+```mermaid
+stateDiagram-v2
+    [*] --> PENDING_PAYMENT
+    PENDING_PAYMENT --> PAYMENT_HELD : Success
+    PENDING_PAYMENT --> FAILED : Payment Rejected
+    
+    PAYMENT_HELD --> DELIVERED : Buyer Receives
+    DELIVERED --> COMPLETED : Warranty Expired (7 Days)
+    DELIVERED --> WARRANTY_CLAIMED : Buyer Reports Issue
+    
+    WARRANTY_CLAIMED --> RETURN_PROCESSED : Return Completed
+    RETURN_PROCESSED --> REFUNDED : Admin Refund
+    
+    COMPLETED --> [*]
+    REFUNDED --> [*]
 ```
 
 ---
@@ -704,86 +442,36 @@ Alternative paths:
 
 ### 8.1 Warranty Timeline
 
-```
-     Day 0              Day 7                   Day 14
-       │                  │                       │
-       ▼                  ▼                       ▼
-  ┌─────────┐       ┌───────────┐           ┌─────────┐
-  │ DELIVERY│       │ WARRANTY  │           │ AUTO-   │
-  │CONFIRMED│       │ EXPIRES   │           │ PAYOUT  │
-  └────┬────┘       └───────────┘           └─────────┘
-       │                  │
-       │◀─── WARRANTY ───▶│
-       │     PERIOD       │
-       │    (7 days)      │
-       │                  │
-       │  Buyer can:      │
-       │  • Report issue  │
-       │  • Claim warranty│
-       │  • Request return│
-       │                  │
-       ▼                  ▼
-  ┌─────────────────────────────┐
-  │ If no issues raised:        │
-  │ Seller receives payout      │
-  │ automatically on Day 7      │
-  └─────────────────────────────┘
+```mermaid
+timeline
+    title Warranty & Protection Timeline
+    Day 0 : Delivery Confirmed
+          : Warranty Starts
+    Day 1-6 : Warranty Period
+            : Buyer can claim
+    Day 7 : Warranty Expires
+          : Auto-Payout triggered
+    Day 14 : Completion
 ```
 
 ### 8.2 Warranty Claim Process
 
-```
-                    BUYER
-                      │
-                      ▼
-              ┌──────────────┐
-              │ Click "Claim │
-              │ Warranty"    │
-              └──────┬───────┘
-                     │
-                     ▼
-              ┌──────────────────────────────────────┐
-              │ SYSTEM ACTIONS:                      │
-              │ 1. Move funds to frozenDispute       │
-              │ 2. Status → WARRANTY_CLAIMED         │
-              │ 3. Notify admin                      │
-              │ 4. Notify seller                     │
-              └──────────────────┬───────────────────┘
-                                 │
-                                 ▼
-                         ┌──────────────┐
-                         │   SELLER     │
-                         │ Notified     │
-                         └──────┬───────┘
-                                │
-              ┌─────────────────┴─────────────────┐
-              ▼                                   ▼
-       ┌──────────────┐                   ┌──────────────┐
-       │ AGREE to     │                   │ DISPUTE      │
-       │ Return       │                   │ (Admin)      │
-       └──────┬───────┘                   └──────┬───────┘
-              │                                  │
-              ▼                                  ▼
-       ┌──────────────┐                   ┌──────────────┐
-       │ Buyer sends  │                   │ Admin        │
-       │ book back    │                   │ investigates │
-       └──────┬───────┘                   └──────┬───────┘
-              │                                  │
-              ▼                                  │
-       ┌──────────────┐                          │
-       │ Seller       │                          │
-       │ confirms     │                          │
-       │ receipt      │                          │
-       └──────┬───────┘                          │
-              │                                  │
-              └──────────────┬───────────────────┘
-                             │
-              ┌──────────────┴──────────────┐
-              ▼                             ▼
-       ┌──────────────┐              ┌──────────────┐
-       │   REFUND     │              │  PAY SELLER  │
-       │   BUYER      │              │              │
-       └──────────────┘              └──────────────┘
+```mermaid
+flowchart TD
+    Claim[Buyer Clicks 'Claim Warranty'] --> System{System Actions}
+    
+    System --> Freeze[Freeze Funds]
+    System --> Notify[Notify Admin & Seller]
+    
+    Notify --> SellerAction{Seller Response}
+    SellerAction -- Agree to Return --> ReturnFlow[Buyer returns item]
+    SellerAction -- Dispute --> AdminAction[Admin Investigates]
+    
+    ReturnFlow --> ConfirmRx[Seller Confirms Receipt]
+    ConfirmRx --> AdminRefund[Admin Refunds Buyer]
+    
+    AdminAction -- Valid Claim --> AdminRefund
+    AdminAction -- Invalid Claim --> PaySeller[Pay Seller]
 ```
 
 ### 8.3 Dispute Resolution (Admin)
@@ -915,43 +603,25 @@ Alternative paths:
 
 ### 10.2 Notification Flow
 
-```
-     ACTION                     SYSTEM                      USER
-        │                          │                          │
-        ▼                          │                          │
-  ┌──────────────┐                 │                          │
-  │ User makes   │                 │                          │
-  │ action       │                 │                          │
-  └──────┬───────┘                 │                          │
-         │                         │                          │
-         ▼                         │                          │
-  ┌──────────────┐                 │                          │
-  │ Push to      │                 │                          │
-  │ /notifications│                │                          │
-  └──────┬───────┘                 │                          │
-         │                         │                          │
-         │                         ▼                          │
-         │                  ┌──────────────┐                  │
-         │                  │ Firebase     │                  │
-         │                  │ listener     │                  │
-         │                  │ triggers     │                  │
-         │                  └──────┬───────┘                  │
-         │                         │                          │
-         │                         ▼                          │
-         │                  ┌──────────────┐                  │
-         │                  │ Update UI:   │                  │
-         │                  │ • Badge count│                  │
-         │                  │ • Dropdown   │──────────────────▶│
-         │                  │ • Sound      │                  │
-         │                  │ • Browser    │                  │
-         │                  │   notif      │                  │
-         │                  └──────────────┘                  │
-         │                                                    │
-         │                                                    ▼
-         │                                             ┌──────────────┐
-         │                                             │ User sees    │
-         │                                             │ notification │
-         │                                             └──────────────┘
+```mermaid
+sequenceDiagram
+    participant Action as User Action
+    participant DB as Firebase Database
+    participant Listener as Client Listener
+    participant UI as User Interface
+    
+    Action->>DB: Write to /notifications
+    DB-->>Listener: Trigger 'child_added' event
+    
+    Listener->>UI: Update Badge Count
+    Listener->>UI: Add to Dropdown List
+    Listener->>UI: Play Notification Sound
+    
+    opt Browser Permission Granted
+        Listener->>UI: Show Desktop Notification
+    end
+    
+    UI-->>Action: User sees alert
 ```
 
 ### 10.3 Notification Features
