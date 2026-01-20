@@ -893,11 +893,19 @@ function displaySalesHistory() {
 
         // WARRANTY FLOW STATUS INFO FOR SELLER
         if (status === 'payment_held') {
+            // Seller waits for buyer to confirm - LIVE COUNTDOWN until auto-refund
+            const startTime = transaction.createdAt;
+            const endTime = transaction.expectedDeliveryDate;
+
             statusBadge = `<span class="status-badge" style="background: #f59e0b; color: white;">⏳ Awaiting Confirmation</span>`;
             statusInfo = `<div class="escrow-info-box warning" style="margin-top: 0.75rem;">
                 <i class="fas fa-clock" style="color: #f59e0b;"></i>
-                <div class="escrow-info-text">Waiting for buyer to confirm received order.</div>
-            </div>`;
+                <div class="escrow-info-text">
+                    <strong>⚠️ Awaiting buyer confirmation.</strong><br>
+                    <span style="font-size: 0.85rem;">If not confirmed in time, order will be auto-refunded. Ensure buyer confirms during F2F handover!</span>
+                </div>
+            </div>
+            ${window.CountdownTimer ? window.CountdownTimer.generateCountdownWidgetHTML(endTime, startTime, 'Time Until Auto-Refund', '⚠️') : ''}`;
 
         } else if (status === 'delivered') {
             // Warranty period - seller waits for payout - LIVE COUNTDOWN
@@ -1339,69 +1347,79 @@ async function checkForAutoDisputes() {
             }
         });
 
-        // Process each disputed transaction
+        // Process each transaction with no confirmation - AUTO-REFUND buyer
         for (const dispute of disputedTransactions) {
             const { transactionId, transaction } = dispute;
             const sellerId = transaction.items?.[0]?.bookDetails?.sellerId;
+            const refundAmount = transaction.amount || 0;
 
-            // Update transaction to dispute_open status (allows admin to refund)
+            // ============================================
+            // AUTO-REFUND: Buyer didn't confirm in 7 days
+            // Assumption: Seller should have ensured F2F confirmation
+            // ============================================
+
+            // 1. Refund buyer's wallet
+            const buyerWalletRef = database.ref(`users/${transaction.buyerId}/wallet`);
+            const buyerWalletSnap = await buyerWalletRef.once('value');
+            const buyerWallet = buyerWalletSnap.val() || {};
+            await buyerWalletRef.update({
+                balance: (buyerWallet.balance || 0) + refundAmount
+            });
+            console.log(`[AUTO-REFUND] Refunded RM${refundAmount.toFixed(2)} to buyer ${transaction.buyerId}`);
+
+            // 2. Clear seller's pending escrow
+            if (sellerId) {
+                const sellerWalletRef = database.ref(`users/${sellerId}/wallet`);
+                const sellerWalletSnap = await sellerWalletRef.once('value');
+                const sellerWallet = sellerWalletSnap.val() || {};
+                const bookPrice = transaction.items?.reduce((sum, item) => sum + (item.bookDetails?.price || 0), 0) || 0;
+                await sellerWalletRef.update({
+                    pendingEscrow: Math.max(0, (sellerWallet.pendingEscrow || 0) - bookPrice)
+                });
+                console.log(`[AUTO-REFUND] Cleared seller ${sellerId} pendingEscrow by RM${bookPrice.toFixed(2)}`);
+            }
+
+            // 3. Update transaction status to auto_refunded
             await database.ref(`transactions/${transactionId}`).update({
-                status: 'dispute_open',
-                deliveryStatus: 'disputed',
-                disputeCreatedAt: Date.now(),
-                disputeReason: 'Buyer did not confirm receipt within 7 days - possible non-delivery',
+                status: 'auto_refunded',
+                deliveryStatus: 'not_delivered',
+                autoRefundedAt: Date.now(),
+                autoRefundReason: 'Buyer did not confirm receipt within 7 days - assumed non-delivery',
                 autoDisputeCreated: true,
                 autoDisputeType: 'no_confirmation'
             });
 
-            // Notify admin with clear refund option
-            if (typeof sendAdminNotification === 'function') {
-                await sendAdminNotification(
-                    'admin_dispute',
-                    `🚨 Non-Delivery Alert: Order #${transactionId.substring(0, 8)} - Buyer didn't confirm delivery in 7 days. Consider refunding buyer.`,
-                    {
-                        transactionId: transactionId,
-                        buyerId: transaction.buyerId,
-                        buyerName: transaction.buyerName,
-                        amount: transaction.amount,
-                        reason: 'Buyer did not confirm receipt within 7 days - likely non-delivery',
-                        action: 'refund_recommended'
-                    },
-                    'high'
-                );
-            }
-
-            // Notify buyer
+            // 4. Notify buyer of auto-refund
             await database.ref('notifications').push({
                 recipientId: transaction.buyerId,
                 senderId: 'system',
                 senderName: 'System',
-                type: 'order_disputed',
-                message: `⚠️ Order #${transactionId.substring(0, 8)} has been flagged - you didn't confirm delivery within 7 days. Admin will review and may issue a refund if the book was not delivered.`,
+                type: 'refund_processed',
+                message: `💰 Auto-Refund: You've been refunded RM${refundAmount.toFixed(2)} for Order #${transactionId.substring(0, 8)} because delivery was not confirmed within 7 days.`,
                 transactionId: transactionId,
                 read: false,
                 createdAt: Date.now()
             });
 
-            // Notify seller
+            // 5. Notify seller of auto-refund (their responsibility to ensure confirmation)
             if (sellerId) {
                 await database.ref('notifications').push({
                     recipientId: sellerId,
                     senderId: 'system',
                     senderName: 'System',
-                    type: 'order_disputed',
-                    message: `⚠️ Order #${transactionId.substring(0, 8)} has been flagged - buyer didn't confirm receipt in 7 days. Admin is reviewing. If you delivered the book, please contact support.`,
+                    type: 'sale_cancelled',
+                    message: `⚠️ Order #${transactionId.substring(0, 8)} was auto-refunded to buyer because delivery wasn't confirmed in 7 days. Tip: Always ask buyers to confirm receipt during F2F handover.`,
                     transactionId: transactionId,
                     read: false,
                     createdAt: Date.now()
                 });
             }
 
-            console.log(`[AUTO-DISPUTE] Created dispute for ${transactionId} - buyer can be refunded by admin`);
+            console.log(`[AUTO-REFUND] Completed auto-refund for ${transactionId}`);
         }
 
         if (disputeCount > 0) {
-            console.log(`[AUTO-DISPUTE] Processed ${disputeCount} non-delivery dispute(s)`);
+            console.log(`[AUTO-REFUND] Processed ${disputeCount} auto-refund(s) for non-confirmed deliveries`);
         }
     } catch (error) {
         console.error("[AUTO-DISPUTE] Error checking for auto-disputes:", error);

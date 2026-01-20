@@ -3046,7 +3046,11 @@ function disableRealtimeListeners() {
 // Generates a clean, printable summary of the dashboard
 
 function printDashboardReport() {
-    // Collect current stats
+    // ========================================
+    // COMPREHENSIVE ADMIN DASHBOARD REPORT
+    // ========================================
+
+    // Basic stats
     const stats = {
         transactions: allTransactions.length,
         commission: document.getElementById('totalCommission')?.textContent || 'RM 0.00',
@@ -3054,11 +3058,59 @@ function printDashboardReport() {
         books: allBooks.length
     };
 
-    // Get quick stats
-    const inEscrow = document.querySelector('#quickStats [style*="In Escrow"]')?.nextElementSibling?.textContent || 'N/A';
-    const pendingDelivery = document.querySelector('#quickStats')?.children?.[2]?.querySelector('div:last-child')?.textContent || 'N/A';
+    // Calculate financial summary
+    const totalRevenue = allTransactions.reduce((sum, txn) => sum + (txn.amount || 0), 0);
+    const completedRevenue = allTransactions
+        .filter(txn => txn.status === 'completed')
+        .reduce((sum, txn) => sum + (txn.amount || 0), 0);
+    const pendingEscrow = allTransactions
+        .filter(txn => ['payment_held', 'delivered'].includes(txn.status))
+        .reduce((sum, txn) => sum + (txn.amount || 0), 0);
+    const frozenFunds = allTransactions
+        .filter(txn => ['warranty_claimed', 'return_sent', 'return_received', 'dispute_open'].includes(txn.status))
+        .reduce((sum, txn) => sum + (txn.amount || 0), 0);
 
-    // Get recent transactions (last 10)
+    // Transaction status breakdown
+    const statusCounts = {
+        completed: allTransactions.filter(txn => txn.status === 'completed').length,
+        pending: allTransactions.filter(txn => txn.status === 'payment_held').length,
+        delivered: allTransactions.filter(txn => txn.status === 'delivered').length,
+        warranty: allTransactions.filter(txn => ['warranty_claimed', 'return_sent', 'return_received'].includes(txn.status)).length,
+        refunded: allTransactions.filter(txn => ['refunded', 'auto_refunded'].includes(txn.status)).length,
+        disputed: allTransactions.filter(txn => txn.status === 'dispute_open').length
+    };
+
+    // User analytics
+    const students = allUsers.filter(u => u.role === 'student').length;
+    const staff = allUsers.filter(u => u.role === 'staff').length;
+
+    // Top sellers by transaction count
+    const sellerStats = {};
+    allTransactions.forEach(txn => {
+        const sellerId = txn.items?.[0]?.bookDetails?.sellerId;
+        const sellerName = txn.items?.[0]?.bookDetails?.sellerName || 'Unknown';
+        if (sellerId) {
+            if (!sellerStats[sellerId]) {
+                sellerStats[sellerId] = { name: sellerName, count: 0, revenue: 0 };
+            }
+            sellerStats[sellerId].count++;
+            sellerStats[sellerId].revenue += (txn.amount || 0);
+        }
+    });
+    const topSellers = Object.values(sellerStats)
+        .sort((a, b) => b.revenue - a.revenue)
+        .slice(0, 5);
+
+    // Book analytics
+    const booksByCondition = {
+        'Brand New': allBooks.filter(b => b.condition === 'Brand New').length,
+        'Like New': allBooks.filter(b => b.condition === 'Like New').length,
+        'Good': allBooks.filter(b => b.condition === 'Good').length,
+        'Fair': allBooks.filter(b => b.condition === 'Fair').length,
+        'Poor': allBooks.filter(b => b.condition === 'Poor').length
+    };
+
+    // Recent transactions (last 10)
     const recentTxns = allTransactions
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
         .slice(0, 10);
@@ -3072,55 +3124,147 @@ function printDashboardReport() {
         <head>
             <title>Admin Dashboard Report - ${new Date().toLocaleDateString('en-MY')}</title>
             <style>
-                body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; }
-                h1 { color: #46166c; border-bottom: 2px solid #46166c; padding-bottom: 10px; }
-                h2 { color: #333; margin-top: 30px; }
-                .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 20px 0; }
-                .stat-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; text-align: center; }
-                .stat-value { font-size: 24px; font-weight: bold; color: #1e293b; }
-                .stat-label { font-size: 12px; color: #64748b; margin-top: 5px; }
-                table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; }
-                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                body { font-family: Arial, sans-serif; padding: 20px; max-width: 900px; margin: 0 auto; font-size: 12px; }
+                h1 { color: #46166c; border-bottom: 3px solid #46166c; padding-bottom: 10px; font-size: 24px; }
+                h2 { color: #1e293b; margin-top: 25px; font-size: 16px; border-left: 4px solid #46166c; padding-left: 10px; }
+                .header-info { display: flex; justify-content: space-between; margin-bottom: 20px; }
+                .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0; }
+                .stats-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
+                .stat-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; text-align: center; }
+                .stat-box.green { background: #ecfdf5; border-color: #a7f3d0; }
+                .stat-box.yellow { background: #fefce8; border-color: #fde047; }
+                .stat-box.red { background: #fef2f2; border-color: #fecaca; }
+                .stat-box.purple { background: #faf5ff; border-color: #e9d5ff; }
+                .stat-value { font-size: 20px; font-weight: bold; color: #1e293b; }
+                .stat-label { font-size: 10px; color: #64748b; margin-top: 4px; text-transform: uppercase; }
+                table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 11px; }
+                th, td { border: 1px solid #ddd; padding: 6px 8px; text-align: left; }
                 th { background: #46166c; color: white; }
                 tr:nth-child(even) { background: #f9fafb; }
-                .footer { margin-top: 40px; text-align: center; color: #94a3b8; font-size: 11px; }
+                .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+                .section-box { background: #f8fafc; border-radius: 8px; padding: 15px; margin-top: 10px; }
+                .mini-stat { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #e2e8f0; }
+                .mini-stat:last-child { border-bottom: none; }
+                .footer { margin-top: 30px; text-align: center; color: #94a3b8; font-size: 10px; border-top: 1px solid #e2e8f0; padding-top: 15px; }
                 @media print { 
                     body { padding: 0; }
-                    .stat-box { break-inside: avoid; }
+                    .stat-box, .section-box { break-inside: avoid; }
                 }
             </style>
         </head>
         <body>
             <h1>📊 UiTM Book e-Marketplace - Admin Report</h1>
-            <p><strong>Generated:</strong> ${new Date().toLocaleString('en-MY')}</p>
+            <div class="header-info">
+                <div><strong>Generated:</strong> ${new Date().toLocaleString('en-MY')}</div>
+                <div><strong>Report Period:</strong> All Time</div>
+            </div>
             
-            <h2>Key Metrics</h2>
+            <!-- KEY METRICS -->
+            <h2>📈 Key Metrics</h2>
             <div class="stats-grid">
                 <div class="stat-box">
                     <div class="stat-value">${stats.transactions}</div>
                     <div class="stat-label">Total Transactions</div>
                 </div>
-                <div class="stat-box">
+                <div class="stat-box green">
                     <div class="stat-value">${stats.commission}</div>
                     <div class="stat-label">Commission Earned</div>
                 </div>
                 <div class="stat-box">
                     <div class="stat-value">${stats.users}</div>
-                    <div class="stat-label">Active Users</div>
+                    <div class="stat-label">Registered Users</div>
                 </div>
                 <div class="stat-box">
                     <div class="stat-value">${stats.books}</div>
                     <div class="stat-label">Books Listed</div>
                 </div>
             </div>
+
+            <!-- FINANCIAL SUMMARY -->
+            <h2>💰 Financial Summary</h2>
+            <div class="stats-grid">
+                <div class="stat-box green">
+                    <div class="stat-value">RM ${completedRevenue.toFixed(2)}</div>
+                    <div class="stat-label">Completed Sales</div>
+                </div>
+                <div class="stat-box yellow">
+                    <div class="stat-value">RM ${pendingEscrow.toFixed(2)}</div>
+                    <div class="stat-label">In Escrow</div>
+                </div>
+                <div class="stat-box red">
+                    <div class="stat-value">RM ${frozenFunds.toFixed(2)}</div>
+                    <div class="stat-label">Frozen (Disputes)</div>
+                </div>
+                <div class="stat-box purple">
+                    <div class="stat-value">RM ${totalRevenue.toFixed(2)}</div>
+                    <div class="stat-label">Total Revenue</div>
+                </div>
+            </div>
+
+            <!-- TWO COLUMN SECTION -->
+            <div class="two-column">
+                <!-- TRANSACTION STATUS -->
+                <div>
+                    <h2>🔄 Transaction Status</h2>
+                    <div class="section-box">
+                        <div class="mini-stat"><span>✅ Completed</span><strong>${statusCounts.completed}</strong></div>
+                        <div class="mini-stat"><span>⏳ Pending Confirmation</span><strong>${statusCounts.pending}</strong></div>
+                        <div class="mini-stat"><span>📦 Delivered (Warranty)</span><strong>${statusCounts.delivered}</strong></div>
+                        <div class="mini-stat"><span>⚠️ Warranty Claims</span><strong>${statusCounts.warranty}</strong></div>
+                        <div class="mini-stat"><span>↩️ Refunded</span><strong>${statusCounts.refunded}</strong></div>
+                        <div class="mini-stat"><span>🔴 Open Disputes</span><strong>${statusCounts.disputed}</strong></div>
+                    </div>
+                </div>
+
+                <!-- USER ANALYTICS -->
+                <div>
+                    <h2>👥 User Analytics</h2>
+                    <div class="section-box">
+                        <div class="mini-stat"><span>🎓 Students</span><strong>${students}</strong></div>
+                        <div class="mini-stat"><span>👨‍🏫 Staff</span><strong>${staff}</strong></div>
+                        <div class="mini-stat"><span>📊 Total Users</span><strong>${allUsers.length}</strong></div>
+                    </div>
+                    <h2 style="margin-top: 15px;">📚 Books by Condition</h2>
+                    <div class="section-box">
+                        ${Object.entries(booksByCondition).map(([cond, count]) =>
+        `<div class="mini-stat"><span>${cond}</span><strong>${count}</strong></div>`
+    ).join('')}
+                    </div>
+                </div>
+            </div>
+
+            <!-- TOP SELLERS -->
+            <h2>🏆 Top 5 Sellers by Revenue</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Seller Name</th>
+                        <th>Sales Count</th>
+                        <th>Total Revenue (RM)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${topSellers.length > 0 ? topSellers.map((seller, i) => `
+                        <tr>
+                            <td>${i + 1}</td>
+                            <td>${seller.name}</td>
+                            <td>${seller.count}</td>
+                            <td>${seller.revenue.toFixed(2)}</td>
+                        </tr>
+                    `).join('') : '<tr><td colspan="4" style="text-align: center;">No sales data</td></tr>'}
+                </tbody>
+            </table>
             
-            <h2>Recent Transactions (Last 10)</h2>
+            <!-- RECENT TRANSACTIONS -->
+            <h2>📝 Recent Transactions (Last 10)</h2>
             <table>
                 <thead>
                     <tr>
                         <th>Transaction ID</th>
                         <th>Date</th>
                         <th>Buyer</th>
+                        <th>Book</th>
                         <th>Amount (RM)</th>
                         <th>Status</th>
                     </tr>
@@ -3128,9 +3272,10 @@ function printDashboardReport() {
                 <tbody>
                     ${recentTxns.map(txn => `
                         <tr>
-                            <td>${txn.id?.substring(0, 12) || 'N/A'}...</td>
+                            <td>${txn.transactionId?.substring(0, 10) || txn.id?.substring(0, 10) || 'N/A'}...</td>
                             <td>${txn.createdAt ? new Date(txn.createdAt).toLocaleDateString('en-MY') : 'N/A'}</td>
-                            <td>${txn.buyerEmail?.split('@')[0] || 'N/A'}</td>
+                            <td>${txn.buyerName || txn.buyerEmail?.split('@')[0] || 'N/A'}</td>
+                            <td>${txn.items?.[0]?.bookDetails?.title?.substring(0, 20) || 'N/A'}...</td>
                             <td>${(txn.amount || 0).toFixed(2)}</td>
                             <td>${txn.status || 'N/A'}</td>
                         </tr>
@@ -3139,7 +3284,8 @@ function printDashboardReport() {
             </table>
             
             <div class="footer">
-                <p>UiTM Book e-Marketplace Admin Dashboard | Confidential Report</p>
+                <p><strong>UiTM Book e-Marketplace</strong> | Admin Dashboard Report | Confidential</p>
+                <p>Generated by System on ${new Date().toLocaleString('en-MY')}</p>
             </div>
             
             <script>
@@ -3152,5 +3298,5 @@ function printDashboardReport() {
     printWindow.document.write(printContent);
     printWindow.document.close();
 
-    showNotification('Print report generated', 'success');
+    showNotification('Comprehensive report generated', 'success');
 }

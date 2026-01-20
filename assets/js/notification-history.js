@@ -154,6 +154,7 @@ function getNotificationIconData(type) {
         'order_confirmed': { icon: 'fa-check-double', bg: '#10b981' },
         'book_sold': { icon: 'fa-shopping-bag', bg: '#10b981' },
         'sale_notification': { icon: 'fa-store', bg: '#10b981' },
+        'sale_cancelled': { icon: 'fa-times-circle', bg: '#ef4444' },
         // Warranty/Returns
         'warranty_claimed': { icon: 'fa-exclamation-triangle', bg: '#f59e0b' },
         'return_sent': { icon: 'fa-box', bg: '#3b82f6' },
@@ -189,6 +190,7 @@ function getNotificationTitle(type) {
         'order_confirmed': 'Order Confirmed',
         'book_sold': 'Book Sold!',
         'sale_notification': 'New Sale',
+        'sale_cancelled': 'Sale Cancelled',
         // Warranty/Returns
         'warranty_claimed': 'Warranty Claim',
         'return_sent': 'Return Initiated',
@@ -214,7 +216,7 @@ function getNotificationBadge(type) {
     if (['offer', 'counter_offer', 'offer_accepted', 'offer_rejected'].includes(type)) {
         return { class: 'badge-offer', text: 'Offer' };
     }
-    if (['transaction', 'payment_received', 'payout_received', 'order_confirmed', 'book_sold', 'sale_notification'].includes(type)) {
+    if (['transaction', 'payment_received', 'payout_received', 'order_confirmed', 'book_sold', 'sale_notification', 'sale_cancelled'].includes(type)) {
         return { class: 'badge-transaction', text: 'Transaction' };
     }
     if (['warranty_claimed', 'return_sent', 'return_received', 'refund_processed', 'claim_dismissed', 'claim_auto_dismissed'].includes(type)) {
