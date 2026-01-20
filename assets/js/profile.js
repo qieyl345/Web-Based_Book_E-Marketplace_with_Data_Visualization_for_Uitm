@@ -96,35 +96,37 @@ function displayMyListings() {
     }
 
     listingsContainer.innerHTML = myListings.map(book => `
-        <div class="cart-item listing-item">
-            <div class="cart-item-image">
-                <img src="${book.images?.[0] || '/assets/images/no-image.png'}" alt="${book.title}">
-            </div>
-            <div class="cart-item-details" style="flex: 1;">
-                <h3 style="margin-bottom: 1rem; color: var(--text-primary);">${book.title}</h3>
-                <div class="cart-item-meta" style="display: flex; flex-wrap: wrap; gap: 1rem;">
-                    <span style="display: flex; align-items: center; gap: 0.5rem;">
-                        <i class="fas fa-user"></i> <strong>Author:</strong> ${book.author}
-                    </span>
-                    <span style="display: flex; align-items: center; gap: 0.5rem;">
-                        <i class="fas fa-tag"></i> <strong>Code:</strong> ${book.subjectCode}
-                    </span>
-                    <span style="display: flex; align-items: center; gap: 0.5rem;">
-                        <i class="fas fa-map-marker-alt"></i> <strong>Campus:</strong> ${book.campusLocation}
-                    </span>
-                    <span style="display: flex; align-items: center; gap: 0.5rem;">
-                        <i class="fas fa-book-open"></i> <strong>Condition:</strong> ${book.condition}
-                    </span>
+        <a href="book-details.html?id=${book.id}" class="listing-link" style="text-decoration: none; color: inherit; display: block;">
+            <div class="cart-item listing-item" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';">
+                <div class="cart-item-image">
+                    <img src="${book.images?.[0] || '/assets/images/no-image.png'}" alt="${book.title}">
+                </div>
+                <div class="cart-item-details" style="flex: 1;">
+                    <h3 style="margin-bottom: 1rem; color: var(--text-primary);">${book.title}</h3>
+                    <div class="cart-item-meta" style="display: flex; flex-wrap: wrap; gap: 1rem;">
+                        <span style="display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="fas fa-user"></i> <strong>Author:</strong> ${book.author}
+                        </span>
+                        <span style="display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="fas fa-tag"></i> <strong>Code:</strong> ${book.subjectCode}
+                        </span>
+                        <span style="display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="fas fa-map-marker-alt"></i> <strong>Campus:</strong> ${book.campusLocation}
+                        </span>
+                        <span style="display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="fas fa-book-open"></i> <strong>Condition:</strong> ${book.condition}
+                        </span>
+                    </div>
+                </div>
+                <div class="cart-item-actions" style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.75rem; min-width: 150px;">
+                    <div>
+                        <div style="font-size: 0.875rem; color: var(--text-tertiary); margin-bottom: 0.25rem;">Listed Price:</div>
+                        <div class="cart-item-price" style="font-size: 1.75rem;">RM ${book.price.toFixed(2)}</div>
+                    </div>
+                    <span class="status-badge ${book.status}">${book.status}</span>
                 </div>
             </div>
-            <div class="cart-item-actions" style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.75rem; min-width: 150px;">
-                <div>
-                    <div style="font-size: 0.875rem; color: var(--text-tertiary); margin-bottom: 0.25rem;">Listed Price:</div>
-                    <div class="cart-item-price" style="font-size: 1.75rem;">RM ${book.price.toFixed(2)}</div>
-                </div>
-                <span class="status-badge ${book.status}">${book.status}</span>
-            </div>
-        </div>
+        </a>
     `).join('');
 }
 
@@ -341,33 +343,38 @@ function displayPurchaseHistory() {
             `;
         }
 
+        // Get the book ID from the first item for linking
+        const bookId = transaction.items?.[0]?.bookId || transaction.items?.[0]?.bookDetails?.id || '';
+        const bookTitle = transaction.items?.[0]?.bookDetails?.title || 'Unknown Book';
+
         return `
-            <div class="cart-item purchase-item" style="flex-direction: column;">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
-                    <div class="cart-item-details" style="flex: 1;">
-                        <h3 style="margin-bottom: 0.5rem; color: var(--text-primary);">
-                            Transaction #${transaction.transactionId}
-                        </h3>
-                        <div class="cart-item-meta" style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 0.5rem;">
-                            <span style="display: flex; align-items: center; gap: 0.5rem;">
-                                <i class="fas fa-calendar"></i> <strong>Date:</strong> ${formatDate(transaction.createdAt)}
-                            </span>
-                            <span style="display: flex; align-items: center; gap: 0.5rem;">
-                                <i class="fas fa-book"></i> <strong>Items:</strong> ${transaction.items.length} item(s)
-                            </span>
-                            <span style="display: flex; align-items: center; gap: 0.5rem;">
-                                <i class="fas fa-store"></i> <strong>Seller:</strong> ${transaction.items[0]?.bookDetails?.sellerName || 'Unknown'}
-                            </span>
+            <a href="book-details.html?id=${bookId}" class="purchase-link" style="text-decoration: none; color: inherit; display: block;">
+                <div class="cart-item purchase-item" style="flex-direction: column; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
+                        <div class="cart-item-details" style="flex: 1;">
+                            <h3 style="margin-bottom: 0.5rem; color: var(--text-primary);">
+                                Transaction #${transaction.transactionId}
+                            </h3>
+                            <div class="cart-item-meta" style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 0.5rem;">
+                                <span style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <i class="fas fa-calendar"></i> <strong>Date:</strong> ${formatDate(transaction.createdAt)}
+                                </span>
+                                <span style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <i class="fas fa-book"></i> <strong>Item:</strong> '${bookTitle}'
+                                </span>
+                                <span style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <i class="fas fa-store"></i> <strong>Seller:</strong> ${transaction.items[0]?.bookDetails?.sellerName || 'Unknown'}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="cart-item-actions" style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; min-width: 150px;">
+                            <div>
+                                <div style="font-size: 0.75rem; color: var(--text-tertiary); margin-bottom: 0.25rem;">Total Paid:</div>
+                                <div class="cart-item-price" style="font-size: 1.5rem;">${formatCurrency(transaction.amount)}</div>
+                            </div>
+                            <span class="status-badge status-${status}">${status.replace('_', ' ')}</span>
                         </div>
                     </div>
-                    <div class="cart-item-actions" style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; min-width: 150px;">
-                        <div>
-                            <div style="font-size: 0.75rem; color: var(--text-tertiary); margin-bottom: 0.25rem;">Total Paid:</div>
-                            <div class="cart-item-price" style="font-size: 1.5rem;">${formatCurrency(transaction.amount)}</div>
-                        </div>
-                        <span class="status-badge status-${status}">${status.replace('_', ' ')}</span>
-                    </div>
-                </div>
                 
                 ${timelineHTML}
                 ${escrowInfoHTML}
@@ -391,7 +398,8 @@ function displayPurchaseHistory() {
                         ` : ''}
                     </div>
                 ` : ''}
-            </div>
+                </div>
+            </a>
         `;
     }).join('');
 }

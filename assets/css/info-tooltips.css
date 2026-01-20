@@ -110,3 +110,83 @@ label .info-tooltip i {
 h4 .info-tooltip i {
     font-size: 0.75em;
 }
+
+/* ========================================== */
+/* WALLET CARD TOOLTIPS                       */
+/* Custom styled tooltips for wallet cards    */
+/* ========================================== */
+
+.wallet-tooltip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    cursor: help;
+}
+
+.wallet-tooltip i {
+    opacity: 0.85;
+    font-size: 0.9rem;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.wallet-tooltip:hover i {
+    opacity: 1;
+    transform: scale(1.15);
+}
+
+.wallet-tooltip .tooltip-content {
+    position: absolute;
+    bottom: calc(100% + 12px);
+    right: -10px;
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 400;
+    line-height: 1.5;
+    width: 220px;
+    text-align: left;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(5px);
+    transition: all 0.3s ease;
+    z-index: 10000;
+    box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+}
+
+.wallet-tooltip .tooltip-content::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    right: 15px;
+    border: 8px solid transparent;
+    border-top-color: #0f172a;
+    border-bottom: none;
+}
+
+.wallet-tooltip:hover .tooltip-content {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Tooltip header styling */
+.wallet-tooltip .tooltip-content strong {
+    display: block;
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+    color: #60a5fa;
+}
+
+/* For left-positioned cards, show tooltip on left side */
+.wallet-tooltip.tooltip-left .tooltip-content {
+    right: auto;
+    left: -10px;
+}
+
+.wallet-tooltip.tooltip-left .tooltip-content::after {
+    right: auto;
+    left: 15px;
+}

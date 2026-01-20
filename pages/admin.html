@@ -56,7 +56,7 @@
 
     <main class="admin-page">
         <div class="container">
-            <div class="admin-header">
+            <div class="admin-header" style="text-align: center;">
                 <h1><i class="fas fa-chart-line"></i> Admin Dashboard</h1>
                 <p>Platform overview and management</p>
                 <button onclick="printDashboardReport()" class="btn btn-secondary btn-sm" style="margin-top: 0.5rem;">
@@ -160,397 +160,404 @@
             <!-- System Health Summary -->
             <div id="section-system-health" class="system-health-card"
                 style="background: linear-gradient(135deg, #f8fafc, #f1f5f9); border: 1px solid #e2e8f0; border-radius: 16px; padding: 1.25rem; margin-bottom: 2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3 style="margin: 0; font-size: 1rem; color: #1e293b;">
+                        <i class="fas fa-heartbeat" style="color: #8b5cf6;"></i> System Health
+                    </h3>
+                    <span id="healthLastUpdated" style="font-size: 0.7rem; color: #94a3b8;">Updated just now</span>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
                     <div
-                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                        <h3 style="margin: 0; font-size: 1rem; color: #1e293b;">
-                            <i class="fas fa-heartbeat" style="color: #8b5cf6;"></i> System Health
-                        </h3>
-                        <span id="healthLastUpdated" style="font-size: 0.7rem; color: #94a3b8;">Updated just now</span>
-                    </div>
-                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;">
-                        <div
-                            style="text-align: center; padding: 0.75rem; background: white; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-                            <div id="healthSuccessRate" style="font-size: 1.75rem; font-weight: 700; color: #22c55e;">
-                                --%</div>
-                            <div style="font-size: 0.7rem; color: #64748b;">Success Rate</div>
-                            <div style="font-size: 0.65rem; color: #94a3b8; margin-top: 0.25rem;">Completed / Total
-                            </div>
-                        </div>
-                        <div
-                            style="text-align: center; padding: 0.75rem; background: white; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-                            <div id="healthAvgRating" style="font-size: 1.75rem; font-weight: 700; color: #f59e0b;">--
-                            </div>
-                            <div style="font-size: 0.7rem; color: #64748b;">Avg Rating</div>
-                            <div style="font-size: 0.65rem; color: #94a3b8; margin-top: 0.25rem;">From feedback</div>
-                        </div>
-                        <div
-                            style="text-align: center; padding: 0.75rem; background: white; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-                            <div id="healthClaimRate" style="font-size: 1.75rem; font-weight: 700; color: #3b82f6;">--%
-                            </div>
-                            <div style="font-size: 0.7rem; color: #64748b;">Issue-Free Rate</div>
-                            <div style="font-size: 0.65rem; color: #94a3b8; margin-top: 0.25rem;">No warranty claims
-                            </div>
-                        </div>
-                        <div
-                            style="text-align: center; padding: 0.75rem; background: white; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-                            <div id="healthAvgResolution" style="font-size: 1.75rem; font-weight: 700; color: #8b5cf6;">
-                                --</div>
-                            <div style="font-size: 0.7rem; color: #64748b;">Avg Resolution</div>
-                            <div style="font-size: 0.65rem; color: #94a3b8; margin-top: 0.25rem;">Days to resolve</div>
+                        style="text-align: center; padding: 0.75rem; background: white; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                        <div id="healthSuccessRate" style="font-size: 1.75rem; font-weight: 700; color: #22c55e;">
+                            --%</div>
+                        <div style="font-size: 0.7rem; color: #64748b;">Success Rate</div>
+                        <div style="font-size: 0.65rem; color: #94a3b8; margin-top: 0.25rem;">Completed / Total
                         </div>
                     </div>
-                </div>
-
-                <!-- Charts -->
-                <div id="section-charts" class="charts-grid">
-                    <div class="chart-card">
-                        <div
-                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                            <h3>Sales Trend</h3>
-                            <select id="salesTrendFilter" class="chart-filter"
-                                style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
-                                <option value="all">All Time</option>
-                                <option value="7">Last 7 Days</option>
-                                <option value="30">Last 30 Days</option>
-                                <option value="90">Last 3 Months</option>
-                            </select>
+                    <div
+                        style="text-align: center; padding: 0.75rem; background: white; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                        <div id="healthAvgRating" style="font-size: 1.75rem; font-weight: 700; color: #f59e0b;">--
                         </div>
-                        <canvas id="salesChart"></canvas>
+                        <div style="font-size: 0.7rem; color: #64748b;">Avg Rating</div>
+                        <div style="font-size: 0.65rem; color: #94a3b8; margin-top: 0.25rem;">From feedback</div>
                     </div>
-
-                    <div class="chart-card">
-                        <div
-                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                            <h3>Revenue Overview</h3>
-                            <select id="revenueFilter" class="chart-filter"
-                                style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
-                                <option value="all">All Time</option>
-                                <option value="7">Last 7 Days</option>
-                                <option value="30">Last 30 Days</option>
-                                <option value="90">Last 3 Months</option>
-                            </select>
+                    <div
+                        style="text-align: center; padding: 0.75rem; background: white; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                        <div id="healthClaimRate" style="font-size: 1.75rem; font-weight: 700; color: #3b82f6;">--%
                         </div>
-                        <canvas id="revenueChart"></canvas>
-                    </div>
-
-                    <div class="chart-card">
-                        <div
-                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                            <h3>Top Sellers by Revenue</h3>
-                            <select id="topSellersFilter" class="chart-filter"
-                                style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
-                                <option value="all">All Time</option>
-                                <option value="7">Last 7 Days</option>
-                                <option value="30">Last 30 Days</option>
-                                <option value="90">Last 3 Months</option>
-                            </select>
-                        </div>
-                        <canvas id="topSellersChart"></canvas>
-                    </div>
-
-                    <div class="chart-card">
-                        <div
-                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                            <h3>Subject Distribution</h3>
-                            <select id="subjectFilter" class="chart-filter"
-                                style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
-                                <option value="all">All Time</option>
-                                <option value="7">Last 7 Days</option>
-                                <option value="30">Last 30 Days</option>
-                                <option value="90">Last 3 Months</option>
-                            </select>
-                        </div>
-                        <canvas id="subjectChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- Phase 1: Critical Analytics -->
-                <div id="section-critical-analytics" class="analytics-section" style="margin-top: 2rem;">
-                    <h2 style="margin-bottom: 1.5rem;"><i class="fas fa-chart-bar"></i> Critical Analytics</h2>
-                    <div class="charts-grid">
-                        <div class="chart-card">
-                            <div
-                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                                <h3>Transaction Success Rate</h3>
-                                <select id="transactionSuccessFilter" class="chart-filter"
-                                    style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
-                                    <option value="all">All Time</option>
-                                    <option value="7">Last 7 Days</option>
-                                    <option value="30">Last 30 Days</option>
-                                    <option value="90">Last 3 Months</option>
-                                </select>
-                            </div>
-                            <canvas id="transactionSuccessChart"></canvas>
-                        </div>
-
-                        <div class="chart-card">
-                            <div
-                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                                <h3>Feedback Rating Distribution</h3>
-                                <select id="feedbackDistributionFilter" class="chart-filter"
-                                    style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
-                                    <option value="all">All Time</option>
-                                    <option value="7">Last 7 Days</option>
-                                    <option value="30">Last 30 Days</option>
-                                    <option value="90">Last 3 Months</option>
-                                </select>
-                            </div>
-                            <canvas id="feedbackDistributionChart"></canvas>
-                        </div>
-
-                        <div class="chart-card">
-                            <div
-                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                                <h3>Warranty Resolution</h3>
-                                <select id="warrantyResolutionFilter" class="chart-filter"
-                                    style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
-                                    <option value="all">All Time</option>
-                                    <option value="4">Last 4 Weeks</option>
-                                    <option value="12">Last 3 Months</option>
-                                    <option value="24">Last 6 Months</option>
-                                </select>
-                            </div>
-                            <canvas id="warrantyResolutionChart"></canvas>
-                        </div>
-
-                        <div class="chart-card">
-                            <div
-                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                                <h3>Offer Success Funnel</h3>
-                                <select id="offerFunnelFilter" class="chart-filter"
-                                    style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
-                                    <option value="all">All Time</option>
-                                    <option value="7">Last 7 Days</option>
-                                    <option value="30">Last 30 Days</option>
-                                    <option value="90">Last 3 Months</option>
-                                </select>
-                            </div>
-                            <canvas id="offerFunnelChart"></canvas>
+                        <div style="font-size: 0.7rem; color: #64748b;">Issue-Free Rate</div>
+                        <div style="font-size: 0.65rem; color: #94a3b8; margin-top: 0.25rem;">No warranty claims
                         </div>
                     </div>
-                </div>
-
-                <!-- Tables -->
-                <div class="tables-grid">
-                    <div id="section-transactions" class="table-card">
-                        <div class="table-header" style="flex-wrap: wrap; gap: 0.5rem;">
-                            <h3>Recent Transactions</h3>
-                            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
-                                <label style="font-size: 0.8rem; color: #64748b;">From:</label>
-                                <input type="date" id="exportDateFrom"
-                                    style="padding: 0.4rem; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85rem;">
-                                <label style="font-size: 0.8rem; color: #64748b;">To:</label>
-                                <input type="date" id="exportDateTo"
-                                    style="padding: 0.4rem; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85rem;">
-                                <button id="exportTransactions" class="btn btn-secondary btn-sm">
-                                    <i class="fas fa-download"></i> Export
-                                </button>
-                            </div>
-                        </div>
-                        <div class="table-responsive">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Transaction ID</th>
-                                        <th>Buyer</th>
-                                        <th>Book</th>
-                                        <th>Amount</th>
-                                        <th>Status</th>
-                                        <th>Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="recentTransactions">
-                                    <tr>
-                                        <td colspan="6" class="loading-placeholder">Loading...</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                    <div
+                        style="text-align: center; padding: 0.75rem; background: white; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                        <div id="healthAvgResolution" style="font-size: 1.75rem; font-weight: 700; color: #8b5cf6;">
+                            --</div>
+                        <div style="font-size: 0.7rem; color: #64748b;">Avg Resolution</div>
+                        <div style="font-size: 0.65rem; color: #94a3b8; margin-top: 0.25rem;">Days to resolve</div>
                     </div>
-
-                    <div id="section-users" class="table-card">
-                        <div class="table-header">
-                            <h3>Users</h3>
-                            <div class="table-actions">
-                                <input type="text" id="userSearch" placeholder="Search users...">
-                            </div>
-                        </div>
-                        <div class="table-responsive">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Role</th>
-                                        <th>Listings</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="usersTable">
-                                    <tr>
-                                        <td colspan="6" class="loading-placeholder">Loading...</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- Warranty Issues Table (NEW) -->
-                    <div id="section-warranty" class="table-card" style="border-left: 4px solid #ef4444;">
-                        <div class="table-header">
-                            <h3><i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i> Warranty Issues</h3>
-                            <span id="warrantyIssuesCount" class="badge"
-                                style="background: #ef4444; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.875rem;">0
-                                Active</span>
-                        </div>
-                        <div class="table-responsive">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Order ID</th>
-                                        <th>Buyer</th>
-                                        <th>Seller</th>
-                                        <th>Issue Type</th>
-                                        <th>Return Status</th>
-                                        <th>Amount</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="warrantyIssuesTable">
-                                    <tr>
-                                        <td colspan="7" class="loading-placeholder">Loading...</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- Payout Queue (NEW) -->
-                    <div id="section-payouts" class="table-card" style="border-left: 4px solid #22c55e;">
-                        <div class="table-header">
-                            <h3><i class="fas fa-wallet" style="color: #22c55e;"></i> Payout Queue</h3>
-                            <span id="payoutQueueCount" class="badge"
-                                style="background: #22c55e; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.875rem;">0
-                                Pending</span>
-                        </div>
-                        <div class="table-responsive">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Seller</th>
-                                        <th>Order ID</th>
-                                        <th>Amount</th>
-                                        <th>Countdown</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="payoutQueueTable">
-                                    <tr>
-                                        <td colspan="5" class="loading-placeholder">Loading...</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- User Feedback (All Reviews & Ratings) -->
-                    <div id="section-feedback" class="table-card" style="border-left: 4px solid #8b5cf6;">
-                        <div class="table-header">
-                            <h3><i class="fas fa-comments" style="color: #8b5cf6;"></i> User Feedback</h3>
-                            <span id="feedbackCount" class="badge"
-                                style="background: #8b5cf6; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.875rem;">0</span>
-                        </div>
-                        <p style="color: #64748b; font-size: 0.8rem; margin: 0 0 0.75rem 0; padding: 0 0.5rem;">
-                            <i class="fas fa-info-circle"></i> All buyer feedback and ratings. For actionable disputes,
-                            see
-                            <a href="#section-warranty" onclick="return scrollToSection('section-warranty', event)"
-                                style="color: #ef4444;">Warranty Issues</a>.
-                        </p>
-                        <div class="table-responsive">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Buyer</th>
-                                        <th>Rating</th>
-                                        <th>Comment</th>
-                                        <th>Sentiment</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="feedbackTable">
-                                    <tr>
-                                        <td colspan="5" class="loading-placeholder">Loading...</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Additional Analytics Section -->
-                <div id="section-analytics" class="analytics-row"
-                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem;">
-
-                    <!-- Seller Leaderboard -->
-                    <div id="section-leaderboard" class="table-card" style="border-top: 4px solid #8b5cf6;">
-                        <div class="table-header">
-                            <h3><i class="fas fa-trophy" style="color: #eab308;"></i> Top Sellers</h3>
-                        </div>
-                        <div class="table-responsive">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Rank</th>
-                                        <th>Seller</th>
-                                        <th>Sales</th>
-                                        <th>Revenue</th>
-                                        <th>Rating</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="sellerLeaderboard">
-                                    <tr>
-                                        <td colspan="5" class="loading-placeholder">Loading...</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- Recent Activity Log -->
-                    <div id="section-activity" class="table-card" style="border-top: 4px solid #06b6d4;">
-                        <div class="table-header">
-                            <h3><i class="fas fa-stream" style="color: #06b6d4;"></i> Recent Activity</h3>
-                        </div>
-                        <div id="activityLog" style="max-height: 400px; overflow-y: auto; padding: 0.5rem;">
-                            <div class="loading-placeholder" style="text-align: center; padding: 2rem;">Loading...</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Settings -->
-                <div id="section-settings" class="settings-card">
-                    <h3>Platform Settings</h3>
-                    <form id="settingsForm">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="commissionRate">Commission Rate (%)</label>
-                                <input type="number" id="commissionRate" value="10" min="0" max="15" step="0.5">
-                                <small class="form-hint">Current: 10%</small>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="maxImages">Max Images per Book</label>
-                                <input type="number" id="maxImages" value="5" min="1" max="10">
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Save Settings
-                        </button>
-                    </form>
                 </div>
             </div>
+
+            <!-- Charts -->
+            <div id="section-charts" class="charts-grid">
+                <div class="chart-card">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3>Sales Trend</h3>
+                        <select id="salesTrendFilter" class="chart-filter"
+                            style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
+                            <option value="all">All Time</option>
+                            <option value="7">Last 7 Days</option>
+                            <option value="30">Last 30 Days</option>
+                            <option value="90">Last 3 Months</option>
+                        </select>
+                    </div>
+                    <canvas id="salesChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3>Revenue Overview</h3>
+                        <select id="revenueFilter" class="chart-filter"
+                            style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
+                            <option value="all">All Time</option>
+                            <option value="7">Last 7 Days</option>
+                            <option value="30">Last 30 Days</option>
+                            <option value="90">Last 3 Months</option>
+                        </select>
+                    </div>
+                    <canvas id="revenueChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3>Top Sellers by Revenue</h3>
+                        <select id="topSellersFilter" class="chart-filter"
+                            style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
+                            <option value="all">All Time</option>
+                            <option value="7">Last 7 Days</option>
+                            <option value="30">Last 30 Days</option>
+                            <option value="90">Last 3 Months</option>
+                        </select>
+                    </div>
+                    <canvas id="topSellersChart"></canvas>
+                </div>
+
+                <div class="chart-card">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3>Subject Distribution</h3>
+                        <select id="subjectFilter" class="chart-filter"
+                            style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
+                            <option value="all">All Time</option>
+                            <option value="7">Last 7 Days</option>
+                            <option value="30">Last 30 Days</option>
+                            <option value="90">Last 3 Months</option>
+                        </select>
+                    </div>
+                    <canvas id="subjectChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Phase 1: Critical Analytics -->
+            <div id="section-critical-analytics" class="analytics-section" style="margin-top: 2rem;">
+                <h2 style="margin-bottom: 1.5rem;"><i class="fas fa-chart-bar"></i> Critical Analytics</h2>
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h3>Transaction Success Rate</h3>
+                            <select id="transactionSuccessFilter" class="chart-filter"
+                                style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
+                                <option value="all">All Time</option>
+                                <option value="7">Last 7 Days</option>
+                                <option value="30">Last 30 Days</option>
+                                <option value="90">Last 3 Months</option>
+                            </select>
+                        </div>
+                        <canvas id="transactionSuccessChart"></canvas>
+                    </div>
+
+                    <div class="chart-card">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h3>Feedback Rating Distribution</h3>
+                            <select id="feedbackDistributionFilter" class="chart-filter"
+                                style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
+                                <option value="all">All Time</option>
+                                <option value="7">Last 7 Days</option>
+                                <option value="30">Last 30 Days</option>
+                                <option value="90">Last 3 Months</option>
+                            </select>
+                        </div>
+                        <canvas id="feedbackDistributionChart"></canvas>
+                    </div>
+
+                    <div class="chart-card">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h3>Warranty Resolution</h3>
+                            <select id="warrantyResolutionFilter" class="chart-filter"
+                                style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
+                                <option value="all">All Time</option>
+                                <option value="4">Last 4 Weeks</option>
+                                <option value="12">Last 3 Months</option>
+                                <option value="24">Last 6 Months</option>
+                            </select>
+                        </div>
+                        <canvas id="warrantyResolutionChart"></canvas>
+                    </div>
+
+                    <div class="chart-card">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h3>Offer Success Funnel</h3>
+                            <select id="offerFunnelFilter" class="chart-filter"
+                                style="padding: 0.5rem; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer;">
+                                <option value="all">All Time</option>
+                                <option value="7">Last 7 Days</option>
+                                <option value="30">Last 30 Days</option>
+                                <option value="90">Last 3 Months</option>
+                            </select>
+                        </div>
+                        <canvas id="offerFunnelChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tables -->
+            <div class="tables-grid">
+                <div id="section-transactions" class="table-card">
+                    <div class="table-header" style="flex-wrap: wrap; gap: 0.5rem;">
+                        <h3>Recent Transactions</h3>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                            <div
+                                style="display: flex; align-items: center; gap: 0.5rem; background: #f1f5f9; border-radius: 8px; padding: 0.25rem 0.5rem;">
+                                <i class="fas fa-search" style="color: #64748b; font-size: 0.85rem;"></i>
+                                <input type="text" id="transactionSearch" placeholder="Search Transaction ID..."
+                                    style="border: none; background: transparent; padding: 0.4rem; font-size: 0.85rem; width: 180px; outline: none;">
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                            <label style="font-size: 0.8rem; color: #64748b;">From:</label>
+                            <input type="date" id="exportDateFrom"
+                                style="padding: 0.4rem; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85rem;">
+                            <label style="font-size: 0.8rem; color: #64748b;">To:</label>
+                            <input type="date" id="exportDateTo"
+                                style="padding: 0.4rem; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85rem;">
+                            <button id="exportTransactions" class="btn btn-secondary btn-sm">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Transaction ID</th>
+                                    <th>Buyer</th>
+                                    <th>Book</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentTransactions">
+                                <tr>
+                                    <td colspan="6" class="loading-placeholder">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="section-users" class="table-card">
+                    <div class="table-header">
+                        <h3>Users</h3>
+                        <div class="table-actions">
+                            <input type="text" id="userSearch" placeholder="Search users...">
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Listings</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTable">
+                                <tr>
+                                    <td colspan="6" class="loading-placeholder">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Warranty Issues Table (NEW) -->
+                <div id="section-warranty" class="table-card" style="border-left: 4px solid #ef4444;">
+                    <div class="table-header">
+                        <h3><i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i> Warranty Issues</h3>
+                        <span id="warrantyIssuesCount" class="badge"
+                            style="background: #ef4444; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.875rem;">0
+                            Active</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Buyer</th>
+                                    <th>Seller</th>
+                                    <th>Issue Type</th>
+                                    <th>Return Status</th>
+                                    <th>Amount</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="warrantyIssuesTable">
+                                <tr>
+                                    <td colspan="7" class="loading-placeholder">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Payout Queue (NEW) -->
+                <div id="section-payouts" class="table-card" style="border-left: 4px solid #22c55e;">
+                    <div class="table-header">
+                        <h3><i class="fas fa-wallet" style="color: #22c55e;"></i> Payout Queue</h3>
+                        <span id="payoutQueueCount" class="badge"
+                            style="background: #22c55e; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.875rem;">0
+                            Pending</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Seller</th>
+                                    <th>Order ID</th>
+                                    <th>Amount</th>
+                                    <th>Countdown</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="payoutQueueTable">
+                                <tr>
+                                    <td colspan="5" class="loading-placeholder">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- User Feedback (All Reviews & Ratings) -->
+                <div id="section-feedback" class="table-card" style="border-left: 4px solid #8b5cf6;">
+                    <div class="table-header">
+                        <h3><i class="fas fa-comments" style="color: #8b5cf6;"></i> User Feedback</h3>
+                        <span id="feedbackCount" class="badge"
+                            style="background: #8b5cf6; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.875rem;">0</span>
+                    </div>
+                    <p style="color: #64748b; font-size: 0.8rem; margin: 0 0 0.75rem 0; padding: 0 0.5rem;">
+                        <i class="fas fa-info-circle"></i> All buyer feedback and ratings. For actionable disputes,
+                        see
+                        <a href="#section-warranty" onclick="return scrollToSection('section-warranty', event)"
+                            style="color: #ef4444;">Warranty Issues</a>.
+                    </p>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Buyer</th>
+                                    <th>Rating</th>
+                                    <th>Comment</th>
+                                    <th>Sentiment</th>
+                                </tr>
+                            </thead>
+                            <tbody id="feedbackTable">
+                                <tr>
+                                    <td colspan="5" class="loading-placeholder">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Analytics Section -->
+            <div id="section-analytics" class="analytics-row"
+                style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem;">
+
+                <!-- Seller Leaderboard -->
+                <div id="section-leaderboard" class="table-card" style="border-top: 4px solid #8b5cf6;">
+                    <div class="table-header">
+                        <h3><i class="fas fa-trophy" style="color: #eab308;"></i> Top Sellers</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Seller</th>
+                                    <th>Sales</th>
+                                    <th>Revenue</th>
+                                    <th>Rating</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sellerLeaderboard">
+                                <tr>
+                                    <td colspan="5" class="loading-placeholder">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Recent Activity Log -->
+                <div id="section-activity" class="table-card" style="border-top: 4px solid #06b6d4;">
+                    <div class="table-header">
+                        <h3><i class="fas fa-stream" style="color: #06b6d4;"></i> Recent Activity</h3>
+                    </div>
+                    <div id="activityLog" style="max-height: 400px; overflow-y: auto; padding: 0.5rem;">
+                        <div class="loading-placeholder" style="text-align: center; padding: 2rem;">Loading...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings -->
+            <div id="section-settings" class="settings-card">
+                <h3>Platform Settings</h3>
+                <form id="settingsForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="commissionRate">Commission Rate (%)</label>
+                            <input type="number" id="commissionRate" value="10" min="0" max="15" step="0.5">
+                            <small class="form-hint">Current: 10%</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="maxImages">Max Images per Book</label>
+                            <input type="number" id="maxImages" value="5" min="1" max="10">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Settings
+                    </button>
+                </form>
+            </div>
+        </div>
     </main>
 
     <div id="loadingOverlay" class="loading-overlay" style="display: none;">

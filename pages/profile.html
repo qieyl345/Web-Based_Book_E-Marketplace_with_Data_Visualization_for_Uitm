@@ -202,9 +202,18 @@
                             style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
                             <!-- Available Balance -->
                             <div
-                                style="background: linear-gradient(135deg, #10b981, #059669); border-radius: 16px; padding: 1.5rem; color: white; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);">
-                                <div style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 0.5rem;">
-                                    <i class="fas fa-wallet"></i> Available Balance
+                                style="background: linear-gradient(135deg, #10b981, #059669); border-radius: 16px; padding: 1.5rem; color: white; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); position: relative;">
+                                <div
+                                    style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: space-between;">
+                                    <span><i class="fas fa-wallet"></i> Available Balance</span>
+                                    <span class="wallet-tooltip tooltip-left">
+                                        <i class="fas fa-info-circle"></i>
+                                        <span class="tooltip-content">
+                                            <strong>💰 Available Balance</strong>
+                                            This is money you can withdraw anytime! It includes all completed payouts
+                                            from your book sales after the 7-day warranty period has passed.
+                                        </span>
+                                    </span>
                                 </div>
                                 <div id="walletBalance" style="font-size: 2rem; font-weight: 700;">RM 0.00</div>
                                 <div style="font-size: 0.75rem; opacity: 0.8; margin-top: 0.5rem;">Ready to withdraw
@@ -213,9 +222,19 @@
 
                             <!-- Pending Escrow -->
                             <div
-                                style="background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 16px; padding: 1.5rem; color: white; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);">
-                                <div style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 0.5rem;">
-                                    <i class="fas fa-clock"></i> Pending Payout
+                                style="background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 16px; padding: 1.5rem; color: white; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3); position: relative;">
+                                <div
+                                    style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: space-between;">
+                                    <span><i class="fas fa-clock"></i> Pending Payout</span>
+                                    <span class="wallet-tooltip">
+                                        <i class="fas fa-info-circle"></i>
+                                        <span class="tooltip-content">
+                                            <strong>⏳ Pending Payout</strong>
+                                            Your payment is being held safely for 7 days (warranty period). Once the
+                                            buyer confirms everything is okay, this money automatically moves to your
+                                            Available Balance!
+                                        </span>
+                                    </span>
                                 </div>
                                 <div id="walletPending" style="font-size: 2rem; font-weight: 700;">RM 0.00</div>
                                 <div style="font-size: 0.75rem; opacity: 0.8; margin-top: 0.5rem;">In warranty period
@@ -224,9 +243,18 @@
 
                             <!-- Frozen (Disputed) -->
                             <div
-                                style="background: linear-gradient(135deg, #ef4444, #dc2626); border-radius: 16px; padding: 1.5rem; color: white; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);">
-                                <div style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 0.5rem;">
-                                    <i class="fas fa-snowflake"></i> Frozen (Disputes)
+                                style="background: linear-gradient(135deg, #ef4444, #dc2626); border-radius: 16px; padding: 1.5rem; color: white; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3); position: relative;">
+                                <div
+                                    style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: space-between;">
+                                    <span><i class="fas fa-snowflake"></i> Frozen (Disputes)</span>
+                                    <span class="wallet-tooltip">
+                                        <i class="fas fa-info-circle"></i>
+                                        <span class="tooltip-content">
+                                            <strong>🔒 Frozen Funds</strong>
+                                            These funds are temporarily frozen due to a dispute or warranty claim. Don't
+                                            worry - an admin will review the case and decide the outcome fairly.
+                                        </span>
+                                    </span>
                                 </div>
                                 <div id="walletFrozen" style="font-size: 2rem; font-weight: 700;">RM 0.00</div>
                                 <div style="font-size: 0.75rem; opacity: 0.8; margin-top: 0.5rem;">Under admin review
@@ -235,9 +263,18 @@
 
                             <!-- Total Earned -->
                             <div
-                                style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); border-radius: 16px; padding: 1.5rem; color: white; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);">
-                                <div style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 0.5rem;">
-                                    <i class="fas fa-trophy"></i> Total Earned
+                                style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); border-radius: 16px; padding: 1.5rem; color: white; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3); position: relative;">
+                                <div
+                                    style="font-size: 0.875rem; opacity: 0.9; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: space-between;">
+                                    <span><i class="fas fa-trophy"></i> Total Earned</span>
+                                    <span class="wallet-tooltip">
+                                        <i class="fas fa-info-circle"></i>
+                                        <span class="tooltip-content">
+                                            <strong>🏆 Total Earned</strong>
+                                            This is your lifetime earnings from all successful book sales! Note: This
+                                            shows your net earnings after the 10% platform commission has been deducted.
+                                        </span>
+                                    </span>
                                 </div>
                                 <div id="walletTotalEarned" style="font-size: 2rem; font-weight: 700;">RM 0.00</div>
                                 <div style="font-size: 0.75rem; opacity: 0.8; margin-top: 0.5rem;">All time earnings
@@ -247,13 +284,35 @@
 
                         <!-- Info Box -->
                         <div
-                            style="background: linear-gradient(135deg, #eff6ff, #dbeafe); border-radius: 12px; padding: 1rem; margin-bottom: 1.5rem; display: flex; align-items: flex-start; gap: 0.75rem; border: 1px solid #bfdbfe;">
-                            <i class="fas fa-info-circle" style="color: #3b82f6; margin-top: 2px;"></i>
-                            <div style="font-size: 0.875rem; color: #1e40af; line-height: 1.5;">
-                                <strong>How it works:</strong> When you sell a book, the payment is held for 7 days
-                                (warranty period).
-                                If the buyer doesn't claim warranty, the funds are automatically released to your
-                                Available Balance.
+                            style="background: linear-gradient(135deg, #eff6ff, #dbeafe); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem; border: 1px solid #bfdbfe;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+                                <i class="fas fa-lightbulb" style="color: #3b82f6; font-size: 1.1rem;"></i>
+                                <strong style="color: #1e40af; font-size: 0.95rem;">Understanding Your Wallet</strong>
+                            </div>
+                            <div style="font-size: 0.85rem; color: #1e40af; line-height: 1.6;">
+                                <div style="margin-bottom: 0.5rem;">
+                                    <strong>📗 Step 1:</strong> When you sell a book, the buyer's payment goes to <span
+                                        style="background: #fef3c7; padding: 0.1rem 0.3rem; border-radius: 4px; color: #92400e;">Pending
+                                        Payout</span> (held in escrow).
+                                </div>
+                                <div style="margin-bottom: 0.5rem;">
+                                    <strong>🛡️ Step 2:</strong> A 7-day warranty period begins after the buyer confirms
+                                    receipt.
+                                </div>
+                                <div style="margin-bottom: 0.5rem;">
+                                    <strong>✅ Step 3:</strong> If no issues are reported, funds move to <span
+                                        style="background: #d1fae5; padding: 0.1rem 0.3rem; border-radius: 4px; color: #065f46;">Available
+                                        Balance</span> automatically.
+                                </div>
+                                <div style="margin-bottom: 0.5rem;">
+                                    <strong>⚠️ If disputed:</strong> Funds move to <span
+                                        style="background: #fee2e2; padding: 0.1rem 0.3rem; border-radius: 4px; color: #991b1b;">Frozen</span>
+                                    until an admin resolves the issue.
+                                </div>
+                                <div
+                                    style="margin-top: 0.75rem; padding-top: 0.5rem; border-top: 1px dashed #93c5fd; font-size: 0.8rem; color: #3b82f6;">
+                                    💡 <em>Note: A 10% platform commission is deducted from each successful sale.</em>
+                                </div>
                             </div>
                         </div>
 

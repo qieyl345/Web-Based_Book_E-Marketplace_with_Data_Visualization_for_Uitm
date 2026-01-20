@@ -79,6 +79,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         setupExportButton();
         setupUserSearch();
+        setupTransactionSearch(); // Setup transaction ID search
         setupSettingsForm();
         setupChartFilters(); // Setup filter event listeners
         setupRealtimeListeners(); // Enable live dashboard updates
@@ -1008,6 +1009,44 @@ function setupUserSearch() {
                     </td>
                 </tr>
             `).join('');
+        });
+    }
+}
+
+function setupTransactionSearch() {
+    const searchInput = document.getElementById('transactionSearch');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase().trim();
+
+            // Filter transactions by transaction ID
+            const filteredTransactions = searchTerm
+                ? allTransactions.filter(txn =>
+                    (txn.transactionId || txn.id || '').toLowerCase().includes(searchTerm)
+                )
+                : [...allTransactions].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)).slice(0, 10);
+
+            const tbody = document.getElementById('recentTransactions');
+            if (!tbody) return;
+
+            if (filteredTransactions.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center" style="padding: 2rem; color: #64748b;">No transactions found matching "' + searchTerm + '"</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filteredTransactions
+                .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
+                .slice(0, searchTerm ? 50 : 10) // Show more results when searching
+                .map(txn => `
+                    <tr>
+                        <td>${txn.transactionId || 'N/A'}</td>
+                        <td>${txn.buyerName || 'N/A'}</td>
+                        <td>${txn.items?.[0]?.bookDetails?.title || 'N/A'}</td>
+                        <td>${formatCurrency(txn.amount || 0)}</td>
+                        <td><span class="status-badge ${txn.status || 'unknown'}">${txn.status || 'unknown'}</span></td>
+                        <td>${formatDate(txn.createdAt || Date.now())}</td>
+                    </tr>
+                `).join('');
         });
     }
 }
