@@ -119,76 +119,160 @@ The ERD visualizes the data structure within the Firebase Realtime Database, sho
 
 ```mermaid
 erDiagram
-    USERS ||--o{ BOOKS : "lists"
-    USERS ||--o{ TRANSACTIONS : "makes"
-    USERS ||--o{ OFFERS : "negotiates"
-    USERS ||--o{ FEEDBACK : "gives/receives"
-
-    BOOKS ||--o{ TRANSACTIONS : "included in"
-    BOOKS ||--o{ OFFERS : "subject of"
+    USERS ||--o{ BOOKS : "lists (as seller)"
+    USERS ||--o{ TRANSACTIONS : "purchases (as buyer)"
+    USERS ||--o{ OFFERS : "makes (as buyer)"
+    USERS ||--o{ OFFERS : "receives (as seller)"
+    USERS ||--o{ NOTIFICATIONS : "receives"
+    USERS ||--o{ FEEDBACK : "submits"
+    USERS ||--|| WALLET : "has"
+    USERS ||--o{ CARTS : "owns"
     
-    TRANSACTIONS ||--o{ FEEDBACK : "reviewed in"
+    BOOKS ||--o{ OFFERS : "has"
+    BOOKS ||--o{ CART_ITEMS : "added to"
+    
+    OFFERS ||--|| CHATS : "has"
+    CHATS ||--o{ MESSAGES : "contains"
+    
+    TRANSACTIONS ||--o{ FEEDBACK : "generates"
+    TRANSACTIONS }o--|| BOOKS : "contains"
 
     USERS {
         string uid PK
         string email
         string fullName
-        string role "admin/student/staff"
         string phoneNumber
-        boolean isSeller
+        string role "admin/student/staff"
+        string avatarUrl
+        string campusLocation
         number totalSales
         number totalPurchases
-        object wallet "{ balance, pendingEscrow, frozenDispute }"
+        timestamp createdAt
+    }
+
+    WALLET {
+        number balance
+        number pendingEscrow
+        number frozenDispute
+        number totalEarned
+        object payoutHistory
     }
 
     BOOKS {
         string bookId PK
         string sellerId FK
+        string sellerName
         string title
         string author
+        string isbn
+        string subjectCode
         number price
-        string condition
+        string condition "New/Like New/Good/Fair"
+        string description
+        string campusLocation
+        array images
         string status "available/sold"
         number viewCount
         timestamp createdAt
-        timestamp soldAt
     }
 
     TRANSACTIONS {
         string transactionId PK
         string buyerId FK
-        string sellerId FK
+        string buyerName
+        string buyerEmail
+        array items "CartItem references"
         number amount
+        number basePrice
         number commissionFee
         string status "payment_held/delivered/completed/refunded"
+        string selectedBank
+        string meetingDate
+        string deliveryStatus
         timestamp createdAt
         timestamp escrowHeldAt
         timestamp warrantyExpiresAt
-        object[] items "Array of Book References"
+        timestamp autoReleaseAt
+        boolean sellerPaidOut
+        number sellerPayoutAmount
     }
 
     OFFERS {
         string offerId PK
-        string buyerId FK
-        string sellerId FK
         string bookId FK
-        number offerPrice
-        string status "pending/accepted/rejected"
+        string bookTitle
+        number bookPrice
+        string buyerId FK
+        string buyerName
+        string sellerId FK
+        string sellerName
+        number currentPrice
+        string status "pending/counter_offered/accepted/rejected"
+        string lastActionBy
+        timestamp createdAt
+        timestamp updatedAt
+    }
+
+    CHATS {
+        string offerId PK
+        object participants
+        string lastMessage
+        timestamp lastMessageTimestamp
+    }
+
+    MESSAGES {
+        string messageId PK
+        string senderId
+        string senderName
+        string text
+        string type "text/system"
+        timestamp timestamp
+    }
+
+    NOTIFICATIONS {
+        string notificationId PK
+        string recipientId FK
+        string senderId
+        string senderName
+        string type
+        string message
+        string offerId
+        string bookId
+        string transactionId
+        boolean read
+        timestamp createdAt
     }
 
     FEEDBACK {
         string feedbackId PK
-        string buyerId FK
         string transactionId FK
+        string buyerId FK
+        string buyerName
+        string sellerId FK
+        string sellerName
+        string type "review/dispute"
         number rating
         string comment
+        string status "pending/resolved"
         timestamp createdAt
+    }
+
+    CARTS {
+        string uid PK
+        object items
+        timestamp updatedAt
     }
 ```
 
 ### Entity Descriptions
-- **USERS**: Stores profile information and aggregate statistics. Key roles include `admin` and regular users (students/staff).
-- **BOOKS**: Represents the listings. Contains details like `sellerId` (link to User) and `status` (tracks availability).
-- **TRANSACTIONS**: Records successful purchases. Links a Buyer to one or more Books. Stores financial details and delivery status.
-- **OFFERS**: Manages price negotiations between buyers and sellers.
-- **FEEDBACK**: Reviews left by buyers after a transaction is completed.
+- **USERS**: Stores profile information and aggregate statistics. Key roles include `admin` and regular users (students/staff). Each user has a nested `wallet` object for financial tracking.
+- **WALLET**: Nested within USERS, tracks `balance` (available funds), `pendingEscrow` (funds in warranty period), `frozenDispute` (disputed funds), and `totalEarned` (lifetime earnings).
+- **BOOKS**: Represents the listings. Contains details like `sellerId` (link to User), `status` (tracks availability), and supports multiple images.
+- **TRANSACTIONS**: Records successful purchases. Links a Buyer to one or more Books. Stores financial details, delivery status, warranty tracking, and payout information.
+- **OFFERS**: Manages price negotiations between buyers and sellers with counter-offer support.
+- **CHATS**: Chat rooms linked to offers for real-time negotiation between buyer and seller.
+- **MESSAGES**: Individual messages within a chat, including system-generated messages.
+- **NOTIFICATIONS**: Real-time alerts for users about offers, purchases, disputes, and system events.
+- **FEEDBACK**: Reviews and dispute reports left by buyers after transactions.
+- **CARTS**: Shopping cart for users to collect books before checkout.
+

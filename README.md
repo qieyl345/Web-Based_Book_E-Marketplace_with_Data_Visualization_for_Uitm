@@ -501,7 +501,7 @@ flowchart LR
 - `assets/js/auth.js` - Authentication logic
 - `assets/js/firebase-config.js` - Firebase initialization
 
-### 2. Buyer Purchase Flow
+### 2. Buyer Flow
 
 ```mermaid
 flowchart TD
@@ -566,7 +566,79 @@ flowchart TD
 - `pages/profile.html` - Sales history
 - `assets/js/profile.js` - Wallet & payouts
 
-### 4. Escrow & Warranty System
+### 4. Administrator Flow
+
+```mermaid
+flowchart TD
+    A[Admin Login] --> B{Verify Credentials}
+    B -->|Success| C[Admin Dashboard]
+    B -->|Failure| D[Show Error]
+    C --> E{Choose Action}
+    
+    E -->|View Analytics| F[Dashboard Overview]
+    F --> G[8 Interactive Charts]
+    G --> H[Sales Trend/Revenue/Top Books/Sellers]
+    G --> I[Subject Distribution/Success Rate]
+    G --> J[Feedback Distribution/Dispute Metrics]
+    
+    E -->|Manage Users| K[User Management Tab]
+    K --> L[Search Users]
+    L --> M[View User Details]
+    M --> N[View Transactions/Listings/Wallet]
+    
+    E -->|Handle Disputes| O[Feedback Tab]
+    O --> P{Dispute Type?}
+    P -->|Warranty Claim| Q[Review Evidence]
+    P -->|Non-Delivery| R[Check Transaction Status]
+    Q --> S{Decision}
+    R --> S
+    S -->|Buyer Wins| T[Process Refund]
+    S -->|Seller Wins| U[Release Payment]
+    T --> V[Update Status & Notify]
+    U --> V
+    
+    E -->|Monitor Payouts| W[Payout Queue]
+    W --> X[Live Countdown Timers]
+    X --> Y[View Pending Auto-Payouts]
+    
+    E -->|Export Data| Z[CSV Export]
+    Z --> AA[Filter by Date Range]
+    AA --> AB[Download Transactions]
+    
+    E -->|Generate Report| AC[Print Report]
+    AC --> AD[Comprehensive PDF Report]
+```
+
+**Admin Dashboard Sections:**
+
+| Section | Description |
+|---------|-------------|
+| **Overview Stats** | Total users, books, transactions, revenue, commission |
+| **System Health** | Real-time monitoring of success rates & issues |
+| **Charts (8 total)** | Sales Trend, Revenue, Top Books, Top Sellers, Subject Distribution, Transaction Success, Feedback Distribution, Dispute Resolution |
+| **Payout Queue** | Live countdown timers for pending auto-payouts |
+| **Recent Transactions** | Quick view of latest platform activity |
+| **User Management** | Search, view profiles, check transaction history |
+| **Feedback Review** | View all feedback, resolve disputes |
+
+**Admin Dispute Resolution Actions:**
+
+| Action | When to Use | Result |
+|--------|-------------|--------|
+| **Refund Buyer** | Non-delivery, wrong item, damaged goods | Full refund to buyer, seller not paid |
+| **Pay Seller** | Buyer didn't return book, false claim | Release escrow to seller |
+| **Auto-Refund** | No "Order Received" in 7 days | System suggests refund |
+| **Auto-Payout** | Warranty claimed but no return in 7 days | System releases payment |
+
+**Key Files:**
+- `pages/admin.html` - Admin dashboard UI
+- `assets/js/admin.js` - Dashboard logic, charts, dispute resolution
+  - `resolveDisputeForBuyer()` - Process buyer refund
+  - `resolveDisputeForSeller()` - Release seller payment
+  - `loadCharts()` - Initialize 8 analytics charts
+  - `exportTransactionsToCSV()` - Export transaction data
+
+### 5. Escrow & Warranty System
 
 ```
 Payment Flow:
@@ -591,7 +663,7 @@ Payment Flow:
 - If buyer doesn't confirm "Order Received" within 7 days → Admin can refund buyer (assume non-delivery)
 - If buyer claims warranty but doesn't return book within 7 days → Auto-payout to seller (buyer accepts condition)
 
-### 5. Admin Dispute Resolution
+### 6. Admin Dispute Resolution
 
 ```mermaid
 flowchart LR
