@@ -119,30 +119,28 @@ The ERD visualizes the data structure within the Firebase Realtime Database, sho
 
 ```mermaid
 erDiagram
-    USERS ||--o{ BOOKS : "lists (as seller)"
-    USERS ||--o{ TRANSACTIONS : "purchases (as buyer)"
-    USERS ||--o{ OFFERS : "makes (as buyer)"
-    USERS ||--o{ OFFERS : "receives (as seller)"
-    USERS ||--o{ NOTIFICATIONS : "receives"
-    USERS ||--o{ FEEDBACK : "submits"
-    USERS ||--|| WALLET : "has"
-    USERS ||--o{ CARTS : "owns"
+    USERS ||--o{ BOOKS : lists
+    USERS ||--o{ TRANSACTIONS : purchases
+    USERS ||--o{ OFFERS : makes
+    USERS ||--o{ NOTIFICATIONS : receives
+    USERS ||--o{ FEEDBACK : submits
+    USERS ||--|| WALLET : has
+    USERS ||--o{ CARTS : owns
     
-    BOOKS ||--o{ OFFERS : "has"
-    BOOKS ||--o{ CART_ITEMS : "added to"
+    BOOKS ||--o{ OFFERS : has
     
-    OFFERS ||--|| CHATS : "has"
-    CHATS ||--o{ MESSAGES : "contains"
+    OFFERS ||--|| CHATS : has
+    CHATS ||--o{ MESSAGES : contains
     
-    TRANSACTIONS ||--o{ FEEDBACK : "generates"
-    TRANSACTIONS }o--|| BOOKS : "contains"
+    TRANSACTIONS ||--o{ FEEDBACK : generates
+    TRANSACTIONS }o--|| BOOKS : contains
 
     USERS {
         string uid PK
         string email
         string fullName
         string phoneNumber
-        string role "admin/student/staff"
+        string role
         string avatarUrl
         string campusLocation
         number totalSales
@@ -167,11 +165,11 @@ erDiagram
         string isbn
         string subjectCode
         number price
-        string condition "New/Like New/Good/Fair"
+        string condition
         string description
         string campusLocation
         array images
-        string status "available/sold"
+        string status
         number viewCount
         timestamp createdAt
     }
@@ -181,11 +179,11 @@ erDiagram
         string buyerId FK
         string buyerName
         string buyerEmail
-        array items "CartItem references"
+        array items
         number amount
         number basePrice
         number commissionFee
-        string status "payment_held/delivered/completed/refunded"
+        string status
         string selectedBank
         string meetingDate
         string deliveryStatus
@@ -207,7 +205,7 @@ erDiagram
         string sellerId FK
         string sellerName
         number currentPrice
-        string status "pending/counter_offered/accepted/rejected"
+        string status
         string lastActionBy
         timestamp createdAt
         timestamp updatedAt
@@ -225,7 +223,7 @@ erDiagram
         string senderId
         string senderName
         string text
-        string type "text/system"
+        string type
         timestamp timestamp
     }
 
@@ -250,10 +248,10 @@ erDiagram
         string buyerName
         string sellerId FK
         string sellerName
-        string type "review/dispute"
+        string type
         number rating
         string comment
-        string status "pending/resolved"
+        string status
         timestamp createdAt
     }
 

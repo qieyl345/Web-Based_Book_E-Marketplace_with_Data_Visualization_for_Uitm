@@ -849,23 +849,21 @@ Deploy the security rules from `config/firebase-rules.json`:
 
 ```mermaid
 erDiagram
-    USERS ||--o{ BOOKS : "lists (as seller)"
-    USERS ||--o{ TRANSACTIONS : "purchases (as buyer)"
-    USERS ||--o{ OFFERS : "makes (as buyer)"
-    USERS ||--o{ OFFERS : "receives (as seller)"
-    USERS ||--o{ NOTIFICATIONS : "receives"
-    USERS ||--o{ FEEDBACK : "submits"
-    USERS ||--|| WALLET : "has"
-    USERS ||--o{ CARTS : "owns"
+    USERS ||--o{ BOOKS : lists
+    USERS ||--o{ TRANSACTIONS : purchases
+    USERS ||--o{ OFFERS : makes
+    USERS ||--o{ NOTIFICATIONS : receives
+    USERS ||--o{ FEEDBACK : submits
+    USERS ||--|| WALLET : has
+    USERS ||--o{ CARTS : owns
     
-    BOOKS ||--o{ OFFERS : "has"
-    BOOKS ||--o{ CART_ITEMS : "added to"
+    BOOKS ||--o{ OFFERS : has
     
-    OFFERS ||--|| CHATS : "has"
-    CHATS ||--o{ MESSAGES : "contains"
+    OFFERS ||--|| CHATS : has
+    CHATS ||--o{ MESSAGES : contains
     
-    TRANSACTIONS ||--o{ FEEDBACK : "generates"
-    TRANSACTIONS }o--|| BOOKS : "contains"
+    TRANSACTIONS ||--o{ FEEDBACK : generates
+    TRANSACTIONS }o--|| BOOKS : contains
 
     USERS {
         string uid PK
