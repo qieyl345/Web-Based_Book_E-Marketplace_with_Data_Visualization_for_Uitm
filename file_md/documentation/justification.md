@@ -1,17 +1,8 @@
 # Justification of Chosen Techniques and Features
 
-> **Document Purpose:** This document provides a comprehensive justification for the technological decisions and feature implementations in the UITM-EMPLC (UiTM Book e-Marketplace) system development.
+## Introduction
 
----
-
-## Table of Contents
-
-1. [Technology Stack Justification](#1-technology-stack-justification)
-2. [Architecture Design Decisions](#2-architecture-design-decisions)
-3. [Core Feature Justification](#3-core-feature-justification)
-4. [Security Implementation Rationale](#4-security-implementation-rationale)
-5. [User Experience Design Choices](#5-user-experience-design-choices)
-6. [System Workflow Justification](#6-system-workflow-justification)
+This document provides a comprehensive justification for the technological decisions and feature implementations in the UITM-EMPLC (UiTM Book e-Marketplace) system development. Each choice was evaluated against alternatives to ensure optimal balance between development efficiency, performance, security, and user experience within the academic project context.
 
 ---
 
@@ -19,49 +10,31 @@
 
 ### 1.1 Frontend Technologies
 
-| Technology | Justification |
-|------------|---------------|
-| **HTML5** | Semantic markup provides better accessibility, SEO optimization, and native browser support for multimedia elements, forms, and local storage. Essential for creating a structured, maintainable web application. |
-| **CSS3** | Modern styling capabilities including flexbox, grid, transitions, and animations enable responsive design and premium visual aesthetics without external dependencies. Custom CSS allows full control over the Glassmorphism design system. |
-| **JavaScript (ES6+)** | Native browser support eliminates build complexity. ES6+ features (arrow functions, async/await, template literals, destructuring) improve code readability and maintainability. No framework overhead means faster initial load times. |
+The frontend of UITM-EMPLC was developed using HTML5, CSS3, and JavaScript (ES6+). HTML5 was selected for its semantic markup capabilities, which provide better accessibility, search engine optimization, and native browser support for multimedia elements, forms, and local storage. This semantic structure is essential for creating a well-organized and maintainable web application.
 
-**Why Vanilla JavaScript over Frameworks (React/Vue/Angular)?**
+CSS3 was chosen for its modern styling capabilities, including flexbox, grid layouts, transitions, and animations. These features enable responsive design and premium visual aesthetics without relying on external dependencies. By using custom CSS, the development team maintained full control over the Glassmorphism design system that gives the platform its distinctive modern appearance.
 
-| Factor | Vanilla JS Advantage |
-|--------|---------------------|
-| **Learning Curve** | Lower barrier for team members to understand and maintain the codebase |
-| **Performance** | No virtual DOM overhead; direct DOM manipulation for optimal performance |
-| **Bundle Size** | No framework code shipped to client; smaller download size |
-| **Simplicity** | Direct Firebase SDK integration without additional abstraction layers |
-| **Deployment** | Static file hosting (Cloudflare Pages) with no build pipeline required |
-| **Maintenance** | No dependency updates or breaking changes from framework versions |
+JavaScript (ES6+) was selected as the primary programming language due to its native browser support, which eliminates the need for complex build processes. Modern ES6+ features such as arrow functions, async/await patterns, template literals, and destructuring operations significantly improve code readability and maintainability throughout the application.
 
-### 1.2 Backend & Database
+The decision to use vanilla JavaScript rather than popular frameworks like React, Vue, or Angular was deliberate and strategic. Vanilla JavaScript offers a lower learning curve, allowing team members to understand and maintain the codebase more easily. It also provides superior performance since there is no virtual DOM overhead, and direct DOM manipulation results in optimal application speed. Additionally, the bundle size remains minimal as no framework code needs to be shipped to the client, resulting in faster download times. The simplicity of direct Firebase SDK integration without additional abstraction layers streamlines development, while static file hosting on Cloudflare Pages eliminates the need for a build pipeline. Furthermore, maintenance is simplified as there are no dependency updates or breaking changes from framework version upgrades to manage.
 
-| Technology | Justification |
-|------------|---------------|
-| **Firebase Realtime Database** | Real-time synchronization enables instant updates for notifications, chat, and transaction status. JSON-based NoSQL structure aligns perfectly with JavaScript objects. Automatic offline support and conflict resolution. |
-| **Firebase Authentication** | Built-in email/password authentication with email verification. Seamless integration with Firebase database rules. Handles session management, password reset, and security tokens automatically. |
+### 1.2 Backend and Database Technologies
 
-**Why Firebase over Traditional Backend (Node.js + MySQL)?**
+Firebase Realtime Database serves as the backend for UITM-EMPLC. This technology was selected for its real-time synchronization capabilities, which enable instant updates for notifications, chat messages, and transaction status changes. The JSON-based NoSQL structure aligns perfectly with JavaScript objects, creating a natural development workflow. Firebase also provides automatic offline support and conflict resolution, ensuring reliable data handling even when users experience network issues.
 
-| Factor | Firebase Advantage |
-|--------|-------------------|
-| **Real-time Capabilities** | Native WebSocket-based real-time sync vs. polling or manual WebSocket implementation |
-| **Scalability** | Automatic horizontal scaling handled by Google infrastructure |
-| **Development Speed** | No server code to write, test, or deploy; faster time-to-market |
-| **Cost Efficiency** | Generous free tier (1GB database, 50K reads/day); pay-as-you-scale |
-| **Security Rules** | Declarative JSON rules enforce access control at database level |
-| **Hosting & CDN** | Integrated hosting with global CDN distribution |
+Firebase Authentication was implemented to handle user management. This service offers built-in email and password authentication with email verification capabilities. Its seamless integration with Firebase database security rules simplifies access control implementation. Firebase Authentication automatically handles session management, password reset functionality, and security token generation, reducing the complexity of authentication implementation.
 
-### 1.3 External Services
+The choice of Firebase over traditional backend solutions such as Node.js with MySQL was based on several factors. Firebase provides native WebSocket-based real-time synchronization, eliminating the need for polling or manual WebSocket implementation. The platform offers automatic horizontal scaling handled by Google's infrastructure, removing concerns about server capacity during peak usage. Development speed is significantly improved since no server code needs to be written, tested, or deployed. The cost efficiency of Firebase's generous free tier, which includes 1GB of database storage and 50,000 reads per day, supported the project's budget constraints while the pay-as-you-scale model ensures cost control as usage grows. Declarative JSON security rules enforce access control at the database level without custom middleware. Finally, integrated hosting with global CDN distribution ensures fast content delivery worldwide.
 
-| Service | Justification |
-|---------|---------------|
-| **ImageBB API** | Free image hosting with CDN delivery. Eliminates Firebase Storage costs. Simple API integration for book image uploads. Permanent hosting URLs for reliable image display. |
-| **Chart.js** | Lightweight (60KB gzipped) canvas-based charting library. 8 chart types cover all admin dashboard visualization needs. Easy customization and responsive by default. |
-| **jsPDF** | Client-side PDF generation for transaction receipts. No server-side processing required. Users can download receipts immediately after payment. |
-| **Font Awesome 6** | Comprehensive icon library with consistent styling. CDN delivery for fast loading. Professional iconography enhances UX without custom SVG creation. |
+### 1.3 External Services Integration
+
+Several external services were integrated to enhance system functionality. ImageBB API provides free image hosting with CDN delivery for book images, eliminating Firebase Storage costs while offering a simple API integration. The permanent hosting URLs ensure reliable image display across the platform.
+
+Chart.js was selected for admin dashboard visualizations due to its lightweight footprint of only 60KB when gzipped. This canvas-based charting library offers eight chart types that cover all the visualization needs of the admin dashboard, including sales trends, revenue tracking, and user analytics. The library provides easy customization options and is responsive by default.
+
+jsPDF enables client-side PDF generation for transaction receipts without requiring server-side processing. Users can download their receipts immediately after completing a payment, enhancing the user experience and providing documentation for transactions.
+
+Font Awesome 6 was implemented to provide a comprehensive icon library with consistent styling throughout the application. CDN delivery ensures fast loading times, and the professional iconography enhances the user experience without requiring custom SVG creation.
 
 ---
 
@@ -69,124 +42,47 @@
 
 ### 2.1 Serverless Architecture
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    UITM-EMPLC Architecture                   │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│   Client (Browser)                                          │
-│   ├── Static Files (HTML/CSS/JS)                           │
-│   ├── Firebase SDK                                          │
-│   └── Real-time Listeners                                   │
-│                                                             │
-│         ↓ HTTPS ↓              ↓ WebSocket ↓                │
-│                                                             │
-│   Firebase Backend                                          │
-│   ├── Authentication Service                                │
-│   ├── Realtime Database                                     │
-│   └── Security Rules                                        │
-│                                                             │
-│   External Services                                         │
-│   ├── ImageBB (Image Storage)                              │
-│   └── Cloudflare Pages (Static Hosting + CDN)              │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
-```
+UITM-EMPLC employs a serverless architecture where the client browser handles static files including HTML, CSS, and JavaScript, along with the Firebase SDK and real-time listeners. Communication occurs through HTTPS and WebSocket connections to the Firebase backend, which manages authentication services, the realtime database, and security rules. External services including ImageBB for image storage and Cloudflare Pages for static hosting and CDN distribution complete the architecture.
 
-**Justification:**
-- **No Server Maintenance:** Zero DevOps overhead; Firebase handles scaling, backups, and availability
-- **Global Performance:** Cloudflare CDN ensures low latency worldwide
-- **Cost Optimization:** Pay only for actual usage; no idle server costs
-- **Security:** Database rules enforce security without custom middleware
+This serverless approach was justified by several key benefits. There is zero DevOps overhead since Firebase handles scaling, backups, and availability automatically. Global performance is ensured through Cloudflare's CDN, which provides low latency for users worldwide. Cost optimization is achieved as the platform only pays for actual usage with no idle server costs. Security is enforced through database rules that execute on Firebase servers and cannot be bypassed by client-side code.
 
 ### 2.2 File Structure Organization
 
-| Directory | Purpose | Justification |
-|-----------|---------|---------------|
-| `/pages/` | 12 HTML pages | Separation of pages enables easier navigation and maintenance |
-| `/assets/css/` | 21 CSS files | Modular CSS (skeleton-loaders, animations, role-based) enables targeted loading and maintainability |
-| `/assets/js/` | 23 JS files | Feature-based separation (auth.js, payment.js, chat.js) follows single responsibility principle |
-| `/config/` | Configuration files | Centralized Firebase rules and deployment configs |
-| `/file_md/` | Documentation | Comprehensive documentation separate from source code |
+The project follows a logical file structure organization designed for maintainability and scalability. The pages directory contains 12 HTML pages, with separation enabling easier navigation and maintenance. The assets/css directory houses 21 CSS files organized by function, including skeleton loaders, animations, and role-based styling, which enables targeted loading and improved maintainability. The assets/js directory contains 23 JavaScript files organized by feature such as auth.js, payment.js, and chat.js, following the single responsibility principle. Configuration files are centralized in the config directory for Firebase rules and deployment settings. Comprehensive documentation is maintained separately in the file_md directory.
 
-### 2.3 Consumer-to-Consumer (C2C) Model
+### 2.3 Consumer-to-Consumer Model
 
-**Justification for C2C Architecture:**
-
-| Aspect | Justification |
-|--------|---------------|
-| **Target Market** | UiTM students/staff naturally trade books within the community |
-| **Sustainability** | Promotes textbook reuse, reducing waste and costs |
-| **Trust Building** | Institutional email verification creates trusted environment |
-| **Peer Economy** | Eliminates middleman; direct transactions between users |
-| **Familiarity** | Similar to successful platforms like Carousell and Mudah |
+The Consumer-to-Consumer (C2C) business model was selected based on the target market and platform objectives. UiTM students and staff naturally trade books within their community, making a peer-to-peer marketplace the most appropriate model. The platform promotes sustainability by encouraging textbook reuse, reducing waste and costs for students. Institutional email verification creates a trusted environment where users can transact with confidence. The C2C model eliminates middlemen, enabling direct transactions between users and maximizing value for both buyers and sellers. This approach is also familiar to the target audience, being similar to successful platforms like Carousell and Mudah that are widely used in Malaysia.
 
 ---
 
 ## 3. Core Feature Justification
 
-### 3.1 Escrow & Warranty System
+### 3.1 Escrow and Warranty System
 
-```
-Payment Flow:
-┌─────────────────────────────────────────────────────────────┐
-│                                                             │
-│   BUYER PAYS  →  ESCROW HELD  →  WARRANTY PERIOD (7 Days)  │
-│        │              │                   │                 │
-│        │              │           ┌───────┴────────┐        │
-│        │              │           │                │        │
-│        │              │      No Issues        Warranty      │
-│        │              │           │            Claimed      │
-│        │              │           ↓                │        │
-│        │              │    AUTO RELEASE       Admin Review  │
-│        │              │    TO SELLER                        │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
-```
+The escrow and warranty system represents one of the most critical features of UITM-EMPLC. When a buyer completes payment, the funds are held in escrow for a 7-day period. This protects buyers from non-delivery and quality issues while ensuring sellers receive payment once transactions are successfully completed. The 7-day warranty period is an industry-standard protection timeframe used by major C2C platforms worldwide.
 
-| Feature | Justification |
-|---------|---------------|
-| **7-Day Escrow Hold** | Protects buyers from non-delivery and quality issues. Industry-standard protection period used by major C2C platforms. |
-| **Automatic Payout** | Reduces admin workload; funds release automatically if no disputes. Sellers receive payment predictably. |
-| **Warranty Claims** | Formal dispute process ensures fair resolution. Documentation trail for admin review. |
-| **Admin Resolution** | Human oversight for complex disputes maintains user trust. Flexibility to refund or pay based on evidence. |
+The automatic payout mechanism reduces administrative workload by releasing funds automatically if no disputes are raised during the warranty period. This ensures sellers receive their payments predictably without requiring manual intervention. When buyers encounter issues, the warranty claims system provides a formal dispute process that ensures fair resolution with a complete documentation trail for admin review.
 
-**Why 7 Days?**
-- Standard meeting and inspection timeframe for physical goods
-- Balances buyer protection with reasonable seller payout delay
-- Matches warranty periods of similar platforms (Shopee Guarantee)
+Admin resolution capabilities allow human oversight for complex disputes, maintaining user trust in the platform. Administrators have the flexibility to refund buyers or pay sellers based on the evidence presented in each case.
+
+The 7-day warranty period was specifically chosen because it provides a standard meeting and inspection timeframe for physical goods transactions. This duration balances buyer protection with reasonable seller payout delays, matching the warranty periods of similar platforms such as Shopee Guarantee.
 
 ### 3.2 Negotiation System
 
-| Feature | Justification |
-|---------|---------------|
-| **Real-time Chat** | Firebase listeners enable instant message delivery. Natural conversation flow for price negotiation. |
-| **Counter Offers** | Structured negotiation process prevents confusion. Clear accept/reject actions reduce ambiguity. |
-| **10x Price Cap** | Prevents abuse and trolling with unrealistic offers |
-| **RM 0.50 Minimum Difference** | Encourages meaningful negotiations; prevents micro-adjustments |
-| **Rate Limiting (2s cooldown)** | Prevents spam and DoS; protects database write quotas |
+The negotiation system enables buyers and sellers to agree on mutually acceptable prices before completing transactions. Real-time chat functionality, powered by Firebase listeners, enables instant message delivery and creates a natural conversation flow for price negotiations. The structured counter-offer process prevents confusion by providing clear accept and reject actions that reduce ambiguity.
+
+Several protective measures were implemented within the negotiation system. A 10x price cap prevents abuse and trolling with unrealistic offers. A minimum difference requirement of RM 0.50 for counter-offers encourages meaningful negotiations and prevents time-wasting micro-adjustments. Rate limiting with a 2-second cooldown between messages prevents spam and protects the database from excessive write operations.
 
 ### 3.3 FPX Payment Simulation
 
-| Decision | Justification |
-|----------|---------------|
-| **Simulation vs Real Integration** | Academic project scope; real FPX requires Malaysian banking license and merchant registration |
-| **90% Success Rate** | Simulates realistic payment failures for testing error handling |
-| **Bank Selection UI** | Authentic Malaysian banking experience (Maybank, CIMB, RHB, etc.) |
-| **Meeting Scheduler** | Essential for physical book handover coordination |
+The payment system simulates FPX (Financial Process Exchange), Malaysia's online payment gateway. The decision to implement a simulation rather than real FPX integration was based on the academic project scope, as real FPX integration requires Malaysian banking licenses and merchant registration that fall outside the project's resources.
+
+The simulation was designed with a 90% success rate to realistically model payment failures and test the system's error handling capabilities. The bank selection interface provides an authentic Malaysian banking experience featuring major banks like Maybank, CIMB, RHB, and Public Bank. A meeting scheduler feature was included as it is essential for coordinating physical book handovers between buyers and sellers.
 
 ### 3.4 Admin Dashboard Analytics
 
-| Chart | Purpose | Justification |
-|-------|---------|---------------|
-| **Sales Trend** | Line chart showing transaction volume over time | Identifies growth patterns and seasonal trends |
-| **Revenue** | Bar chart of commission earnings | Tracks platform financial health |
-| **Top Books** | Most sold books visualization | Informs inventory and demand insights |
-| **Top Sellers** | Student vs Staff performance | Identifies power sellers; informs engagement strategies |
-| **Subject Distribution** | Pie chart of book categories | Reveals popular subjects and gaps |
-| **Transaction Success** | Completion vs failure rates | Critical health metric for platform reliability |
-| **Feedback Distribution** | Rating distribution | Measures user satisfaction |
-| **Dispute Metrics** | Opened vs resolved with rate | Tracks resolution efficiency |
+The admin dashboard features eight interactive charts designed to provide comprehensive platform insights. The sales trend line chart shows transaction volume over time, helping identify growth patterns and seasonal trends. The revenue bar chart tracks commission earnings to monitor platform financial health. The top books visualization reveals most sold books, informing inventory and demand insights. The seller leaderboard differentiates between student and staff performance, identifying power sellers and informing engagement strategies. The subject distribution pie chart reveals popular book categories and gaps in inventory. The transaction success chart shows completion versus failure rates as a critical health metric for platform reliability. The feedback distribution chart measures user satisfaction through rating analysis. Finally, the dispute metrics visualization tracks opened versus resolved disputes along with resolution rates to ensure efficient dispute handling.
 
 ---
 
@@ -194,49 +90,17 @@ Payment Flow:
 
 ### 4.1 Authentication Security
 
-| Feature | Justification |
-|---------|---------------|
-| **UiTM Email Restriction** | Only `@student.uitm.edu.my` and `@staff.uitm.edu.my` domains allowed. Creates trusted, verified community. Prevents external bad actors. |
-| **Email Verification** | Mandatory verification ensures email ownership. Reduces fake accounts and spam. |
-| **Role Identification** | 10-digit ID = Student, 6-digit ID = Staff. Automatic role assignment based on Malaysian education standards. |
-| **Session Management** | Firebase handles secure token storage and refresh. Automatic session expiry for security. |
+The authentication system implements several security measures to protect the platform and its users. UiTM email restriction limits access to users with @student.uitm.edu.my and @staff.uitm.edu.my email domains only. This creates a trusted, verified community and prevents external bad actors from accessing the platform. Mandatory email verification ensures that users actually own the email addresses they register with, reducing fake accounts and spam.
+
+Role identification is automated based on user ID format, where 10-digit IDs indicate students and 6-digit IDs indicate staff members. This follows Malaysian education standards and enables automatic role assignment. Firebase handles secure token storage, refresh operations, and automatic session expiry, ensuring robust session management without custom implementation.
 
 ### 4.2 Firebase Security Rules
 
-```json
-{
-  "rules": {
-    "users": {
-      ".read": "auth != null",
-      "$uid": {
-        ".write": "auth.uid == $uid || isAdmin()"
-      }
-    },
-    "books": {
-      ".read": "auth != null",
-      "$bookId": {
-        ".write": "auth != null && (isNewBook() || isOwner() || isAdmin())"
-      }
-    }
-  }
-}
-```
-
-| Rule | Justification |
-|------|---------------|
-| **Authenticated Read** | All database reads require login; no public data exposure |
-| **Owner-Only Write** | Users can only modify their own data; prevents tampering |
-| **Admin Override** | Administrators can access all data for moderation |
-| **Server-Side Enforcement** | Rules execute on Firebase servers; cannot be bypassed by client |
+Firebase security rules provide server-side enforcement of access control. All database reads require user authentication, ensuring no public data exposure. Write operations are restricted so that users can only modify their own data, preventing tampering with other users' information. Administrators have override capabilities to access all data for platform moderation purposes. Since these rules execute on Firebase servers, they cannot be bypassed by client-side manipulation.
 
 ### 4.3 Input Sanitization
 
-| Technique | Implementation | Justification |
-|-----------|----------------|---------------|
-| **DOMPurify** | HTML sanitization for user-generated content | Prevents XSS attacks in descriptions and messages |
-| **Input Validation** | Client-side and Firebase rules validation | Prevents invalid data entry and database corruption |
-| **Rate Limiting** | 2-second cooldown on chat messages | Prevents spam and DoS attacks |
-| **Character Limits** | 500 character max for messages | Controls database size and prevents abuse |
+Multiple input sanitization techniques protect the platform from various attack vectors. DOMPurify provides HTML sanitization for user-generated content, preventing cross-site scripting (XSS) attacks in descriptions and chat messages. Input validation occurs both on the client side and through Firebase rules, preventing invalid data entry and database corruption. Rate limiting with a 2-second cooldown on chat messages prevents spam and denial-of-service attacks. Character limits of 500 characters maximum for messages control database size and prevent abuse.
 
 ---
 
@@ -244,36 +108,21 @@ Payment Flow:
 
 ### 5.1 Visual Design System
 
-| Feature | Justification |
-|---------|---------------|
-| **Glassmorphism** | Modern, premium aesthetic with frosted glass effects. Creates depth and visual hierarchy. Differentiates from basic Bootstrap sites. |
-| **Role-Based Theming** | Purple accent for students, gold for staff. Visual identity reinforcement. Immediate role recognition. |
-| **Skeleton Loaders** | Shimmer loading animations indicate data fetching. Reduces perceived load time. Better than spinners or blank screens. |
+The visual design system was carefully crafted to create a modern, premium user experience. Glassmorphism styling with frosted glass effects creates depth and visual hierarchy throughout the application. This design approach differentiates UITM-EMPLC from basic Bootstrap-based sites and provides a distinctive, memorable aesthetic.
+
+Role-based theming uses purple accents for students and gold accents for staff members. This visual identity reinforcement enables immediate role recognition and creates a personalized experience for different user groups. Skeleton loaders with shimmer animations indicate data fetching progress, reducing perceived load times and providing better user feedback than traditional spinners or blank screens.
 
 ### 5.2 Responsive Design
 
-| Approach | Justification |
-|----------|---------------|
-| **Mobile-First CSS** | Majority of student users access via mobile devices |
-| **CSS Grid & Flexbox** | Native browser layout for optimal performance |
-| **Adaptive Components** | Cards, tables, and forms adjust to viewport |
+Responsive design implementation follows mobile-first CSS principles, recognizing that the majority of student users access the platform via mobile devices. Native browser layout capabilities through CSS Grid and Flexbox ensure optimal performance across all devices. Adaptive components including cards, tables, and forms automatically adjust to different viewport sizes, ensuring consistent usability across desktops, tablets, and smartphones.
 
 ### 5.3 Notification System
 
-| Feature | Justification |
-|---------|---------------|
-| **Real-time Firebase Listeners** | Instant notification delivery without polling |
-| **Bell Icon Badge** | Standard UX pattern for unread count |
-| **Type-Specific Icons** | Color-coded icons for offers, purchases, disputes |
-| **Click Navigation** | Notifications link directly to relevant pages |
+The real-time notification system uses Firebase listeners to deliver instant notifications without polling, reducing server load and improving responsiveness. The bell icon badge follows standard UX patterns to display unread notification counts. Type-specific color-coded icons distinguish between different notification types such as offers, purchases, and disputes. Click navigation allows users to navigate directly to relevant pages from notification items, streamlining workflows.
 
 ### 5.4 Live Countdown Timer
 
-| Feature | Justification |
-|---------|---------------|
-| **Real-time Updates** | Timer updates every second for urgency |
-| **Color-Coded Urgency** | Visual indication of time remaining |
-| **Dual View** | Buyers see warranty expiry; sellers see payout release |
+The live countdown timer feature provides real-time visual feedback for time-sensitive transaction stages. The timer updates every second, creating urgency and keeping users informed of remaining time. Color-coded urgency indicators provide visual cues about approaching deadlines. The dual-view design shows buyers their warranty expiration countdown while showing sellers their payout release countdown, ensuring both parties have relevant information.
 
 ---
 
@@ -281,48 +130,25 @@ Payment Flow:
 
 ### 6.1 Transaction Lifecycle
 
-| Stage | Status | Justification |
-|-------|--------|---------------|
-| **Checkout** | `pending_payment` | Separates intent from actual payment |
-| **Payment Success** | `payment_held` | Escrow protection activated |
-| **Buyer Confirms** | `delivered` | Warranty period begins |
-| **No Issues** | `completed` | Auto-payout after 7 days |
-| **Warranty Claimed** | `warranty_claimed` | Dispute process initiated |
-| **Return Sent** | `return_sent` | Book in transit back to seller |
-| **Admin Refund** | `refunded` | Buyer receives full refund |
+The transaction lifecycle was designed with clear status transitions that protect both buyers and sellers. When checkout is initiated, the transaction enters pending_payment status, separating user intent from actual payment. Upon successful payment, the payment_held status indicates that escrow protection is activated. When the buyer confirms receipt, the transaction moves to delivered status and the warranty period begins. If no issues are reported within 7 days, the transaction automatically moves to completed status and the seller receives payment. If the buyer claims warranty within the protection period, the transaction enters warranty_claimed status and the dispute process begins. When a buyer sends a book back, the return_sent status indicates the item is in transit. Upon admin resolution favoring the buyer, the refunded status indicates the buyer has received a full refund.
 
 ### 6.2 Timeout Logic
 
-| Scenario | Action | Justification |
-|----------|--------|---------------|
-| **No "Order Received" in 7 days** | Admin can refund | Assume non-delivery; protect buyer |
-| **Warranty claimed, no return in 7 days** | Auto-payout to seller | Buyer implicitly accepts book condition |
+Specific timeout logic was implemented to handle edge cases and protect all parties. If a buyer does not confirm "Order Received" within 7 days, administrators can process a refund under the assumption of non-delivery, protecting buyers from sellers who fail to complete transactions. Conversely, if a buyer claims warranty but fails to return the book within 7 days, automatic payout to the seller occurs under the assumption that the buyer has implicitly accepted the book's condition.
 
 ### 6.3 Commission Model
 
-| Parameter | Value | Justification |
-|-----------|-------|---------------|
-| **Commission Rate** | 10% | Industry standard for C2C platforms (Carousell, Mudah) |
-| **Collection Point** | At payment | Ensures platform revenue on every transaction |
-| **Visibility** | Shown in price breakdown | Transparency builds trust |
+The platform uses a 10% commission rate on all transactions, which aligns with industry standards for C2C platforms such as Carousell and Mudah. Commission collection occurs at the point of payment, ensuring platform revenue on every successful transaction. The commission is displayed in the price breakdown during checkout, promoting transparency and building user trust.
 
 ---
 
 ## Summary
 
-The UITM-EMPLC system was designed with careful consideration of:
+The UITM-EMPLC system was developed with careful consideration of multiple factors across all aspects of the platform. Technology selection prioritized the optimal balance of development speed, performance, and cost efficiency appropriate for an academic project scope. The security architecture implements multiple layers including email domain restriction, Firebase security rules, and comprehensive input sanitization to create a trusted environment for users.
 
-1. **Technology Selection**: Vanilla JavaScript with Firebase provides optimal balance of development speed, performance, and cost efficiency for an academic project.
+User experience design incorporates modern visual elements including Glassmorphism styling, skeleton loaders, and real-time updates to deliver a premium, contemporary experience. The business logic built around escrow protection, warranty periods, and dispute resolution systems protects both buyers and sellers while enabling automated processing to reduce administrative overhead. The serverless architecture ensures automatic scalability with user growth without requiring additional infrastructure management.
 
-2. **Security Architecture**: Multi-layered security with email domain restriction, Firebase rules, and input sanitization creates a trusted environment.
-
-3. **User Experience**: Glassmorphism design, skeleton loaders, and real-time updates deliver a premium, modern experience.
-
-4. **Business Logic**: Escrow, warranty, and dispute resolution systems protect both buyers and sellers while enabling automated processing.
-
-5. **Scalability**: Serverless architecture automatically scales with user growth without additional infrastructure management.
-
-Each decision was made to balance academic feasibility with production-quality implementation, resulting in a fully functional C2C marketplace tailored for the UiTM community.
+Each decision was made to balance academic feasibility with production-quality implementation, resulting in a fully functional Consumer-to-Consumer marketplace specifically tailored for the UiTM community. The platform successfully demonstrates how modern web technologies can be combined to create a secure, user-friendly, and efficient online marketplace.
 
 ---
 
