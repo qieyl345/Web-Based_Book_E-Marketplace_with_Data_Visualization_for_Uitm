@@ -364,84 +364,7 @@
         </div>
     </div>
 
-    <!-- Feedback Modal -->
-    <div id="feedbackModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fas fa-star"></i> Rate Your Experience</h3>
-                <button class="close-modal" id="closeFeedbackModal">&times;</button>
-            </div>
-            <div class="modal-body" style="max-height: 60vh; overflow-y: auto;">
-                <p style="text-align: center; color: var(--text-secondary); margin-bottom: 2rem;">
-                    Help us improve by sharing your feedback about this transaction
-                </p>
-
-                <form id="purchaseFeedbackForm">
-                    <input type="hidden" id="feedbackTransactionId">
-
-                    <div class="form-group">
-                        <label>Rating *</label>
-                        <div class="star-rating" id="purchaseStarRating"
-                            style="display: flex; gap: 0.5rem; font-size: 2rem; justify-content: center; margin-top: 0.5rem;">
-                            <i class="fas fa-star" data-rating="1"
-                                style="color: #d1d5db; cursor: pointer; transition: all 0.2s ease;"></i>
-                            <i class="fas fa-star" data-rating="2"
-                                style="color: #d1d5db; cursor: pointer; transition: all 0.2s ease;"></i>
-                            <i class="fas fa-star" data-rating="3"
-                                style="color: #d1d5db; cursor: pointer; transition: all 0.2s ease;"></i>
-                            <i class="fas fa-star" data-rating="4"
-                                style="color: #d1d5db; cursor: pointer; transition: all 0.2s ease;"></i>
-                            <i class="fas fa-star" data-rating="5"
-                                style="color: #d1d5db; cursor: pointer; transition: all 0.2s ease;"></i>
-                        </div>
-                        <input type="hidden" id="purchaseRatingValue" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="purchaseFeedbackType">Feedback Type *</label>
-                        <select id="purchaseFeedbackType" required>
-                            <option value="">Select type</option>
-                            <option value="general">General Feedback</option>
-                            <option value="dispute">Report Dispute</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="purchaseFeedbackComment">Your Comment *</label>
-                        <textarea id="purchaseFeedbackComment" rows="4" required
-                            placeholder="Share your experience or describe any issues..."></textarea>
-                        <small class="form-hint dispute-hint" id="purchaseDisputeHint"
-                            style="display: none; color: var(--error); margin-top: 0.5rem;">
-                            <i class="fas fa-exclamation-triangle"></i> Please provide details about the dispute so
-                            admin can investigate.
-                        </small>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="button" class="btn btn-secondary close-feedback-modal-btn">Cancel</button>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-paper-plane"></i> Submit Feedback
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- View Feedback Modal -->
-    <div id="viewFeedbackModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fas fa-comment-dots"></i> Your Feedback</h3>
-                <button class="close-modal" id="closeViewFeedbackModal">&times;</button>
-            </div>
-            <div class="modal-body" style="max-height: 60vh; overflow-y: auto;">
-                <div id="viewFeedbackContent" style="background: #f9fafb; padding: 1.5rem; border-radius: 8px;">
-                    <!-- Feedback will be loaded here -->
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Feedback Modal is defined below (near the scripts section) with better styling -->
 
     <!-- Report Issue Modal -->
     <div id="reportIssueModal" class="modal"
@@ -703,14 +626,7 @@
         }
     </style>
 
-    <script>
-        // Initialize feedback modals when DOM is ready
-        document.addEventListener('DOMContentLoaded', function () {
-            if (typeof setupFeedbackModals === 'function') {
-                setupFeedbackModals();
-            }
-        });
-    </script>
+    <!-- Note: setupFeedbackModals() is already called in profile.js on DOMContentLoaded -->
 
     <div id="loadingOverlay" class="loading-overlay" style="display: none;">
         <div class="spinner"></div>

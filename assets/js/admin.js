@@ -287,99 +287,7 @@ async function loadUsers() {
     }
 }
 
-async function loadFeedback() {
-    console.log('[ADMIN] loadFeedback called');
-    const tbody = document.getElementById('feedbackTable');
-    if (!tbody) return;
-
-    try {
-        const snapshot = await database.ref('feedback').once('value');
-        const feedbackList = [];
-        snapshot.forEach(child => {
-            feedbackList.push({ id: child.key, ...child.val() });
-        });
-
-        // Sort by date descending
-        feedbackList.sort((a, b) => b.createdAt - a.createdAt);
-
-        if (feedbackList.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="7" class="text-center">No feedback found</td></tr>';
-            return;
-        }
-
-        // Fetch transaction status for disputes
-        const rows = await Promise.all(feedbackList.map(async (item) => {
-            let txnStatus = '';
-            let returnStatusBadge = '';
-            let canRefund = false;
-
-            if (item.transactionId && item.type === 'dispute') {
-                try {
-                    const txnSnap = await database.ref(`transactions/${item.transactionId}`).once('value');
-                    const txn = txnSnap.val();
-                    if (txn) {
-                        txnStatus = txn.status;
-                        canRefund = (txnStatus === 'return_received');
-
-                        // Create status badge
-                        const statusColors = {
-                            'warranty_claimed': '#f59e0b',
-                            'return_sent': '#3b82f6',
-                            'return_received': '#10b981',
-                            'dispute_open': '#ef4444'
-                        };
-                        const statusLabels = {
-                            'warranty_claimed': '📦 Warranty Claimed',
-                            'return_sent': '🔄 Return Sent',
-                            'return_received': '✅ Ready for Refund',
-                            'dispute_open': '⚠️ Dispute Open'
-                        };
-
-                        if (statusColors[txnStatus]) {
-                            returnStatusBadge = `<span style="background: ${statusColors[txnStatus]}; color: white; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; display: inline-block; margin-top: 0.25rem;">${statusLabels[txnStatus]}</span>`;
-                        }
-                    }
-                } catch (e) {
-                    console.warn('Could not fetch transaction:', e);
-                }
-            }
-
-            return `
-                <tr>
-                    <td>${formatDate(item.createdAt)}</td>
-                    <td>${item.buyerName}</td>
-                    <td><span class="status-badge ${item.type === 'dispute' ? 'cancelled' : 'completed'}">${item.type}</span></td>
-                    <td>${item.rating}/5</td>
-                    <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;">
-                        ${item.comment}
-                        ${returnStatusBadge}
-                    </td>
-                    <td><span class="status-badge ${item.status === 'resolved' ? 'completed' : 'pending'}">${item.status}</span></td>
-                    <td>
-                        ${item.type === 'dispute' && item.status !== 'resolved' ? `
-                            <div style="display: flex; gap: 0.25rem; flex-wrap: wrap;">
-                                <button class="btn btn-sm ${canRefund ? 'btn-warning' : 'btn-secondary'}" 
-                                    onclick="resolveDisputeForBuyer('${item.transactionId || ''}', '${item.id}')" 
-                                    title="${canRefund ? 'Refund full amount to buyer' : 'Wait for both parties to confirm return'}"
-                                    ${!canRefund ? 'style="opacity: 0.6; cursor: not-allowed;"' : ''}>
-                                    <i class="fas fa-undo"></i> ${canRefund ? 'Refund' : 'Waiting...'}
-                                </button>
-                                <button class="btn btn-sm btn-success" onclick="resolveDisputeForSeller('${item.transactionId || ''}', '${item.id}')" title="Pay seller (minus 10% commission)">
-                                    <i class="fas fa-check"></i> Pay Seller
-                                </button>
-                            </div>
-                        ` : ''}
-                    </td>
-                </tr>
-            `;
-        }));
-
-        tbody.innerHTML = rows.join('');
-    } catch (error) {
-        console.error('[ADMIN] Error loading feedback:', error);
-        tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger">Error loading feedback</td></tr>';
-    }
-}
+// NOTE: loadFeedback() function removed - replaced by loadReviewsAndDisputes() which has the correct table format
 
 // ESCROW: Resolve dispute - REFUND to buyer
 // WARRANTY FLOW: Requires both buyer and seller to confirm return first
@@ -468,7 +376,7 @@ async function resolveDisputeForBuyer(transactionId, feedbackId) {
         }
 
         showNotification('Dispute resolved - Buyer refunded RM' + txn.amount.toFixed(2), 'success');
-        loadFeedback();
+        loadReviewsAndDisputes();
 
     } catch (error) {
         console.error('Error resolving dispute:', error);
@@ -526,7 +434,7 @@ async function resolveDisputeForSeller(transactionId, feedbackId) {
         }
 
         showNotification('Dispute resolved - Seller paid RM' + sellerPayout.toFixed(2), 'success');
-        loadFeedback();
+        loadReviewsAndDisputes();
 
     } catch (error) {
         console.error('Error resolving dispute:', error);
@@ -540,7 +448,7 @@ async function resolveDispute(feedbackId) {
         try {
             await database.ref(`feedback/${feedbackId}`).update({ status: 'resolved' });
             showNotification('Dispute marked as resolved', 'success');
-            loadFeedback();
+            loadReviewsAndDisputes();
         } catch (error) {
             showNotification('Error resolving dispute', 'error');
         }
@@ -2238,7 +2146,7 @@ async function processWarrantyRefund(transactionId) {
 
         showNotification('Refund processed successfully!', 'success');
         await loadWarrantyIssues();
-        await loadFeedback();
+        await loadReviewsAndDisputes();
 
     } catch (error) {
         console.error('[ADMIN] Error processing refund:', error);
@@ -2379,7 +2287,7 @@ async function processPaySeller(transactionId) {
 
         showNotification('Seller paid successfully!', 'success');
         await loadWarrantyIssues();
-        await loadFeedback();
+        await loadReviewsAndDisputes();
 
     } catch (error) {
         console.error('[ADMIN] Error paying seller:', error);
