@@ -2568,6 +2568,21 @@ async function loadReviewsAndDisputes() {
         // Sort by date descending (most recent first)
         allFeedback.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
+        // DEDUPLICATE: Remove duplicate entries (same buyer + rating + comment)
+        // This filters out old duplicates that were created before the fix
+        const seen = new Set();
+        const uniqueFeedback = allFeedback.filter(f => {
+            const key = `${f.buyerName || ''}_${f.rating || 0}_${(f.comment || '').substring(0, 50)}`;
+            if (seen.has(key)) {
+                return false; // Skip duplicate
+            }
+            seen.add(key);
+            return true;
+        });
+
+        // Use deduplicated list for display
+        const feedbackToDisplay = uniqueFeedback;
+
         // Helper to truncate and make expandable comment
         const formatComment = (comment, maxLength = 50) => {
             if (!comment) return '-';
@@ -2597,13 +2612,13 @@ async function loadReviewsAndDisputes() {
         const feedbackTable = document.getElementById('feedbackTable');
         const feedbackCount = document.getElementById('feedbackCount');
 
-        if (feedbackCount) feedbackCount.textContent = allFeedback.length;
+        if (feedbackCount) feedbackCount.textContent = feedbackToDisplay.length;
 
         if (feedbackTable) {
-            if (allFeedback.length === 0) {
+            if (feedbackToDisplay.length === 0) {
                 feedbackTable.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #64748b;">No feedback yet</td></tr>';
             } else {
-                feedbackTable.innerHTML = allFeedback.slice(0, 15).map(f => `
+                feedbackTable.innerHTML = feedbackToDisplay.slice(0, 15).map(f => `
                     <tr>
                         <td>${formatDate(f.createdAt)}</td>
                         <td>${f.buyerName || 'Unknown'}</td>
@@ -2615,7 +2630,7 @@ async function loadReviewsAndDisputes() {
             }
         }
 
-        console.log('[ADMIN] Loaded unified feedback:', allFeedback.length, 'entries');
+        console.log('[ADMIN] Loaded unified feedback:', feedbackToDisplay.length, 'unique entries (filtered from', allFeedback.length, 'total)');
     } catch (error) {
         console.error('[ADMIN] Error loading feedback:', error);
     }

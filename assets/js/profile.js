@@ -348,33 +348,35 @@ function displayPurchaseHistory() {
         const bookTitle = transaction.items?.[0]?.bookDetails?.title || 'Unknown Book';
 
         return `
-            <a href="book-details.html?id=${bookId}" class="purchase-link" style="text-decoration: none; color: inherit; display: block;">
-                <div class="cart-item purchase-item" style="flex-direction: column; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
-                        <div class="cart-item-details" style="flex: 1;">
-                            <h3 style="margin-bottom: 0.5rem; color: var(--text-primary);">
-                                Transaction #${transaction.transactionId}
-                            </h3>
-                            <div class="cart-item-meta" style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 0.5rem;">
-                                <span style="display: flex; align-items: center; gap: 0.5rem;">
-                                    <i class="fas fa-calendar"></i> <strong>Date:</strong> ${formatDate(transaction.createdAt)}
-                                </span>
-                                <span style="display: flex; align-items: center; gap: 0.5rem;">
-                                    <i class="fas fa-book"></i> <strong>Item:</strong> '${bookTitle}'
-                                </span>
-                                <span style="display: flex; align-items: center; gap: 0.5rem;">
-                                    <i class="fas fa-store"></i> <strong>Seller:</strong> ${transaction.items[0]?.bookDetails?.sellerName || 'Unknown'}
-                                </span>
-                            </div>
-                        </div>
-                        <div class="cart-item-actions" style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; min-width: 150px;">
-                            <div>
-                                <div style="font-size: 0.75rem; color: var(--text-tertiary); margin-bottom: 0.25rem;">Total Paid:</div>
-                                <div class="cart-item-price" style="font-size: 1.5rem;">${formatCurrency(transaction.amount)}</div>
-                            </div>
-                            <span class="status-badge status-${status}">${status.replace('_', ' ')}</span>
+            <div class="cart-item purchase-item" style="flex-direction: column;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
+                    <div class="cart-item-details" style="flex: 1;">
+                        <h3 style="margin-bottom: 0.5rem; color: var(--text-primary);">
+                            Transaction #${transaction.transactionId}
+                        </h3>
+                        <div class="cart-item-meta" style="display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 0.5rem;">
+                            <span style="display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fas fa-calendar"></i> <strong>Date:</strong> ${formatDate(transaction.createdAt)}
+                            </span>
+                            <span style="display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fas fa-book"></i> <strong>Item:</strong> 
+                                <a href="book-details.html?id=${bookId}" class="book-title-link" style="color: var(--primary-color); text-decoration: none; transition: all 0.2s;" onmouseover="this.style.textDecoration='underline'; this.style.color='var(--primary-hover)';" onmouseout="this.style.textDecoration='none'; this.style.color='var(--primary-color)';">
+                                    '${bookTitle}' <i class="fas fa-external-link-alt" style="font-size: 0.7rem; margin-left: 4px; opacity: 0.7;"></i>
+                                </a>
+                            </span>
+                            <span style="display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fas fa-store"></i> <strong>Seller:</strong> ${transaction.items[0]?.bookDetails?.sellerName || 'Unknown'}
+                            </span>
                         </div>
                     </div>
+                    <div class="cart-item-actions" style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.5rem; min-width: 150px;">
+                        <div>
+                            <div style="font-size: 0.75rem; color: var(--text-tertiary); margin-bottom: 0.25rem;">Total Paid:</div>
+                            <div class="cart-item-price" style="font-size: 1.5rem;">${formatCurrency(transaction.amount)}</div>
+                        </div>
+                        <span class="status-badge status-${status}">${status.replace('_', ' ')}</span>
+                    </div>
+                </div>
                 
                 ${timelineHTML}
                 ${escrowInfoHTML}
@@ -382,24 +384,23 @@ function displayPurchaseHistory() {
                 ${(showConfirmButton || showClaimWarrantyButton || showConfirmReturnButton) ? `
                     <div class="purchase-action-buttons">
                         ${showConfirmButton ? `
-                            <button type="button" class="btn btn-success" onclick="event.stopPropagation(); event.preventDefault(); window.confirmOrderReceived('${transaction.transactionId}'); return false;">
+                            <button type="button" class="btn btn-success" onclick="window.confirmOrderReceived('${transaction.transactionId}');">
                                 <i class="fas fa-check-circle"></i> Confirm Received
                             </button>
                         ` : ''}
                         ${showClaimWarrantyButton ? `
-                            <button type="button" class="btn btn-danger" onclick="event.stopPropagation(); event.preventDefault(); window.claimWarranty('${transaction.transactionId}'); return false;">
+                            <button type="button" class="btn btn-danger" onclick="window.claimWarranty('${transaction.transactionId}');">
                                 <i class="fas fa-shield-alt"></i> Claim Warranty
                             </button>
                         ` : ''}
                         ${showConfirmReturnButton ? `
-                            <button type="button" class="btn btn-warning" onclick="event.stopPropagation(); event.preventDefault(); window.confirmReturnSent('${transaction.transactionId}'); return false;" style="background: linear-gradient(135deg, #f59e0b, #d97706); border: none; color: white;">
+                            <button type="button" class="btn btn-warning" onclick="window.confirmReturnSent('${transaction.transactionId}');" style="background: linear-gradient(135deg, #f59e0b, #d97706); border: none; color: white;">
                                 <i class="fas fa-undo"></i> Confirm Return Sent
                             </button>
                         ` : ''}
                     </div>
                 ` : ''}
-                </div>
-            </a>
+            </div>
         `;
     }).join('');
 }
