@@ -862,6 +862,176 @@ input[type="password"]::-ms-clear {
   margin-bottom: 0.5rem;
 }
 
+/* ======================================
+   Grid & List Layouts for Profile Tabs
+   ====================================== */
+
+.grid-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+.list-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Purchase/Sales items - Keep horizontal header, stack content vertically */
+.list-layout .cart-item.purchase-item,
+.list-layout .cart-item.listing-item {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+}
+
+/* The header row inside purchase items should be horizontal */
+.list-layout .cart-item.purchase-item>div:first-child {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  gap: 1.5rem;
+}
+
+/* Negotiation items - horizontal layout maintained */
+.list-layout .cart-item.negotiation-item {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+}
+
+/* Ensure cart-item-details and cart-item-actions stay side by side */
+.list-layout .negotiation-item .cart-item-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.list-layout .negotiation-item .cart-item-actions {
+  flex-shrink: 0;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+/* Grid layout items - card style */
+.grid-layout>.listing-link,
+.grid-layout>.cart-item {
+  display: block;
+}
+
+.grid-layout .listing-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.grid-layout .cart-item,
+.grid-layout .listing-item {
+  display: flex !important;
+  flex-direction: column !important;
+  /* Force vertical stacking */
+  gap: 1rem;
+  padding: 0;
+  /* Remove padding from container to let image go edge-to-edge if needed, or keep it */
+  padding: 1rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  height: 100%;
+  /* Full height */
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.grid-layout .listing-item:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-medium);
+}
+
+.grid-layout .listing-item .cart-item-image {
+  width: 100%;
+  height: 200px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.grid-layout .listing-item .cart-item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.grid-layout .listing-item .cart-item-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.grid-layout .listing-item .cart-item-details h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.grid-layout .listing-item .cart-item-meta {
+  flex-direction: column;
+  gap: 0.25rem !important;
+}
+
+.grid-layout .listing-item .cart-item-actions {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-top: auto;
+  /* Push to bottom */
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.grid-layout .listing-item .price-label {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+}
+
+.grid-layout .listing-item .cart-item-price {
+  font-size: 1.25rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .grid-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .list-layout .cart-item.negotiation-item {
+    flex-direction: column !important;
+  }
+
+  .list-layout .negotiation-item .cart-item-actions {
+    align-items: flex-start;
+    width: 100%;
+  }
+}
+
 .cart-content {
   display: grid;
   grid-template-columns: 1fr 400px;
@@ -2255,6 +2425,16 @@ td {
   display: block;
 }
 
+/* Tab Content Container - Enhanced */
+.tab-content-container {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-light);
+}
+
+/* Panel Header styling */
 .panel-header {
   display: flex;
   justify-content: space-between;

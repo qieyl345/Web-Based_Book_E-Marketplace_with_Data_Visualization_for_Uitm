@@ -95,39 +95,42 @@ function displayMyListings() {
         return;
     }
 
-    listingsContainer.innerHTML = myListings.map(book => `
-        <a href="book-details.html?id=${book.id}" class="listing-link" style="text-decoration: none; color: inherit; display: block;">
-            <div class="cart-item listing-item" style="cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)';" onmouseout="this.style.transform='none'; this.style.boxShadow='none';">
+    listingsContainer.innerHTML = myListings.map(book => {
+        const bookId = book.id || '';
+        const href = bookId ? `./book-details.html?id=${encodeURIComponent(bookId)}` : '#';
+        return `
+        <a href="${href}" class="listing-link" ${!bookId ? 'onclick="return false;" style="cursor: default;"' : ''}>
+            <div class="cart-item listing-item">
                 <div class="cart-item-image">
                     <img src="${book.images?.[0] || '/assets/images/no-image.png'}" alt="${book.title}">
                 </div>
-                <div class="cart-item-details" style="flex: 1;">
-                    <h3 style="margin-bottom: 1rem; color: var(--text-primary);">${book.title}</h3>
-                    <div class="cart-item-meta" style="display: flex; flex-wrap: wrap; gap: 1rem;">
-                        <span style="display: flex; align-items: center; gap: 0.5rem;">
-                            <i class="fas fa-user"></i> <strong>Author:</strong> ${book.author}
-                        </span>
-                        <span style="display: flex; align-items: center; gap: 0.5rem;">
-                            <i class="fas fa-tag"></i> <strong>Code:</strong> ${book.subjectCode}
-                        </span>
-                        <span style="display: flex; align-items: center; gap: 0.5rem;">
-                            <i class="fas fa-map-marker-alt"></i> <strong>Campus:</strong> ${book.campusLocation}
-                        </span>
-                        <span style="display: flex; align-items: center; gap: 0.5rem;">
-                            <i class="fas fa-book-open"></i> <strong>Condition:</strong> ${book.condition}
-                        </span>
+                <div class="cart-item-details">
+                    <h3>${book.title}</h3>
+                    <div class="cart-item-meta">
+                        <div class="meta-row">
+                            <i class="fas fa-user"></i> <span class="meta-label">Author:</span> <span class="meta-value">${book.author}</span>
+                        </div>
+                        <div class="meta-row">
+                            <i class="fas fa-tag"></i> <span class="meta-label">Code:</span> <span class="meta-value">${book.subjectCode}</span>
+                        </div>
+                        <div class="meta-row">
+                            <i class="fas fa-map-marker-alt"></i> <span class="meta-label">Campus:</span> <span class="meta-value">${book.campusLocation}</span>
+                        </div>
+                        <div class="meta-row">
+                            <i class="fas fa-book-open"></i> <span class="meta-label">Condition:</span> <span class="meta-value">${book.condition}</span>
+                        </div>
                     </div>
                 </div>
-                <div class="cart-item-actions" style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.75rem; min-width: 150px;">
+                <div class="cart-item-actions">
                     <div>
-                        <div style="font-size: 0.875rem; color: var(--text-tertiary); margin-bottom: 0.25rem;">Listed Price:</div>
-                        <div class="cart-item-price" style="font-size: 1.75rem;">RM ${book.price.toFixed(2)}</div>
+                        <div class="price-label">Listed Price:</div>
+                        <div class="cart-item-price">RM ${book.price.toFixed(2)}</div>
                     </div>
                     <span class="status-badge ${book.status}">${book.status}</span>
                 </div>
             </div>
         </a>
-    `).join('');
+    `}).join('');
 }
 
 async function loadPurchaseHistory() {
@@ -160,7 +163,7 @@ function displayPurchaseHistory() {
                 <i class="fas fa-shopping-bag"></i>
                 <h3>No purchases yet</h3>
                 <p>Start buying books from other students!</p>
-                <a href="index.html" class="btn btn-primary">Browse Books</a>
+                <a href="../index.html" class="btn btn-primary">Browse Books</a>
             </div>
         `;
         return;
@@ -346,6 +349,7 @@ function displayPurchaseHistory() {
         // Get the book ID from the first item for linking
         const bookId = transaction.items?.[0]?.bookId || transaction.items?.[0]?.bookDetails?.id || '';
         const bookTitle = transaction.items?.[0]?.bookDetails?.title || 'Unknown Book';
+        const bookHref = bookId ? `./book-details.html?id=${encodeURIComponent(bookId)}` : '#';
 
         return `
             <div class="cart-item purchase-item" style="flex-direction: column;">
@@ -360,7 +364,7 @@ function displayPurchaseHistory() {
                             </span>
                             <span style="display: flex; align-items: center; gap: 0.5rem;">
                                 <i class="fas fa-book"></i> <strong>Item:</strong> 
-                                <a href="book-details.html?id=${bookId}" class="book-title-link" style="color: var(--primary-color); text-decoration: none; transition: all 0.2s;" onmouseover="this.style.textDecoration='underline'; this.style.color='var(--primary-hover)';" onmouseout="this.style.textDecoration='none'; this.style.color='var(--primary-color)';">
+                                <a href="${bookHref}" class="book-title-link" style="color: var(--primary-color); text-decoration: none; transition: all 0.2s;" onmouseover="this.style.textDecoration='underline'; this.style.color='var(--primary-hover)';" onmouseout="this.style.textDecoration='none'; this.style.color='var(--primary-color)';" ${!bookId ? 'onclick="return false;"' : ''}>
                                     '${bookTitle}' <i class="fas fa-external-link-alt" style="font-size: 0.7rem; margin-left: 4px; opacity: 0.7;"></i>
                                 </a>
                             </span>

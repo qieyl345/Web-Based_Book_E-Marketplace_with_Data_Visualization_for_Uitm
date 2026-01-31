@@ -336,6 +336,81 @@
     letter-spacing: 0.05em;
 }
 
+/* Additional status badges with borders */
+.status-badge.status-delivered {
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+    border: 2px solid #10b981;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.status-badge.status-warranty_claimed {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+    border: 2px solid #ef4444;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.status-badge.status-return_sent {
+    background: rgba(245, 158, 11, 0.1);
+    color: #d97706;
+    border: 2px solid #f59e0b;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.status-badge.status-return_received {
+    background: rgba(139, 92, 246, 0.1);
+    color: #7c3aed;
+    border: 2px solid #8b5cf6;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.status-badge.status-pending {
+    background: rgba(245, 158, 11, 0.1);
+    color: #d97706;
+    border: 2px solid #f59e0b;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Also update completed to have border style as alternative */
+.status-badge.status-completed {
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+    border: 2px solid #10b981;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+}
+
 /* Action buttons enhancement */
 .purchase-item .btn-success,
 .purchase-action-buttons .btn-success {
