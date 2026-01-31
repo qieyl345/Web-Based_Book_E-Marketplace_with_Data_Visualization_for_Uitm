@@ -1993,7 +1993,7 @@ async function loadWarrantyIssues() {
         if (warrantyIssues.length === 0) {
             tableBody.innerHTML = `
                 <tr>
-                    <td colspan="7" style="text-align: center; padding: 2rem; color: #10b981;">
+                    <td colspan="8" style="text-align: center; padding: 2rem; color: #10b981;">
                         <i class="fas fa-check-circle" style="font-size: 2rem; margin-bottom: 0.5rem;"></i><br>
                         No active warranty issues! All transactions are healthy.
                     </td>
@@ -2001,6 +2001,7 @@ async function loadWarrantyIssues() {
             `;
             return;
         }
+
 
         // Render warranty issues
         tableBody.innerHTML = warrantyIssues.map(txn => {
@@ -2011,57 +2012,64 @@ async function loadWarrantyIssues() {
             const issueType = txn.warrantyIssueType || 'Not specified';
             const amount = txn.amount || txn.basePrice || 0;
 
-            // Determine return status badge and available actions
+            // Determine return status badge, deadline countdown, and available actions
             let statusBadge = '';
+            let returnDeadline = '';
             let actions = '';
+
+
 
             switch (txn.status) {
                 case 'warranty_claimed':
                     // Buyer claimed but hasn't returned yet - show countdown
                     const claimedAt = txn.warrantyClaimedAt || Date.now();
-                    const returnDeadline = claimedAt + (7 * 24 * 60 * 60 * 1000);
-                    const timeLeft = returnDeadline - Date.now();
+                    const deadline = claimedAt + (7 * 24 * 60 * 60 * 1000);
+                    const timeLeft = deadline - Date.now();
                     const daysLeft = Math.max(0, Math.ceil(timeLeft / (24 * 60 * 60 * 1000)));
 
+                    statusBadge = '<span style="background: #f59e0b; color: white; padding: 4px 8px; border-radius: 4px; font-weight: 500;">⏳ Awaiting Return</span>';
+
                     if (daysLeft > 0) {
-                        statusBadge = `<span class="badge" style="background: #f59e0b; color: white; padding: 0.25rem 0.5rem; border-radius: 4px;">⚠️ Claimed (${daysLeft}d left)</span>`;
+                        returnDeadline = `<span style="color: #f59e0b; font-weight: 600;">⏱️ ${daysLeft}d left</span>`;
                         actions = `
-                            <span style="color: #94a3b8; font-size: 0.75rem;">⏳ ${daysLeft}d to return</span>
-                            <button class="btn btn-outline btn-sm" onclick="dismissWarrantyClaim('${orderId}')" style="margin-left: 0.5rem; border: 1px solid #94a3b8; background: transparent; color: #64748b;" title="Dismiss claim manually">
+                            <button class="btn btn-outline btn-sm" onclick="dismissWarrantyClaim('${orderId}')" style="border: 1px solid #94a3b8; background: transparent; color: #64748b;" title="Dismiss claim manually">
                                 <i class="fas fa-times"></i> Dismiss
                             </button>
                         `;
                     } else {
-                        statusBadge = '<span class="badge" style="background: #ef4444; color: white; padding: 0.25rem 0.5rem; border-radius: 4px;">❌ Expired</span>';
-                        actions = `
-                            <span style="color: #ef4444; font-size: 0.75rem;">Will auto-dismiss</span>
-                        `;
+                        statusBadge = '<span style="background: #ef4444; color: white; padding: 4px 8px; border-radius: 4px; font-weight: 500;">❌ Return Expired</span>';
+                        returnDeadline = '<span style="color: #ef4444; font-weight: 500;">⚠️ Expired</span>';
+                        actions = '<span style="color: #94a3b8;">Auto-dismissing...</span>';
                     }
                     break;
 
                 case 'return_sent':
                     // Buyer has sent, seller hasn't confirmed receipt
-                    statusBadge = '<span class="badge" style="background: #3b82f6; color: white; padding: 0.25rem 0.5rem; border-radius: 4px;">📦 Return Sent</span>';
-                    actions = `<span style="color: #94a3b8; font-size: 0.75rem;">⏳ Seller to confirm receipt</span>`;
+                    statusBadge = '<span style="background: #3b82f6; color: white; padding: 4px 8px; border-radius: 4px; font-weight: 500;">📦 Return Shipped</span>';
+                    returnDeadline = '<span style="color: #3b82f6;">In Transit</span>';
+                    actions = '<span style="color: #64748b;">Awaiting seller</span>';
                     break;
 
                 case 'return_received':
                     // Book is back with seller - only Refund makes sense now
-                    statusBadge = '<span class="badge" style="background: #10b981; color: white; padding: 0.25rem 0.5rem; border-radius: 4px;">✅ Ready for Refund</span>';
+                    statusBadge = '<span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 4px; font-weight: 500;">✅ Book Received</span>';
+                    returnDeadline = '<span style="color: #10b981;">Completed</span>';
                     actions = `
                         <button class="btn btn-success btn-sm" onclick="processWarrantyRefund('${orderId}')">
-                            <i class="fas fa-undo"></i> Process Refund
+                            <i class="fas fa-undo"></i> Refund
                         </button>
                     `;
                     break;
 
                 default:
-                    // Catch any unexpected status - should not happen but prevents UI bugs
-                    console.warn('[ADMIN] Unexpected warranty status:', txn.status, 'for transaction:', orderId);
-                    statusBadge = `<span class="badge" style="background: #94a3b8; color: white; padding: 0.25rem 0.5rem; border-radius: 4px;">❓ ${txn.status || 'Unknown'}</span>`;
-                    actions = `<span style="color: #94a3b8; font-size: 0.75rem;">Status unclear</span>`;
+                    // Fallback for unexpected status
+                    statusBadge = `<span style="background: #94a3b8; color: white; padding: 4px 8px; border-radius: 4px; font-weight: 500;">❓ ${txn.status || 'Unknown'}</span>`;
+                    returnDeadline = '<span style="color: #94a3b8;">N/A</span>';
+                    actions = '<span style="color: #94a3b8;">Review needed</span>';
                     break;
             }
+
+
 
             return `
                 <tr>
@@ -2070,7 +2078,8 @@ async function loadWarrantyIssues() {
                     <td>${sellerName}</td>
                     <td><span style="color: #ef4444; font-weight: 500;">${issueType}</span></td>
                     <td>${statusBadge}</td>
-                    <td style="font-weight: 600;">RM ${amount.toFixed(2)}</td>
+                    <td><strong>RM ${amount.toFixed(2)}</strong></td>
+                    <td>${returnDeadline}</td>
                     <td>${actions}</td>
                 </tr>
             `;
@@ -2080,11 +2089,12 @@ async function loadWarrantyIssues() {
         console.error('[ADMIN] Error loading warranty issues:', error);
         tableBody.innerHTML = `
             <tr>
-                <td colspan="7" style="color: #ef4444;">Error loading warranty issues</td>
+                <td colspan="8" style="color: #ef4444;">Error loading warranty issues</td>
             </tr>
         `;
     }
 }
+
 
 // Process warranty refund
 async function processWarrantyRefund(transactionId) {
