@@ -35,9 +35,9 @@ A **Consumer-to-Consumer (C2C)** web platform designed specifically for UiTM stu
 | **Book Listing** | Sellers create listings with images, price, condition, and subject code |
 | **Price Negotiation** | Buyers make offers; sellers can accept, reject, or counter |
 | **Real-time Chat** | Integrated messaging within negotiation sessions |
-| **Simulated Payment** | FPX simulation with 90% success rate |
-| **Escrow Protection** | Funds held until buyer confirms receipt |
-| **7-Day Warranty** | Post-delivery protection for buyers |
+| **Simulated Payment** | Application-level payment simulation |
+| **Escrow-style workflow** | Application status and wallet updates; no real funds are held |
+| **7-Day Warranty Workflow** | Application-level post-delivery claim tracking; not a separate warranty guarantee |
 | **Admin Analytics** | 8 interactive charts, System Health, Seller Leaderboard & Payout Queue |
 
 
@@ -102,7 +102,7 @@ A **Consumer-to-Consumer (C2C)** web platform designed specifically for UiTM stu
 
 | Role | Email Format | Example |
 |------|-------------|---------|
-| Student | 10-digit ID + `@student.uitm.edu.my` | `2024745815@student.uitm.edu.my` |
+| Student | 10-digit ID + `@student.uitm.edu.my` | A valid student email address |
 | Staff | 6-digit ID + `@staff.uitm.edu.my` | `709265@staff.uitm.edu.my` |
 | Admin | `admin@student.uitm.edu.my` | Auto-created on first login |
 
@@ -156,16 +156,9 @@ flowchart TD
     Verify --> Redirect[Redirect to Login]
 ```
 
-### 3.3 Auto-Admin Creation
+### 3.3 Admin Account Setup
 
-When logging in with `admin` + `admin123` for the first time:
-
-1. System detects admin credentials
-2. Automatically creates `admin@student.uitm.edu.my` account
-3. Sets role to `admin` in database
-4. Logs in and redirects to admin dashboard
-
-**Code Location:** `assets/js/auth.js` (Lines 185-206)
+Create an admin account in the Firebase project you control and assign it the admin role. The former hard-coded admin bootstrap has been removed; existing admin accounts continue to use normal Firebase login.
 
 ---
 
@@ -765,17 +758,9 @@ sequenceDiagram
 
 ## 12. Security Implementation
 
-### 12.1 Firebase Security Rules Summary
+### 12.1 Firebase Database Rules
 
-| Node | Read | Write |
-|------|------|-------|
-| `/users` | Authenticated users | Own profile or admin |
-| `/users/$uid/wallet` | Own only | System only (via transactions) |
-| `/books` | Authenticated users | Owner or admin; status change allowed for purchase |
-| `/offers` | Buyer, seller, or admin | Buyer or seller in offer |
-| `/chats` | Buyer or seller in offer | Buyer or seller in offer |
-| `/notifications` | Own only | Authenticated users |
-| `/feedback` | Admin for all, own entries | Buyer or admin |
+The current rules are in `config/firebase-rules.json`. Several nodes permit reads by any authenticated user, and the rules are not an independent security assessment. Review and test them for the intended project before deployment; do not assume the rules provide complete user-data isolation.
 
 ### 12.2 Client-Side Validation
 
@@ -787,27 +772,17 @@ sequenceDiagram
 | Message cooldown | `chat.js` | 2 seconds between messages |
 | Admin access | `firebase-config.js` | `requireAdmin()` redirects non-admins |
 
-### 12.3 Data Protection
+### 12.3 Data and Transaction Limitations
 
-| Protection | Implementation |
-|------------|----------------|
-| **User isolation** | Firebase rules ensure users can only access their own data |
-| **Escrow protection** | Wallet balance cannot be directly modified by users |
-| **Chat privacy** | Only offer participants can read/write to chat |
-| **Feedback privacy** | Only admins can view all feedback |
-| **Transaction integrity** | Status progression enforced by security rules |
+The repository includes client-side role checks and a Firebase rules file, but does not establish that user data is isolated or that transaction changes are protected against manipulation. Payment is simulated in the application and is not a third-party escrow service.
 
 ---
 
 ## Quick Reference Cards
 
-### Test Credentials
+### Test Accounts
 
-| Role | ID | Password |
-|------|-----|----------|
-| Student | `2024745815` | `2024745815` |
-| Staff | `709265` | `70926500` |
-| Admin | `admin` | `admin123` |
+Use accounts provisioned in the Firebase project used for testing. Do not publish their passwords in documentation.
 
 ### Key URLs
 

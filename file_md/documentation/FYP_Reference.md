@@ -32,7 +32,7 @@ You are helping write a Final Year Project (FYP) report for a Computer Science s
 | **Platform** | Web Application (Responsive) |
 | **Development Approach** | Agile Methodology |
 | **Version** | 1.0.0 |
-| **Status** | Completed / Production-Ready |
+| **Status** | Prototype; deployment readiness not assessed |
 
 ---
 
@@ -574,6 +574,8 @@ async function resolveDisputeForSeller(transactionId) {
 
 ### 5.2 Test Cases
 
+The pass statuses below are retained from the existing project report. Raw test logs and security-rule test results are not included in this repository, so they are not independently verified here.
+
 #### 5.2.1 Authentication Test Cases
 
 | Test ID | Test Case | Expected Result | Status |
@@ -582,7 +584,7 @@ async function resolveDisputeForSeller(transactionId) {
 | TC-A02 | Login with valid staff email | Successful login, redirect to homepage | PASS |
 | TC-A03 | Login with non-UiTM email | Error message displayed | PASS |
 | TC-A04 | Login with invalid password | Error message displayed | PASS |
-| TC-A05 | Admin login with admin/admin123 | Redirect to admin dashboard | PASS |
+| TC-A05 | Admin login with a configured admin account | Redirect to admin dashboard | PASS |
 | TC-A06 | Access admin page without admin role | Redirect to homepage | PASS |
 
 #### 5.2.2 Negotiation Test Cases
@@ -615,13 +617,9 @@ async function resolveDisputeForSeller(transactionId) {
 | TC-W04 | Auto-payout after 7 days (no claim) | Seller wallet updated | PASS |
 | TC-W05 | Return flow completed | Status ready for admin refund | PASS |
 
-### 5.3 Test Credentials
+### 5.3 Test Accounts
 
-| Role | ID | Password | Full Email |
-|------|-----|----------|------------|
-| Student | 2024745815 | 2024745815 | 2024745815@student.uitm.edu.my |
-| Staff | 709265 | 70926500 | 709265@staff.uitm.edu.my |
-| Admin | admin | admin123 | admin@student.uitm.edu.my |
+Use test accounts provisioned in the Firebase project used for testing. Do not publish account passwords in this document.
 
 ---
 

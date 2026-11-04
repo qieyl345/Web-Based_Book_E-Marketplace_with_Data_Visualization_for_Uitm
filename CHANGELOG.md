@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.0] - 2026-01-05
 
-### 🎉 Initial Production Release
+### 🎉 Initial Release
 
-This is the first production-ready release of the UiTM Book e-Marketplace.
+This entry records the initial project release; it does not assert production readiness.
 
 ### Added
 
@@ -72,8 +72,8 @@ This is the first production-ready release of the UiTM Book e-Marketplace.
 - **23 JavaScript Modules** - Modular code organization
 - **21 CSS Files** - Separated styling concerns
 - **Firebase Realtime Database** - NoSQL data storage
-- **Firebase Authentication** - Secure user management
-- **Firebase Security Rules** - Role-based data protection
+- **Firebase Authentication** - Account sign-in
+- **Firebase Realtime Database rules** - Rule configuration
 
 ---
 

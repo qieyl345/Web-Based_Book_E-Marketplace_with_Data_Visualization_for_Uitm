@@ -1,9 +1,7 @@
 # 📚 Book E-Marketplace with Real-Time Data Visualization
 
-> A real-time, role-based academic book marketplace for UiTM students and staff, designed for secure buying, selling, and negotiation with live analytics.
+> A Firebase-backed academic book marketplace prototype for UiTM students and staff, with buying, selling, negotiation, and dashboard features.
 
-![Status](https://img.shields.io/badge/Status-Production%20Ready-00C7B7?style=for-the-badge)
-![License](https://img.shields.io/badge/License-MIT-70A5FD?style=for-the-badge)
 ![Platform](https://img.shields.io/badge/Platform-Web-8A2BE2?style=for-the-badge)
 ![Firebase](https://img.shields.io/badge/Backend-Firebase-FFCA28?style=for-the-badge)
 
@@ -11,18 +9,26 @@
 
 ## 🎯 Project Summary
 
-This project is a **C2C book marketplace** built for UiTM students and staff to buy and sell used academic books in a secure environment. It includes role-based access, negotiation flow, escrow-style payments, 7-day warranty tracking, and interactive dashboards for analytics.
+This project is a **C2C book marketplace prototype** for UiTM students and staff to buy and sell used academic books. It includes account-role workflows, negotiation, an escrow-style transaction flow, 7-day warranty tracking, and dashboards for analytics.
 
 The system is designed to reflect a realistic campus marketplace with practical business logic and a polished user interface.
 
 ---
 
+## 🌐 Try the live demo
+
+Open the [UiTM e-Marketplace login page](https://uitmbookmarketplace.pages.dev/pages/login).
+
+First-time users can select **Sign Up**, register with a valid UiTM student or staff email address, and choose their role. Set a password of at least 8 characters. On successful registration, the app signs in the new account and redirects to the home page. If you need to sign in later, use your student/staff ID or full email and the password you set. Existing users can use **Forgot Password?** if needed. No shared demo credentials are provided. If registration is unavailable, the demo owner may need to provision or enable access in the hosted Firebase project.
+
+After signing in, browse and filter book listings, open a listing for details, and use the available marketplace actions. The live site is configured with a hosted backend, so registration, profile, or marketplace data may be stored remotely. Only enter information you are comfortable submitting to that service.
+
 ## ✨ Core Features
 
-- **Student/Staff/Admin roles** with different access and permissions
+- **Student/Staff/Admin roles** with role-aware views
 - **Book listing and browsing** with search and filters
 - **Real-time negotiation chat** between buyer and seller
-- **Escrow-based transaction flow** with warranty protection
+- **Escrow-style transaction flow** with warranty tracking
 - **Interactive dashboard** with Chart.js analytics
 - **Notification system** for updates and actions
 - **User profile, wallet, and purchase history**
@@ -47,29 +53,26 @@ The system is designed to reflect a realistic campus marketplace with practical 
 ## 🧠 Project Goals
 
 - Build a practical marketplace for academic resource trading
-- Support secure buyer-seller interactions
+- Support buyer-seller interactions
 - Implement trust-building features such as escrow and warranty
 - Showcase full-stack development and data visualization
 - Demonstrate a scalable UI and role-based system design
 
 ---
 
-## 📊 Highlights
+## 📊 Implementation Highlights
 
-- 3 user roles: **Student, Staff, Admin**
-- **8 analytics panels** in the admin dashboard
-- **Real-time updates** for transactions and notifications
-- **100% pass rate** on 22 test cases in project evaluation
-- **95% SUS score** for usability evaluation
+- Student, staff, and admin account-role workflows
+- Negotiation, transaction, and warranty flows
+- Admin dashboard charts and Firebase-backed updates
 
 ---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 14+
-- npm or yarn
-- Firebase project
+- Node.js 14+ and npm
+- A Firebase project with Email/Password Authentication and Realtime Database enabled
 - Internet access for Firebase and image upload services
 
 ### Setup
@@ -81,7 +84,16 @@ npm install
 npm run dev
 ```
 
-Then open the local app in your browser.
+Open `http://localhost:8080` and choose **Login** or **Sign up**. The app is a static frontend; `npm run dev` serves it locally and does not provision Firebase services.
+
+### Configure services
+
+- Firebase client settings and the admin email list are in `assets/js/firebase-config.js`. They currently contain project-specific values; replace them only with values for a Firebase project you control.
+- Image upload uses an ImageBB key configured in the same file. Use your own key and treat any previously published key as exposed.
+- Database rules and Firebase CLI configuration are in `config/firebase-rules.json`, `config/firebase.json`, and `config/.firebaserc`. Update the project ID and review the rules for your use case before deploying. Deploy with Firebase CLI from the repository root, specifying your project explicitly: `firebase deploy --config config/firebase.json --only database --project YOUR_FIREBASE_PROJECT_ID`.
+- See [`file_md/guides/SETUP.md`](file_md/guides/SETUP.md) for detailed setup steps.
+
+Create test accounts in the Firebase project you control. No demo passwords are published here. Firebase and ImageBB configuration in the application source is project-specific and should be reviewed before connecting another project. The hard-coded admin account bootstrap has been removed; existing admin accounts continue to use ordinary Firebase login. The project owner should review and rotate any credentials previously disclosed in the source or documentation.
 
 ---
 
@@ -104,23 +116,17 @@ Web-Based_Book_E-Marketplace_with_Data_Visualization_for_Uitm/
 
 ---
 
-## 🧪 Demo Credentials
+## 🔐 Account and credential note
 
-| Role | Email / ID | Password |
-|------|------------|----------|
-| Student | 2024779269@student.uitm.edu.my | 2024779269 |
-| Staff | 709265@staff.uitm.edu.my | 70926500 |
-| Admin | admin@student.uitm.edu.my | admin123 |
+Previously listed demo logins have been removed from the documentation. Removing them here does not disable accounts or invalidate credentials that may already have been disclosed. If those accounts are active, the project owner must reset or disable them in the associated Firebase Authentication project; this repository change does not modify any external service.
 
 ---
 
-## 🛡️ Security and Trust Features
+## 🔎 Access and transaction behavior
 
-- UiTM email validation
-- Role-based permissions
-- Escrow-style payment handling
-- Warranty and dispute flow
-- Data validation and prevention of improper actions
+- Client-side UiTM email checks and role-aware UI
+- Escrow-style transaction, warranty, and dispute workflows
+- The repository does not establish that the application or its database rules have undergone a security review or are production-ready.
 
 ---
 
@@ -134,7 +140,7 @@ Web-Based_Book_E-Marketplace_with_Data_Visualization_for_Uitm/
 
 ## 📝 License
 
-This project is licensed under the MIT License.
+No license file is present. `package.json` lists `ISC`, while prior README content claimed MIT; the intended project license is unconfirmed. Confirm it with the project owner before adding a license or making a license claim.
 
 ---
 

@@ -180,31 +180,7 @@ if (window.location.pathname.includes('/login')) {
                     console.log("Error code:", error.code);
                     console.log("Error message:", error.message);
 
-                    // Auto-create admin account if it doesn't exist and credentials match
-                    // Handle both 'auth/user-not-found' (old) and 'auth/invalid-login-credentials' (new)
-                    // Also check for generic "INVALID_LOGIN_CREDENTIALS" string in message
-                    if (isAdminLogin && password === 'admin123') {
-                        try {
-                            console.log("Auto-creating admin account...");
-                            // Try to sign up
-                            await signUp(email, password, "System Admin", "0123456789", "admin");
-                            showNotification("Admin account created! Logging in...", 'success');
-                            setTimeout(() => {
-                                window.location.href = 'admin.html';
-                            }, 1500);
-                            return;
-                        } catch (createError) {
-                            // If signup fails because email already exists, it means the password was wrong
-                            if (createError.code === 'auth/email-already-in-use') {
-                                showNotification("Invalid password for admin account.", 'error');
-                            } else {
-                                console.error("Admin auto-creation failed:", createError);
-                                showNotification("Failed to create admin account: " + createError.message, 'error');
-                            }
-                        }
-                    } else {
-                        showNotification(error.message, 'error');
-                    }
+                    showNotification(error.message, 'error');
                 } finally {
                     loadingOverlay.style.display = 'none';
                 }
