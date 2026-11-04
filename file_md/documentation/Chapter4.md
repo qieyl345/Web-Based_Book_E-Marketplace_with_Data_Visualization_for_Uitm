@@ -25,7 +25,7 @@ The platform was built using modern web technologies without relying on legacy f
 |-----------|------------|---------------|
 | **Frontend** | Vanilla HTML5, CSS3, JavaScript (ES6+) | Lightweight, no framework overhead, faster load times |
 | **Backend** | Firebase Realtime Database | Real-time sync, built-in authentication, scalable |
-| **Authentication** | Firebase Auth | Secure, supports email/password, easy integration |
+| **Authentication** | Firebase Auth | Email/password authentication |
 | **Image Hosting** | ImageBB API | Free tier, reliable CDN, simple API |
 | **Charts** | Chart.js v4.4.1 | Interactive, responsive, 8 chart types used |
 | **Design** | Custom CSS with Glassmorphism | Modern aesthetic, UiTM branding colors |
@@ -401,33 +401,9 @@ async function signUp(email, password, fullName, phoneNumber, role) {
 }
 ```
 
-#### Auto-Create Admin Account
+#### Admin Account Setup
 
-**File:** `assets/js/auth.js` (Lines 185-206)
-
-```javascript
-// Auto-create admin account if credentials match
-if (isAdminLogin && password === 'admin123') {
-    try {
-        console.log("Auto-creating admin account...");
-        const userCredential = await auth.createUserWithEmailAndPassword(
-            'admin@student.uitm.edu.my', 
-            'admin123'
-        );
-        
-        await database.ref('users/' + userCredential.user.uid).set({
-            email: 'admin@student.uitm.edu.my',
-            fullName: 'System Administrator',
-            role: 'admin',
-            createdAt: Date.now()
-        });
-        
-        showNotification("Admin account created! Logging in...", "success");
-    } catch (signupError) {
-        // Handle if already exists
-    }
-}
-```
+The former hard-coded admin account bootstrap has been removed from the login flow. Create admin accounts through Firebase Authentication in the project you control, then assign the admin role in its Realtime Database and configure the account email in `ADMIN_EMAILS`.
 
 > **📸 Screenshot Required:** Capture the login page showing the ID input field  
 > **Location:** `file_md/screenshots/4.4.1_login_page.png`
@@ -825,62 +801,16 @@ function calculateSalesTrendWithFilter(range) {
 
 **File:** `config/firebase-rules.json`
 
-```json
-{
-  "rules": {
-    "users": {
-      ".read": "auth != null",
-      "$uid": {
-        ".write": "auth != null && (auth.uid == $uid || 
-                  root.child('users/' + auth.uid + '/role').val() == 'admin')"
-      }
-    },
-    "books": {
-      "$bookId": {
-        ".write": "auth != null && (
-          !data.exists() || 
-          data.child('sellerId').val() == auth.uid || 
-          root.child('users/' + auth.uid + '/role').val() == 'admin' ||
-          (newData.child('status').val() == 'sold' && data.child('status').val() == 'available')
-        )"
-      }
-    },
-    "offers": {
-      "$offerId": {
-        ".read": "auth != null && (
-          data.child('buyerId').val() == auth.uid || 
-          data.child('sellerId').val() == auth.uid ||
-          root.child('users/' + auth.uid + '/role').val() == 'admin'
-        )"
-      }
-    },
-    "chats": {
-      "$offerId": {
-        ".read": "auth != null && (
-          root.child('offers/' + $offerId + '/buyerId').val() == auth.uid || 
-          root.child('offers/' + $offerId + '/sellerId').val() == auth.uid
-        )"
-      }
-    },
-    "feedback": {
-      ".read": "auth != null && 
-               root.child('users/' + auth.uid + '/role').val() == 'admin'"
-    }
-  }
-}
-```
+The current rules are in `config/firebase-rules.json`. Several database nodes allow reads by any authenticated user, so this configuration should not be described as isolating every user's data. Review and test the rules for the intended deployment; no independent security audit is documented here.
 
-### 4.5.2 Security Measures Summary
+### 4.5.2 Access-Control Implementation
 
-| Security Feature | Implementation |
-|-----------------|----------------|
-| **Email Domain Restriction** | Only `@student.uitm.edu.my` and `@staff.uitm.edu.my` allowed |
-| **Role-Based Access** | Admin dashboard blocked for non-admin users |
-| **Data Ownership** | Only book owner can edit/delete their listings |
-| **Chat Privacy** | Only buyer and seller in an offer can access chat |
-| **Feedback Privacy** | Only admins can view all feedback; users see their own |
-| **Escrow Protection** | Funds held until buyer confirms delivery |
-| **Auto-Dispute** | System flags unconfirmed deliveries after 7 days |
+| Mechanism | Implementation |
+|-----------|----------------|
+| **Email domain check** | Client-side validation for UiTM student and staff domains |
+| **Role-aware interface** | Client-side admin checks and navigation |
+| **Database rules** | Rules are provided in `config/firebase-rules.json`; review them before use |
+| **Transaction flow** | Application workflow and payment simulation; not a real escrow or payment service |
 
 ### 4.5.3 Warranty & Dispute Flow
 
@@ -933,7 +863,7 @@ This chapter has demonstrated the complete implementation of the **UiTM Book e-M
 | **Architecture** | Client-server model with Firebase BaaS |
 | **Technology** | Vanilla JS, Firebase, Chart.js, ImageBB |
 | **Features** | 14 HTML pages, 23 JS modules, 21 CSS files |
-| **Security** | Role-based access, escrow system, data validation |
+| **Access behavior** | Role-aware interface, transaction simulation, and client-side validation; no security audit documented |
 | **Innovation** | Real-time negotiation, 8 analytics charts, warranty system |
 
 ### Design Artifacts Delivered:
@@ -945,7 +875,7 @@ This chapter has demonstrated the complete implementation of the **UiTM Book e-M
 - **No Framework Overhead**: Pure vanilla JavaScript for optimal performance
 - **Real-Time Updates**: Firebase listeners for instant data synchronization
 - **Responsive Design**: Mobile-friendly interface with glassmorphism aesthetics
-- **Secure by Default**: Firebase security rules enforce data protection
+- **Database configuration**: Firebase Realtime Database rules are included and require project-specific review
 
 ---
 

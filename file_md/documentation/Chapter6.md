@@ -4,7 +4,9 @@
 
 ### 6.1.1 Project Overview
 
-The **UiTM Book e-Marketplace** was developed to address the challenges of informal textbook trading within the UiTM community. Traditional methods of selling used books—such as WhatsApp groups, bulletin boards, and word-of-mouth—lacked structure, security, and transparency. This project delivers a modern, web-based solution that enables secure consumer-to-consumer (C2C) transactions with built-in negotiation, payment simulation, and administrative oversight.
+The **UiTM Book e-Marketplace** was developed as a web-based prototype for textbook trading within the UiTM community. It includes negotiation workflows, payment simulation, and administrative views; this repository does not establish that it provides secure transactions.
+
+The evaluation scores and pass statuses in this chapter are retained from the existing project report. Raw questionnaires and test logs are not included in this repository, so those outcomes are not independently verifiable from this checkout.
 
 ### 6.1.2 Core Innovation
 
@@ -13,10 +15,10 @@ The platform introduces several innovative features that distinguish it from gen
 | Innovation | Description | Impact |
 |------------|-------------|--------|
 | **Offer/Chat System** | Real-time negotiation with counter-offer validation (≥RM 0.50, ≤10× price) | Fair price discovery |
-| **Escrow Model** | Funds held until buyer confirms receipt | Fraud prevention |
-| **7-Day Warranty** | Post-delivery protection period with dispute option | Buyer confidence |
+| **Escrow-style workflow** | Simulated transaction status and wallet updates | Demonstrates a transaction flow; not a payment service |
+| **7-Day Warranty** | Post-delivery status tracking and dispute option | Demonstrates a claim workflow |
 | **Admin Dashboard** | 8 interactive Chart.js charts with time filters | Data-driven management |
-| **UiTM Email Validation** | Restricted to `@student.uitm.edu.my` and `@staff.uitm.edu.my` | Trusted community |
+| **UiTM Email Validation** | Client-side check for student and staff email domains | Restricts sign-up input in the client |
 
 ### 6.1.3 Technology Stack Recap
 
@@ -24,7 +26,7 @@ The platform introduces several innovative features that distinguish it from gen
 |-----------|------------|--------------|
 | **Frontend** | Vanilla HTML5, CSS3, JavaScript (ES6+) | No framework overhead, fast loading |
 | **Backend** | Firebase Realtime Database | Real-time sync, scalable NoSQL |
-| **Authentication** | Firebase Auth | Secure, email verification |
+| **Authentication** | Firebase Auth | Email/password account handling |
 | **Image Hosting** | ImageBB API | Free, reliable CDN |
 | **Analytics** | Chart.js v4.4.1 | Interactive, responsive charts |
 | **Design** | Custom CSS with Glassmorphism | Modern UiTM-branded aesthetics |
@@ -359,30 +361,27 @@ This project contributes to the body of knowledge in:
 
 1. **E-Commerce System Design** – Demonstrates C2C marketplace implementation with negotiation
 2. **Firebase as BaaS** – Showcases real-time database with security rules for academic projects
-3. **Escrow Pattern** – Implements buyer-seller protection without third-party escrow service
+3. **Escrow-style workflow** – Demonstrates simulated transaction states; not a third-party escrow service
 4. **Dashboard Analytics** – Provides template for Chart.js integration in admin interfaces
 
 ### 6.4.4 Deployment Readiness
 
 | Criteria | Status |
 |----------|--------|
-| All features functional | ✅ Ready |
-| Security rules tested | ✅ Ready |
-| Usability validated | ✅ Ready |
-| Documentation complete | ✅ Ready |
-| Performance acceptable | ✅ Ready |
-| Scalability considered | ⚠️ Monitor |
+| All features functional | Reported ready; not independently verified |
+| Security rules tested | Reported ready; test artifacts not included |
+| Usability validated | Reported ready; raw evaluation data not included |
+| Documentation complete | Reported ready; not independently verified |
+| Performance acceptable | Reported ready; measurements not included |
+| Scalability considered | Reported for monitoring; not independently assessed |
 
-**Recommendation:** The platform is **ready for pilot deployment** at UiTM Tapah Campus as a beta launch, with plans to expand to other campuses based on feedback.
+**Deployment recommendation:** Readiness is not established by the evidence in this repository. No reproducible test logs or security audit are included, and the Firebase configuration and database rules require project-owner review. Do not treat this report as approval for pilot or production deployment.
 
 ### 6.4.5 Closing Statement
 
-The **UiTM Book e-Marketplace** represents a practical solution to a real problem faced by UiTM students and staff. By combining modern web technologies with user-centered design, the platform delivers a secure, transparent, and efficient way to trade textbooks.
+The **UiTM Book e-Marketplace** is a prototype for textbook trading workflows for UiTM students and staff.
 
-The project achieved all three objectives:
-1. ✅ **User-Centered Design** – 4.3/5 satisfaction, 95% intuitive navigation
-2. ✅ **Functional E-Marketplace** – Complete feature set tested and validated
-3. ✅ **Evidence-Based Evaluation** – 20+ participants, 50+ test cases
+The project report records evaluation outcomes, but the underlying participant data and test artifacts are not included in this repository; those outcomes should be treated as reported, not independently verified.
 
 With the recommended future enhancements—particularly PWA support and real payment integration—the platform has the potential to serve the entire UiTM network of over 170,000 students across 35 campuses nationwide.
 
@@ -409,7 +408,7 @@ No additional screenshots required for Chapter 6. However, consider including:
 - **Chapter 5:** Results and Evaluation Testing
 - **Source Code:** Available at `UITM-EMPLC_ver1/`
 - **Firebase Configuration:** `config/firebase-rules.json`
-- **Test Credentials:** Student (2024745815), Staff (709265), Admin (admin/admin123)
+- **Test Accounts:** Use accounts provisioned in the Firebase project used for testing; credentials are not included here.
 
 ---
 

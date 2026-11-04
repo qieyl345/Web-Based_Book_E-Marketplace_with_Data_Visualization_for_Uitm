@@ -8,6 +8,8 @@ This chapter presents the comprehensive testing and evaluation of the **UiTM Boo
 2. **Functional E-Marketplace** – Complete C2C trading capabilities with negotiation
 3. **Evidence-Based Evaluation** – Validated through structured testing and user feedback
 
+The results and pass statuses below are retained from the existing project report. Raw test logs, questionnaires, and rule-simulator exports are not included in this repository, so these outcomes are not independently reproducible from this checkout.
+
 ### 5.1.1 Testing Approach
 
 The evaluation employs a two-pronged testing strategy:
@@ -15,7 +17,7 @@ The evaluation employs a two-pronged testing strategy:
 | Testing Type | Purpose | Method |
 |--------------|---------|--------|
 | **Functional Testing** | Verify all features work correctly | Test cases with expected vs. actual results |
-| **Security Testing** | Validate access controls and data protection | Penetration attempts, rule validation |
+| **Security Testing** | Review configured access controls | Firebase rules simulator is cited in the project report; raw results are not included here |
 | **Usability Testing** | Assess user experience and satisfaction | Questionnaire, task completion, Likert scale |
 
 ---
@@ -28,14 +30,14 @@ The evaluation employs a two-pronged testing strategy:
 
 | ID | Test Case | Input | Expected Result | Actual Result | Status |
 |----|-----------|-------|-----------------|---------------|--------|
-| AUTH-01 | Login with valid student email | `2024745815` + password | Redirect to homepage | Redirect to homepage | ✅ Pass |
-| AUTH-02 | Login with valid staff email | `709265` + password | Redirect to homepage | Redirect to homepage | ✅ Pass |
-| AUTH-03 | Login with admin credentials | `admin` + `admin123` | Redirect to admin dashboard | Redirect to admin dashboard | ✅ Pass |
+| AUTH-01 | Login with valid student email | Valid student account | Redirect to homepage | Redirect to homepage | ✅ Pass |
+| AUTH-02 | Login with valid staff email | Valid staff account | Redirect to homepage | Redirect to homepage | ✅ Pass |
+| AUTH-03 | Login with a configured admin account | Account configured for testing | Redirect to admin dashboard | Redirect to admin dashboard | ✅ Pass |
 | AUTH-04 | Login with non-UiTM email | `test@gmail.com` | Error: "Only UiTM emails allowed" | Error displayed | ✅ Pass |
 | AUTH-05 | Login with wrong password | Valid ID + wrong password | Error: "Invalid credentials" | Firebase error shown | ✅ Pass |
 | AUTH-06 | Student access admin dashboard | Direct URL to `/pages/admin.html` | Redirect to homepage | Redirect occurs | ✅ Pass |
 | AUTH-07 | Staff access admin dashboard | Direct URL to `/pages/admin.html` | Redirect to homepage | Redirect occurs | ✅ Pass |
-| AUTH-08 | Auto-create admin on first login | `admin` + `admin123` (new) | Account created + logged in | Admin created successfully | ✅ Pass |
+| AUTH-08 | Admin account setup | Account provisioned for testing | Account can access admin dashboard | Admin access verified | ✅ Pass |
 
 #### Evidence
 
@@ -342,8 +344,8 @@ The following questions were rated on a 5-point Likert scale (1 = Strongly Disag
 | Evidence Type | Details |
 |---------------|---------|
 | Functional test cases | 50+ test cases executed |
-| Security validation | 10 Firebase rule tests passed |
-| Usability testing | 20+ UiTM participants |
+| Security validation | Reported in the original project record; test artifacts not included |
+| Usability testing | Reported in the original project record; participant data not included |
 | Quantitative metrics | 4.3/5 satisfaction score |
 | Qualitative feedback | Themes analyzed and documented |
 
@@ -364,13 +366,13 @@ The following questions were rated on a 5-point Likert scale (1 = Strongly Disag
 | Testing Type | Result |
 |--------------|--------|
 | **Functional Testing** | 50+ test cases, all passed |
-| **Security Testing** | Firebase rules validated, role-based access confirmed |
+| **Security Testing** | Reported rule checks are not independently verified; current rules require project-specific review |
 | **Usability Testing** | 4.3/5 overall satisfaction from 20+ participants |
 
 ### Key Achievements
 
 - ✅ **All core features functional** – Listing, negotiation, payment, and dispute resolution work as designed
-- ✅ **Security validated** – Firebase rules prevent unauthorized access
+- ⚠️ **Security status unverified** – No independent security audit or reproducible rule-test artifacts are included
 - ✅ **High user satisfaction** – 86% satisfaction rate, 88% would recommend
 - ✅ **Real-time capabilities** – Chat and dashboard update instantly
 
@@ -385,13 +387,7 @@ The following questions were rated on a 5-point Likert scale (1 = Strongly Disag
 
 ### Conclusion
 
-The UiTM Book e-Marketplace has been thoroughly tested and validated through functional testing and user feedback. The system successfully meets all three project objectives:
-
-1. **User-Centered Design** – Confirmed by 4.3/5 usability scores and intuitive task completion
-2. **Functional E-Marketplace** – All features operational with 100% functional test pass rate
-3. **Evidence-Based Evaluation** – 20+ participants provided quantitative and qualitative feedback
-
-The platform is **ready for pilot deployment** with minor enhancements recommended based on user feedback.
+The existing project report records functional and usability results, but this repository does not include raw test logs or participant data to reproduce them. These reported outcomes are not independent validation, and no deployment-readiness conclusion can be drawn from them.
 
 ---
 

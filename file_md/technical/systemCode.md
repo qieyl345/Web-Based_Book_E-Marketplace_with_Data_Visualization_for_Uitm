@@ -97,28 +97,9 @@ if (userId.length === 10 && /^\d+$/.test(userId)) {
 }
 ```
 
-### Auto-Create Admin
-**File:** `assets/js/auth.js`
+### Legacy Admin Bootstrap
 
-```javascript
-if (isAdminLogin && password === 'admin123') {
-    try {
-        const userCredential = await auth.createUserWithEmailAndPassword(
-            'admin@student.uitm.edu.my', 
-            'admin123'
-        );
-        
-        await database.ref('users/' + userCredential.user.uid).set({
-            email: 'admin@student.uitm.edu.my',
-            fullName: 'System Administrator',
-            role: 'admin',
-            createdAt: Date.now()
-        });
-    } catch (signupError) {
-        // Handle if already exists
-    }
-}
-```
+The hard-coded admin account bootstrap was removed from `assets/js/auth.js`. Existing admin accounts continue to use normal Firebase login; create additional admin accounts in the Firebase project you control and assign their roles there.
 
 ### Admin Check Function
 **File:** `assets/js/firebase-config.js`

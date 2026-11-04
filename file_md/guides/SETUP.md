@@ -2,13 +2,13 @@
 
 ## 1. Update Firebase Configuration
 
-Edit `assets/js/firebase-config.js` and replace with your actual Firebase credentials:
+Edit `assets/js/firebase-config.js` with the web configuration for a Firebase project you control. This file currently contains project-specific values; do not reuse them for a different project.
 
 ```javascript
 const firebaseConfig = {
     apiKey: "YOUR_ACTUAL_API_KEY",
     authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.asia-southeast1.firebasedatabase.app/",
+    databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.asia-southeast1.firebasedatabase.app",
     projectId: "YOUR_PROJECT_ID",
     storageBucket: "YOUR_PROJECT_ID.appspot.com",
     messagingSenderId: "YOUR_SENDER_ID",
@@ -21,9 +21,9 @@ const firebaseConfig = {
 ### Create Firebase Project
 1. Go to https://console.firebase.google.com
 2. Click "Add project"
-3. Enter project name: `uitm-emarketplace`
-4. Disable Google Analytics
-5. Create project
+3. Enter a project name and create the project
+4. Update `assets/js/firebase-config.js` with the web app settings for this project
+5. Update the default project ID in `config/.firebaserc`
 
 ### Enable Authentication
 1. In Firebase Console, go to Authentication
@@ -35,7 +35,7 @@ const firebaseConfig = {
 ### Setup Realtime Database
 1. Go to Realtime Database
 2. Click "Create database"
-3. Start in test mode (for development)
+3. Choose the database mode appropriate for your project
 4. Choose location: asia-southeast1 (Singapore)
 5. Enable database
 
@@ -46,19 +46,15 @@ const firebaseConfig = {
 4. Register app with nickname
 5. Copy firebaseConfig object
 
-## 3. Deploy Security Rules
+## 3. Deploy Realtime Database Rules
 
-In Firebase Console:
-1. Go to Realtime Database → Rules
-2. Copy rules from `firebase-rules.json`
-3. Click "Publish"
+Review `config/firebase-rules.json` for your use case before publishing. In Firebase Console, open Realtime Database → Rules, use the rules file, and publish.
 
 Or using Firebase CLI:
 ```bash
 npm install -g firebase-tools
 firebase login
-firebase init database
-firebase deploy --only database
+firebase deploy --config config/firebase.json --only database --project YOUR_FIREBASE_PROJECT_ID
 ```
 
 ## 4. ImageBB API Setup
@@ -67,7 +63,7 @@ firebase deploy --only database
 2. Create account
 3. Go to API section
 4. Copy API key
-5. Update in `assets/js/firebase-config.js`:
+5. Set your own key in `assets/js/firebase-config.js`. Any key previously published in the repository should be treated as exposed and replaced with a key you control:
 ```javascript
 const IMGBB_API_KEY = "YOUR_IMGBB_API_KEY";
 ```
@@ -84,59 +80,43 @@ const ADMIN_EMAILS = [
 
 ## 6. Run the Application
 
-### Option 1: Direct File Access
-Open `login.html` in your browser (may have CORS limitations)
-
-### Option 2: Local Server (Recommended)
+### Local Server (Recommended)
 
 **Using Python:**
 ```bash
 # Python 3
 python -m http.server 8000
-
-# Python 2
-python -m SimpleHTTPServer 8000
 ```
-Then open: http://localhost:8000
+Then open `http://localhost:8000/pages/login.html`.
 
 **Using Node.js:**
 ```bash
-npx http-server
+npm run dev
 ```
-Then open: http://localhost:8080
+Then open `http://localhost:8080/pages/login.html`.
 
 **Using PHP:**
 ```bash
 php -S localhost:8000
 ```
+Then open `http://localhost:8000/pages/login.html`.
 
 ## 7. Test the Application
 
-1. Open http://localhost:8000/login.html
-2. Create account with:
-   - Email: test@student.uitm.edu.my
-   - Password: Test123!
-3. Check email for verification link
-4. After verification, login
-5. Browse homepage
-6. List a book
-7. Add to cart
-8. Test payment flow
+1. Install dependencies with `npm install` from the repository root.
+2. Run `npm run dev` and open `http://localhost:8080/pages/signup.html`.
+3. Register an account in the Firebase project you configured, using an email domain accepted by the application.
+4. Log in using the student/staff ID or full email associated with the account.
+5. Exercise the marketplace flows with accounts and data in your own project.
 
 ### 7.1 Verification
 Once you have tested the basic flows, you can perform a full User Acceptance Test (UAT) using the provided questionnaire:
 - **[View UAT Questions](../../UAT.md)**
 
 
-## 8. Default Admin Setup
+## 8. Admin Setup
 
-To make yourself an admin:
-1. Register with your UiTM email
-2. In Firebase Console → Realtime Database → users
-3. Find your user record
-4. Change `role` from "student" or "staff" to "admin"
-5. Refresh the app
-6. You should now see "Admin" link in navigation
+Create the admin account through Firebase Authentication in your own project, then assign its user record the admin role in Realtime Database. Add the account email to `ADMIN_EMAILS` in `assets/js/firebase-config.js` for the client-side admin checks. Admin accounts are no longer created automatically by the login form.
 
 ## 9. Commission Rate
 

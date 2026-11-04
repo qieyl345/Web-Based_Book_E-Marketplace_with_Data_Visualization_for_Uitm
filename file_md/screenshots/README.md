@@ -34,10 +34,7 @@ This folder is for storing screenshots referenced in Chapters 4, 5, and 6.
 
 1. Run the local dev server: `npm run dev`
 2. Open browser to `http://localhost:8080`
-3. Use test credentials:
-   - Student: `2024745815` / `2024745815`
-   - Staff: `709265` / `70926500`
-   - Admin: `admin` / `admin123`
+3. Sign in with test accounts created in the Firebase project you control. Do not store account passwords in screenshots or documentation.
 4. Capture screenshots using Windows Snipping Tool (Win+Shift+S)
 5. Save with the exact filenames above
 6. Place all screenshots in this folder: `file_md/screenshots/`

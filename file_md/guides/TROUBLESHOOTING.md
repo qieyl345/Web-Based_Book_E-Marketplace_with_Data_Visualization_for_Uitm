@@ -46,9 +46,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 **Cause:** Wrong ID format entered
 
 **Solution:**
-- **Student:** 10-digit number (e.g., `2024745815`)
-- **Staff:** 6-digit number (e.g., `709265`)
-- **Admin:** Type `admin` with password `admin123`
+- **Student:** 10-digit number
+- **Staff:** 6-digit number
+- **Admin:** Use the email address configured for an admin account in your Firebase project and the password set for that account.
 
 ---
 

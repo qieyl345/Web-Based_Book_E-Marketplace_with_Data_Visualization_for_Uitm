@@ -24,7 +24,7 @@ Firebase Realtime Database serves as the backend for UITM-EMPLC. This technology
 
 Firebase Authentication was implemented to handle user management. This service offers built-in email and password authentication with email verification capabilities. Its seamless integration with Firebase database security rules simplifies access control implementation. Firebase Authentication automatically handles session management, password reset functionality, and security token generation, reducing the complexity of authentication implementation.
 
-The choice of Firebase over traditional backend solutions such as Node.js with MySQL was based on several factors. Firebase provides native WebSocket-based real-time synchronization, eliminating the need for polling or manual WebSocket implementation. The platform offers automatic horizontal scaling handled by Google's infrastructure, removing concerns about server capacity during peak usage. Development speed is significantly improved since no server code needs to be written, tested, or deployed. The cost efficiency of Firebase's generous free tier, which includes 1GB of database storage and 50,000 reads per day, supported the project's budget constraints while the pay-as-you-scale model ensures cost control as usage grows. Declarative JSON security rules enforce access control at the database level without custom middleware. Finally, integrated hosting with global CDN distribution ensures fast content delivery worldwide.
+The choice of Firebase over traditional backend solutions such as Node.js with MySQL was based on its real-time synchronization, JavaScript integration, and managed services. Firebase provides database rules that are evaluated server-side, but the effectiveness of this project's configured rules is not established by that fact; the current rules need project-specific review. Hosting and service limits, availability, and costs depend on project configuration and usage.
 
 ### 1.3 External Services Integration
 
@@ -44,7 +44,7 @@ Font Awesome 6 was implemented to provide a comprehensive icon library with cons
 
 UITM-EMPLC employs a serverless architecture where the client browser handles static files including HTML, CSS, and JavaScript, along with the Firebase SDK and real-time listeners. Communication occurs through HTTPS and WebSocket connections to the Firebase backend, which manages authentication services, the realtime database, and security rules. External services including ImageBB for image storage and Cloudflare Pages for static hosting and CDN distribution complete the architecture.
 
-This serverless approach was justified by several key benefits. There is zero DevOps overhead since Firebase handles scaling, backups, and availability automatically. Global performance is ensured through Cloudflare's CDN, which provides low latency for users worldwide. Cost optimization is achieved as the platform only pays for actual usage with no idle server costs. Security is enforced through database rules that execute on Firebase servers and cannot be bypassed by client-side code.
+This serverless approach reduces the amount of application-server code to maintain. Hosting performance, backups, availability, and cost depend on the selected service plans and configuration. Database rules are evaluated on Firebase servers, but this does not demonstrate that the rules in this repository adequately protect data.
 
 ### 2.2 File Structure Organization
 
@@ -60,9 +60,9 @@ The Consumer-to-Consumer (C2C) business model was selected based on the target m
 
 ### 3.1 Escrow and Warranty System
 
-The escrow and warranty system represents one of the most critical features of UITM-EMPLC. When a buyer completes payment, the funds are held in escrow for a 7-day period. This protects buyers from non-delivery and quality issues while ensuring sellers receive payment once transactions are successfully completed. The 7-day warranty period is an industry-standard protection timeframe used by major C2C platforms worldwide.
+The application includes an escrow-style transaction workflow and a 7-day warranty-status flow. Payment is simulated; the repository does not provide a payment processor or third-party escrow service, and the workflow does not establish that real funds are held or protected.
 
-The automatic payout mechanism reduces administrative workload by releasing funds automatically if no disputes are raised during the warranty period. This ensures sellers receive their payments predictably without requiring manual intervention. When buyers encounter issues, the warranty claims system provides a formal dispute process that ensures fair resolution with a complete documentation trail for admin review.
+The application includes an automatic status and wallet-update workflow after the configured warranty period. It is not evidence of real payment settlement. Buyers can create warranty claims for admin review, but the repository does not establish that dispute outcomes are independently verified or guaranteed to be fair.
 
 Admin resolution capabilities allow human oversight for complex disputes, maintaining user trust in the platform. Administrators have the flexibility to refund buyers or pay sellers based on the evidence presented in each case.
 
@@ -90,17 +90,15 @@ The admin dashboard features eight interactive charts designed to provide compre
 
 ### 4.1 Authentication Security
 
-The authentication system implements several security measures to protect the platform and its users. UiTM email restriction limits access to users with @student.uitm.edu.my and @staff.uitm.edu.my email domains only. This creates a trusted, verified community and prevents external bad actors from accessing the platform. Mandatory email verification ensures that users actually own the email addresses they register with, reducing fake accounts and spam.
-
-Role identification is automated based on user ID format, where 10-digit IDs indicate students and 6-digit IDs indicate staff members. This follows Malaysian education standards and enables automatic role assignment. Firebase handles secure token storage, refresh operations, and automatic session expiry, ensuring robust session management without custom implementation.
+The sign-up code checks for UiTM student and staff email domains in the client before creating an account. The login form accepts an ID or full email. The sign-up path does not itself send an email-verification message, so verification should not be described as mandatory based on this code. These behaviors describe the current implementation and do not establish that authentication has been independently security-reviewed.
 
 ### 4.2 Firebase Security Rules
 
-Firebase security rules provide server-side enforcement of access control. All database reads require user authentication, ensuring no public data exposure. Write operations are restricted so that users can only modify their own data, preventing tampering with other users' information. Administrators have override capabilities to access all data for platform moderation purposes. Since these rules execute on Firebase servers, they cannot be bypassed by client-side manipulation.
+The repository includes Realtime Database rules in `config/firebase-rules.json`, but several nodes permit reads by any authenticated user and some write conditions are broader than per-user ownership. The rules require project-specific review and testing; this document does not establish that they prevent data exposure or tampering.
 
 ### 4.3 Input Sanitization
 
-Multiple input sanitization techniques protect the platform from various attack vectors. DOMPurify provides HTML sanitization for user-generated content, preventing cross-site scripting (XSS) attacks in descriptions and chat messages. Input validation occurs both on the client side and through Firebase rules, preventing invalid data entry and database corruption. Rate limiting with a 2-second cooldown on chat messages prevents spam and denial-of-service attacks. Character limits of 500 characters maximum for messages control database size and prevent abuse.
+Client-side input checks and message handling are implemented in the browser. The repository does not establish that these controls prevent XSS, abuse, or invalid database writes; they should not be treated as a security assessment.
 
 ---
 
@@ -130,7 +128,7 @@ The live countdown timer feature provides real-time visual feedback for time-sen
 
 ### 6.1 Transaction Lifecycle
 
-The transaction lifecycle was designed with clear status transitions that protect both buyers and sellers. When checkout is initiated, the transaction enters pending_payment status, separating user intent from actual payment. Upon successful payment, the payment_held status indicates that escrow protection is activated. When the buyer confirms receipt, the transaction moves to delivered status and the warranty period begins. If no issues are reported within 7 days, the transaction automatically moves to completed status and the seller receives payment. If the buyer claims warranty within the protection period, the transaction enters warranty_claimed status and the dispute process begins. When a buyer sends a book back, the return_sent status indicates the item is in transit. Upon admin resolution favoring the buyer, the refunded status indicates the buyer has received a full refund.
+The application implements transaction status changes and a payment simulation. These client-side workflows do not represent a payment provider or third-party escrow service, and they do not prove that funds are held or protected. Warranty and dispute statuses describe application workflows, not an external guarantee.
 
 ### 6.2 Timeout Logic
 
@@ -144,11 +142,11 @@ The platform uses a 10% commission rate on all transactions, which aligns with i
 
 ## Summary
 
-The UITM-EMPLC system was developed with careful consideration of multiple factors across all aspects of the platform. Technology selection prioritized the optimal balance of development speed, performance, and cost efficiency appropriate for an academic project scope. The security architecture implements multiple layers including email domain restriction, Firebase security rules, and comprehensive input sanitization to create a trusted environment for users.
+The UITM-EMPLC system was developed as an academic marketplace prototype. It includes client-side email-domain checks and a Firebase rules file; their effectiveness has not been independently assessed, and no security assurance is made here.
 
 User experience design incorporates modern visual elements including Glassmorphism styling, skeleton loaders, and real-time updates to deliver a premium, contemporary experience. The business logic built around escrow protection, warranty periods, and dispute resolution systems protects both buyers and sellers while enabling automated processing to reduce administrative overhead. The serverless architecture ensures automatic scalability with user growth without requiring additional infrastructure management.
 
-Each decision was made to balance academic feasibility with production-quality implementation, resulting in a fully functional Consumer-to-Consumer marketplace specifically tailored for the UiTM community. The platform successfully demonstrates how modern web technologies can be combined to create a secure, user-friendly, and efficient online marketplace.
+The project demonstrates a set of Consumer-to-Consumer marketplace workflows for the UiTM community. Production readiness, security, and independent usability outcomes are not established by the evidence included in this repository.
 
 ---
 
