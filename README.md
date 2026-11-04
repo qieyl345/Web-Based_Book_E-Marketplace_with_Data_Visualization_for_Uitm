@@ -108,7 +108,7 @@ Web-Based_Book_E-Marketplace_with_Data_Visualization_for_Uitm/
 
 | Role | Email / ID | Password |
 |------|------------|----------|
-| Student | 2024745815@student.uitm.edu.my | 2024745815 |
+| Student | 2024779269@student.uitm.edu.my | 2024779269 |
 | Staff | 709265@staff.uitm.edu.my | 70926500 |
 | Admin | admin@student.uitm.edu.my | admin123 |
 
